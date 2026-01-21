@@ -1,11 +1,5 @@
-/***********************
- * 🔧 ตั้งค่า URL GAS
- ***********************/
 const GAS = 'https://script.google.com/macros/s/AKfycbycd0jLtPDxF17tZc4QGMGgLQktURjuJ_Q6SlFNA__wU-IRQKtfmVc6AtWqv-Lr5mkCpA/exec';
 
-/***********************
- * 🔐 Google Login
- ***********************/
 window.onload = () => {
   google.accounts.id.initialize({
     client_id: 'GOOGLE_CLIENT_ID_ของคุณ',
@@ -19,21 +13,34 @@ window.onload = () => {
 };
 
 function handleLogin(response) {
-  // ล็อกอินสำเร็จ → โหลดข้อมูล
-  loadData();
+  const payload = JSON.parse(atob(response.credential.split('.')[1]));
+  const email = payload.email;
+
+  // ส่งอีเมลไปตรวจสอบกับ GAS
+  fetch(GAS, {
+    method: 'POST',
+    body: JSON.stringify({
+      action: 'checkStaff',
+      email: email
+    })
+  })
+  .then(res => res.json())
+  .then(result => {
+    if (result.allow) {
+      document.getElementById('staffTable').style.display = 'table';
+      loadData();
+    } else {
+      document.getElementById('noAccess').style.display = 'block';
+    }
+  });
 }
 
-/***********************
- * 📥 โหลดข้อมูลแฟ้ม
- ***********************/
 function loadData() {
   fetch(GAS + '?action=getData')
     .then(res => res.json())
     .then(data => {
-      const tb = document.getElementById('tb');
       tb.innerHTML = '';
 
-      // แสดงเฉพาะแฟ้มที่ยังอยู่กับ ผอ.
       data
         .filter(row => row[3] === 'เสนอแฟ้มต่อผู้อำนวยการ')
         .forEach(row => {
@@ -59,16 +66,9 @@ function loadData() {
           </tr>
         `;
       }
-    })
-    .catch(err => {
-      alert('โหลดข้อมูลไม่สำเร็จ');
-      console.error(err);
     });
 }
 
-/***********************
- * 📝 อัปเดตวันที่ออกจาก ผอ.
- ***********************/
 function updateOut(code) {
   const outDate = document.getElementById('d' + code).value;
 
@@ -86,7 +86,7 @@ function updateOut(code) {
     })
   })
   .then(() => {
-    alert('อัปเดตสถานะเรียบร้อย');
-    loadData(); // โหลดข้อมูลใหม่
+    alert('อัปเดตเรียบร้อย');
+    loadData();
   });
 }
