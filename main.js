@@ -1,9 +1,16 @@
 const GAS = 'https://script.google.com/macros/s/AKfycbycd0jLtPDxF17tZc4QGMGgLQktURjuJ_Q6SlFNA__wU-IRQKtfmVc6AtWqv-Lr5mkCpA/exec';
 let CODE = '';
 
+const loading = document.getElementById('loading');
+const table = document.getElementById('dataTable');
+
 fetch(GAS + '?action=getData')
 .then(r => r.json())
 .then(data => {
+  loading.classList.add('d-none');
+  table.classList.remove('d-none');
+
+  tb.innerHTML = '';
   data.forEach(x => {
     tb.innerHTML += `
       <tr>
@@ -12,12 +19,13 @@ fetch(GAS + '?action=getData')
         <td>${x[3]}</td>
         <td>
           ${x[3] === 'พิจารณาเรียบร้อยแล้ว'
-            ? `<button onclick="openSign('${x[1]}')">รับแฟ้มคืน</button>`
+            ? `<button class="btn btn-sm btn-success" onclick="openSign('${x[1]}')">รับแฟ้มคืน</button>`
             : '-'}
         </td>
       </tr>`;
   });
 });
+
 
 function add() {
   fetch(GAS, {
