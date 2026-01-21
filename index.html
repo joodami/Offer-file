@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>ระบบเสนอแฟ้มผู้อำนวยการ</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h2>📁 ระบบเสนอแฟ้มผู้อำนวยการ</h2>
+
+<form id="formAdd">
+  <input type="date" id="date" required>
+  <input type="text" id="code" placeholder="รหัสแฟ้ม" required>
+  <input type="text" id="sender" placeholder="ผู้เสนอ" required>
+  <button type="submit">ลงทะเบียนเสนอแฟ้ม</button>
+</form>
+
+<table>
+  <thead>
+    <tr>
+      <th>วันที่เสนอ</th>
+      <th>รหัสแฟ้ม</th>
+      <th>ผู้เสนอ</th>
+      <th>สถานะ</th>
+      <th>ดำเนินการ</th>
+    </tr>
+  </thead>
+  <tbody id="tableBody"></tbody>
+</table>
+
+<script src="script.js"></script>
+</body>
+</html>
