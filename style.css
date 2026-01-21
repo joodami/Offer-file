@@ -7,68 +7,25 @@
 
 body {
   margin: 0;
-  padding: 20px;
   background: #f4f6f8;
 }
 
-h1, h2, h3 {
+.navbar-brand {
   font-weight: 500;
-  text-align: center;
-}
-
-nav {
-  background: #1976d2;
-  padding: 10px;
-  text-align: center;
-}
-
-nav a {
-  color: white;
-  margin: 0 15px;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-  margin-top: 20px;
-}
-
-th, td {
-  border: 1px solid #ddd;
-  padding: 10px;
-  text-align: center;
-}
-
-th {
-  background: #1976d2;
-  color: white;
-}
-
-input, button {
-  padding: 8px;
-  margin: 5px;
-  font-size: 14px;
-}
-
-button {
-  background: #1976d2;
-  color: white;
-  border: none;
-  border-radius: 6px;
-}
-
-canvas {
-  border: 1px solid #333;
-  touch-action: none;
-  background: #fff;
 }
 
 .card {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  margin-top: 20px;
+  border-radius: 12px;
+}
+
+.table th {
+  vertical-align: middle;
+}
+
+.badge {
+  font-size: 0.85rem;
+}
+
+input[type="date"] {
+  min-width: 140px;
 }
