@@ -44,14 +44,14 @@ function appendRow(x) {
 
   const tr = document.createElement('tr');
   tr.innerHTML = `
-    <td>${x[1]}</td>
-    <td>${x[2]}</td>
-    <td>
+    <td class="text-center align-middle">${x[1]}</td>
+    <td class="text-start align-middle">${x[2]}</td>
+    <td class="text-center align-middle">
       <span class="badge bg-${statusColor[x[3]] || 'secondary'}">
         ${x[3]}
       </span>
     </td>
-    <td>
+    <td class="text-center align-middle">
       ${x[3] === 'พิจารณาเรียบร้อยแล้ว'
         ? `<button class="btn btn-sm btn-success" onclick="openSign('${x[1]}')">
             รับแฟ้มคืน
@@ -59,8 +59,9 @@ function appendRow(x) {
         : '-'}
     </td>
   `;
-  tb.prepend(tr);
+  tb.prepend(tr);   // ✅ ข้อมูลล่าสุดอยู่บนสุด
 }
+
 
 /* เพิ่มแฟ้ม */
 function add(e) {
