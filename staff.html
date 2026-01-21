@@ -18,16 +18,21 @@
 
 <div id="login"></div>
 
-<table>
-<thead>
-<tr>
-  <th>รหัสแฟ้ม</th>
-  <th>วันที่ออกจาก ผอ.</th>
-  <th>บันทึก</th>
-</tr>
-</thead>
-<tbody id="tb"></tbody>
+<div id="noAccess" style="display:none;color:red;text-align:center">
+  ❌ อีเมลนี้ไม่มีสิทธิ์ใช้งานระบบเจ้าหน้าที่
+</div>
+
+<table id="staffTable" style="display:none">
+  <thead>
+    <tr>
+      <th>รหัสแฟ้ม</th>
+      <th>วันที่ออกจาก ผอ.</th>
+      <th>บันทึก</th>
+    </tr>
+  </thead>
+  <tbody id="tb"></tbody>
 </table>
+
 
 <script src="staff.js"></script>
 </body>
