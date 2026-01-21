@@ -1,37 +1,35 @@
 const GAS = 'https://script.google.com/macros/s/AKfycbycd0jLtPDxF17tZc4QGMGgLQktURjuJ_Q6SlFNA__wU-IRQKtfmVc6AtWqv-Lr5mkCpA/exec';
 
-window.onload = () => {
-  google.accounts.id.initialize({
-    client_id: 'GOOGLE_CLIENT_ID_ของคุณ',
-    callback: handleLogin
-  });
+function login() {
+  const phone = document.getElementById('phone').value.trim();
+  const msg = document.getElementById('msg');
 
-  google.accounts.id.renderButton(
-    document.getElementById('login'),
-    { theme: 'outline', size: 'large' }
-  );
-};
+  if (!phone) {
+    msg.innerText = 'กรุณากรอกเบอร์โทรศัพท์';
+    return;
+  }
 
-function handleLogin(response) {
-  const payload = JSON.parse(atob(response.credential.split('.')[1]));
-  const email = payload.email;
-
-  // ส่งอีเมลไปตรวจสอบกับ GAS
   fetch(GAS, {
     method: 'POST',
     body: JSON.stringify({
-      action: 'checkStaff',
-      email: email
+      action: 'staffLogin',
+      phone: phone
     })
   })
   .then(res => res.json())
-  .then(result => {
-    if (result.allow) {
-      document.getElementById('staffTable').style.display = 'table';
+  .then(r => {
+    if (r.allow) {
+      document.getElementById('loginBox').style.display = 'none';
+      document.getElementById('staffBox').style.display = 'block';
+      document.getElementById('staffName').innerText = '👩‍💼 ' + r.name;
       loadData();
     } else {
-      document.getElementById('noAccess').style.display = 'block';
+      msg.innerText = '❌ เบอร์โทรนี้ไม่มีสิทธิ์ใช้งาน';
     }
+  })
+  .catch(err => {
+    console.error(err);
+    msg.innerText = 'เกิดข้อผิดพลาดในการเชื่อมต่อระบบ';
   });
 }
 
@@ -39,6 +37,7 @@ function loadData() {
   fetch(GAS + '?action=getData')
     .then(res => res.json())
     .then(data => {
+      const tb = document.getElementById('tb');
       tb.innerHTML = '';
 
       data
@@ -47,24 +46,16 @@ function loadData() {
           tb.innerHTML += `
             <tr>
               <td>${row[1]}</td>
+              <td><input type="date" id="d${row[1]}"></td>
               <td>
-                <input type="date" id="d${row[1]}">
-              </td>
-              <td>
-                <button onclick="updateOut('${row[1]}')">
-                  บันทึก
-                </button>
+                <button onclick="updateOut('${row[1]}')">บันทึก</button>
               </td>
             </tr>
           `;
         });
 
-      if (tb.innerHTML === '') {
-        tb.innerHTML = `
-          <tr>
-            <td colspan="3">ไม่มีแฟ้มรออัปเดต</td>
-          </tr>
-        `;
+      if (!tb.innerHTML) {
+        tb.innerHTML = `<tr><td colspan="3">ไม่มีแฟ้มรออัปเดต</td></tr>`;
       }
     });
 }
