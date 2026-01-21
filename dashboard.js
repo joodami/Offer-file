@@ -1,6 +1,9 @@
-fetch(GAS+'?action=dashboard').then(r=>r.json()).then(x=>{
- d.innerHTML=`
- <h3>ทั้งหมด ${x.total}</h3>
- <h3>รอ ผอ. ${x.waiting}</h3>
- <h3>เสร็จแล้ว ${x.done}</h3>`;
+fetch(GAS + '?action=dashboard')
+.then(r => r.json())
+.then(x => {
+  d.innerHTML = `
+    <h3>📁 แฟ้มทั้งหมด: ${x.total}</h3>
+    <h3>⏳ รอผู้อำนวยการ: ${x.waiting}</h3>
+    <h3>✅ เสร็จสิ้น: ${x.done}</h3>
+  `;
 });
