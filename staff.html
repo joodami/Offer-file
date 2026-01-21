@@ -2,41 +2,81 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>เจ้าหน้าที่</title>
-<link rel="stylesheet" href="style.css">
+<title>เจ้าหน้าที่ | ระบบสารบรรณ</title>
+
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<nav>
-  <a href="index.html">📁 ผู้เสนอแฟ้ม</a>
-  <a href="staff.html">👩‍💼 เจ้าหน้าที่</a>
-  <a href="dashboard.html">📊 Dashboard</a>
+<!-- Navbar -->
+<nav class="navbar navbar-dark bg-primary shadow-sm mb-4">
+  <div class="container-fluid">
+    <span class="navbar-brand">👩‍💼 เจ้าหน้าที่สารบรรณ</span>
+    <div>
+      <a href="index.html" class="btn btn-outline-light btn-sm">📁 ผู้เสนอแฟ้ม</a>
+      <a href="dashboard.html" class="btn btn-outline-light btn-sm">📊 Dashboard</a>
+    </div>
+  </div>
 </nav>
 
-<h2>เข้าสู่ระบบเจ้าหน้าที่</h2>
+<div class="container">
 
-<div class="card" id="loginBox">
-  <input id="phone" placeholder="กรอกเบอร์โทรศัพท์">
-  <button onclick="login()">เข้าสู่ระบบ</button>
-  <div id="msg" style="color:red;text-align:center"></div>
+  <!-- Login -->
+  <div class="card shadow-sm mx-auto" id="loginBox" style="max-width:420px">
+    <div class="card-header bg-light fw-medium text-center">
+      เข้าสู่ระบบเจ้าหน้าที่
+    </div>
+    <div class="card-body">
+      <input id="phone" class="form-control mb-2" placeholder="กรอกเบอร์โทรศัพท์">
+      <button class="btn btn-primary w-100" onclick="login(event)">
+        เข้าสู่ระบบ
+      </button>
+      <div id="msg" class="text-danger text-center mt-2"></div>
+    </div>
+  </div>
+
+  <!-- Staff -->
+  <div class="card shadow-sm d-none" id="staffBox">
+    <div class="card-header bg-light fw-medium d-flex justify-content-between">
+      <span id="staffName"></span>
+      <span class="text-muted">รายการแฟ้มรอออกจาก ผอ.</span>
+    </div>
+
+    <div class="card-body p-0">
+      <table class="table table-bordered table-striped mb-0">
+        <thead class="table-primary">
+          <tr>
+            <th width="30%">รหัสแฟ้ม</th>
+            <th>วันที่ออกจาก ผอ.</th>
+            <th width="20%">บันทึก</th>
+          </tr>
+        </thead>
+        <tbody id="tb">
+          <tr>
+            <td colspan="3" class="text-center text-muted p-4">
+              ยังไม่มีข้อมูล
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
 </div>
 
-<div class="card" id="staffBox" style="display:none">
-  <h3 id="staffName"></h3>
-
-  <table>
-    <thead>
-      <tr>
-        <th>รหัสแฟ้ม</th>
-        <th>วันที่ออกจาก ผอ.</th>
-        <th>บันทึก</th>
-      </tr>
-    </thead>
-    <tbody id="tb"></tbody>
-  </table>
+<!-- Toast -->
+<div class="toast-container position-fixed top-0 end-0 p-3">
+  <div id="toast" class="toast align-items-center text-bg-success border-0">
+    <div class="d-flex">
+      <div class="toast-body" id="toastMsg"></div>
+      <button class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>
+  </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="staff.js"></script>
 </body>
 </html>
