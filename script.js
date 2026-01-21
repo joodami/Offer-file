@@ -1,53 +1,85 @@
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbycd0jLtPDxF17tZc4QGMGgLQktURjuJ_Q6SlFNA__wU-IRQKtfmVc6AtWqv-Lr5mkCpA/exec';
+const GAS = 'https://script.google.com/macros/s/AKfycbycd0jLtPDxF17tZc4QGMGgLQktURjuJ_Q6SlFNA__wU-IRQKtfmVc6AtWqv-Lr5mkCpA/exec';
 
-fetch(`${GAS_URL}?action=getData`)
+function login() {
+  const phone = document.getElementById('phone').value.trim();
+
+  if (!phone) {
+    msg.innerText = 'กรุณากรอกเบอร์โทรศัพท์';
+    return;
+  }
+
+  fetch(GAS, {
+    method: 'POST',
+    body: JSON.stringify({
+      action: 'staffLogin',
+      phone: phone
+    })
+  })
   .then(res => res.json())
-  .then(data => renderTable(data));
-
-function renderTable(data) {
-  const tbody = document.getElementById('tableBody');
-  tbody.innerHTML = '';
-  data.forEach(row => {
-    tbody.innerHTML += `
-      <tr>
-        <td>${row[0]}</td>
-        <td>${row[1]}</td>
-        <td>${row[2]}</td>
-        <td>${row[3]}</td>
-        <td>
-          ${row[3] === 'พิจารณาเรียบร้อยแล้ว'
-            ? `<button onclick="receive('${row[1]}')">รับแฟ้มคืน</button>`
-            : '-'}
-        </td>
-      </tr>`;
+  .then(r => {
+    if (r.allow) {
+      loginBox.style.display = 'none';
+      staffBox.style.display = 'block';
+      staffName.innerText = '👩‍💼 ' + r.name;
+      loadData();
+    } else {
+      msg.innerText = '❌ เบอร์โทรนี้ไม่มีสิทธิ์ใช้งาน';
+    }
   });
 }
 
-document.getElementById('formAdd').onsubmit = e => {
-  e.preventDefault();
-  fetch(GAS_URL, {
-    method: 'POST',
-    body: JSON.stringify({
-      action: 'add',
-      date: date.value,
-      code: code.value,
-      sender: sender.value
-    })
-  }).then(() => location.reload());
-};
+function loadData() {
+  fetch(GAS + '?action=getData')
+    .then(res => res.json())
+    .then(data => {
+      tb.innerHTML = '';
 
-function receive(code) {
-  const receiver = prompt('ผู้รับแฟ้มคืน');
-  const signature = prompt('ลงลายมือชื่อ');
-  fetch(GAS_URL, {
+      data
+        .filter(row => row[3] === 'เสนอแฟ้มต่อผู้อำนวยการ')
+        .forEach(row => {
+          tb.innerHTML += `
+            <tr>
+              <td>${row[1]}</td>
+              <td>
+                <input type="date" id="d${row[1]}">
+              </td>
+              <td>
+                <button onclick="updateOut('${row[1]}')">
+                  บันทึก
+                </button>
+              </td>
+            </tr>
+          `;
+        });
+
+      if (tb.innerHTML === '') {
+        tb.innerHTML = `
+          <tr>
+            <td colspan="3">ไม่มีแฟ้มรออัปเดต</td>
+          </tr>
+        `;
+      }
+    });
+}
+
+function updateOut(code) {
+  const outDate = document.getElementById('d' + code).value;
+
+  if (!outDate) {
+    alert('กรุณาเลือกวันที่ออกจาก ผอ.');
+    return;
+  }
+
+  fetch(GAS, {
     method: 'POST',
     body: JSON.stringify({
-      action: 'updateStatus',
-      code,
-      status: 'รับแฟ้มคืนเรียบร้อยแล้ว',
-      receiver,
-      returnDate: new Date().toLocaleDateString(),
-      signature
+      action: 'outDirector',
+      code: code,
+      outDate: outDate
     })
-  }).then(() => location.reload());
+  })
+  .then(() => {
+    alert('อัปเดตเรียบร้อย');
+    loadData();
+  });
 }
