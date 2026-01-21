@@ -28,6 +28,13 @@ fetch(GAS + '?action=getData')
 
 
 function add() {
+  const btn = event.target;
+  btn.disabled = true;
+  btn.innerHTML = `
+    <span class="spinner-border spinner-border-sm"></span>
+    กำลังบันทึก...
+  `;
+
   fetch(GAS, {
     method: 'POST',
     body: JSON.stringify({
@@ -36,8 +43,15 @@ function add() {
       code: code.value,
       sender: sender.value
     })
-  }).then(() => location.reload());
+  })
+  .then(() => location.reload())
+  .catch(() => {
+    btn.disabled = false;
+    btn.innerHTML = 'บันทึก';
+    alert('เกิดข้อผิดพลาด');
+  });
 }
+
 
 /* Canvas รองรับมือถือ */
 const c = document.getElementById('c');
