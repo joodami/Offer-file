@@ -1,37 +1,36 @@
 const GAS = 'https://script.google.com/macros/s/AKfycbycd0jLtPDxF17tZc4QGMGgLQktURjuJ_Q6SlFNA__wU-IRQKtfmVc6AtWqv-Lr5mkCpA/exec';
 
 function login() {
-  const phone = document.getElementById('phone').value.trim();
-  const msg = document.getElementById('msg');
-
-  if (!phone) {
-    msg.innerText = 'กรุณากรอกเบอร์โทรศัพท์';
-    return;
-  }
+  const btn = event.target;
+  btn.disabled = true;
+  btn.innerHTML = `
+    <span class="spinner-border spinner-border-sm"></span>
+    กำลังเข้าสู่ระบบ...
+  `;
 
   fetch(GAS, {
     method: 'POST',
     body: JSON.stringify({
       action: 'staffLogin',
-      phone: phone
+      phone: phone.value
     })
   })
   .then(res => res.json())
   .then(r => {
+    btn.disabled = false;
+    btn.innerHTML = 'เข้าสู่ระบบ';
+
     if (r.allow) {
-      document.getElementById('loginBox').style.display = 'none';
-      document.getElementById('staffBox').style.display = 'block';
-      document.getElementById('staffName').innerText = '👩‍💼 ' + r.name;
+      loginBox.style.display = 'none';
+      staffBox.style.display = 'block';
+      staffName.innerText = '👩‍💼 ' + r.name;
       loadData();
     } else {
-      msg.innerText = '❌ เบอร์โทรนี้ไม่มีสิทธิ์ใช้งาน';
+      msg.innerText = '❌ ไม่มีสิทธิ์';
     }
-  })
-  .catch(err => {
-    console.error(err);
-    msg.innerText = 'เกิดข้อผิดพลาดในการเชื่อมต่อระบบ';
   });
 }
+
 
 function loadData() {
   fetch(GAS + '?action=getData')
