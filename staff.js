@@ -60,23 +60,18 @@ function loadData() {
 }
 
 function updateOut(code) {
-  const outDate = document.getElementById('d' + code).value;
-
-  if (!outDate) {
-    alert('กรุณาเลือกวันที่ออกจาก ผอ.');
-    return;
-  }
+  const btn = event.target;
+  btn.disabled = true;
+  btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span>`;
 
   fetch(GAS, {
     method: 'POST',
     body: JSON.stringify({
       action: 'outDirector',
-      code: code,
-      outDate: outDate
+      code,
+      outDate: document.getElementById('d' + code).value
     })
   })
-  .then(() => {
-    alert('อัปเดตเรียบร้อย');
-    loadData();
-  });
+  .then(() => loadData());
 }
+
