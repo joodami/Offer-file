@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <title>เจ้าหน้าที่</title>
 <link rel="stylesheet" href="style.css">
-<script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 
@@ -14,25 +13,28 @@
   <a href="dashboard.html">📊 Dashboard</a>
 </nav>
 
-<h2>หน้าเจ้าหน้าที่ (อัปเดตสถานะแฟ้ม)</h2>
+<h2>เข้าสู่ระบบเจ้าหน้าที่</h2>
 
-<div id="login"></div>
-
-<div id="noAccess" style="display:none;color:red;text-align:center">
-  ❌ อีเมลนี้ไม่มีสิทธิ์ใช้งานระบบเจ้าหน้าที่
+<div class="card" id="loginBox">
+  <input id="phone" placeholder="กรอกเบอร์โทรศัพท์">
+  <button onclick="login()">เข้าสู่ระบบ</button>
+  <div id="msg" style="color:red;text-align:center"></div>
 </div>
 
-<table id="staffTable" style="display:none">
-  <thead>
-    <tr>
-      <th>รหัสแฟ้ม</th>
-      <th>วันที่ออกจาก ผอ.</th>
-      <th>บันทึก</th>
-    </tr>
-  </thead>
-  <tbody id="tb"></tbody>
-</table>
+<div class="card" id="staffBox" style="display:none">
+  <h3 id="staffName"></h3>
 
+  <table>
+    <thead>
+      <tr>
+        <th>รหัสแฟ้ม</th>
+        <th>วันที่ออกจาก ผอ.</th>
+        <th>บันทึก</th>
+      </tr>
+    </thead>
+    <tbody id="tb"></tbody>
+  </table>
+</div>
 
 <script src="staff.js"></script>
 </body>
