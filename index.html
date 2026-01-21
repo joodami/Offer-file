@@ -1,33 +1,36 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <title>ระบบเสนอแฟ้มผู้อำนวยการ</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>เสนอแฟ้มผู้อำนวยการ</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<h2>📁 ระบบเสนอแฟ้มผู้อำนวยการ</h2>
 
-<form id="formAdd">
-  <input type="date" id="date" required>
-  <input type="text" id="code" placeholder="รหัสแฟ้ม" required>
-  <input type="text" id="sender" placeholder="ผู้เสนอ" required>
-  <button type="submit">ลงทะเบียนเสนอแฟ้ม</button>
-</form>
+<h2>📁 เสนอแฟ้มผู้อำนวยการ</h2>
+
+<input type="date" id="date">
+<input placeholder="รหัสแฟ้ม" id="code">
+<input placeholder="ผู้เสนอ" id="sender">
+<button onclick="add()">ลงทะเบียน</button>
 
 <table>
-  <thead>
-    <tr>
-      <th>วันที่เสนอ</th>
-      <th>รหัสแฟ้ม</th>
-      <th>ผู้เสนอ</th>
-      <th>สถานะ</th>
-      <th>ดำเนินการ</th>
-    </tr>
-  </thead>
-  <tbody id="tableBody"></tbody>
+<thead>
+<tr>
+<th>รหัสแฟ้ม</th><th>ผู้เสนอ</th><th>สถานะ</th><th>ดำเนินการ</th>
+</tr>
+</thead>
+<tbody id="tb"></tbody>
 </table>
 
-<script src="script.js"></script>
+<div id="sign" style="display:none">
+<h3>✍️ รับแฟ้มคืน</h3>
+<input id="receiver" placeholder="ผู้รับแฟ้มคืน"><br><br>
+<canvas id="c" width="300" height="150"></canvas><br>
+<button onclick="clearC()">ล้าง</button>
+<button onclick="save()">บันทึก</button>
+</div>
+
+<script src="main.js"></script>
 </body>
 </html>
