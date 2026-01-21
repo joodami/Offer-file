@@ -62,8 +62,9 @@ function save() {
       action: 'receive',
       code: CODE,
       receiver: receiver.value,
-      date: new Date().toLocaleDateString(),
+      receiveDate: new Date().toLocaleDateString(),
       signature: c.toDataURL()
     })
   }).then(() => location.reload());
 }
+
