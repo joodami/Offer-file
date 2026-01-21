@@ -1,36 +1,74 @@
-@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap');
 
-body {
-  font-family: 'Prompt', sans-serif;
-  margin: 20px;
-  background: #f7f7f7;
+* {
+  font-family: 'Prompt', sans-serif !important;
+  box-sizing: border-box;
 }
 
-h2 { text-align: center; }
+body {
+  margin: 0;
+  padding: 20px;
+  background: #f4f6f8;
+}
+
+h1, h2, h3 {
+  font-weight: 500;
+  text-align: center;
+}
+
+nav {
+  background: #1976d2;
+  padding: 10px;
+  text-align: center;
+}
+
+nav a {
+  color: white;
+  margin: 0 15px;
+  text-decoration: none;
+  font-weight: 500;
+}
 
 table {
   width: 100%;
   border-collapse: collapse;
   background: white;
+  margin-top: 20px;
 }
 
 th, td {
   border: 1px solid #ddd;
-  padding: 8px;
+  padding: 10px;
   text-align: center;
 }
 
-th { background: #1976d2; color: white; }
+th {
+  background: #1976d2;
+  color: white;
+}
+
+input, button {
+  padding: 8px;
+  margin: 5px;
+  font-size: 14px;
+}
 
 button {
   background: #1976d2;
   color: white;
   border: none;
-  padding: 6px 12px;
-  border-radius: 5px;
+  border-radius: 6px;
 }
 
 canvas {
   border: 1px solid #333;
   touch-action: none;
+  background: #fff;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
 }
