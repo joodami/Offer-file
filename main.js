@@ -19,20 +19,21 @@ function loadData() {
   fetch(GAS + '?action=getData')
     .then(r => r.json())
     .then(data => {
-      tb.innerHTML = '';
+  tb.innerHTML = '';
 
-      if (!data.length) {
-        tb.innerHTML = `
-          <tr>
-            <td colspan="4" class="text-center text-muted p-4">
-              ยังไม่มีข้อมูล
-            </td>
-          </tr>`;
-        return;
-      }
+  if (!data.length) {
+    tb.innerHTML = `
+      <tr>
+        <td colspan="4" class="text-center text-muted p-4">
+          ยังไม่มีข้อมูล
+        </td>
+      </tr>`;
+    return;
+  }
 
-      data.forEach(x => appendRow(x));
-    });
+  data.reverse().forEach(x => appendRow(x)); // ⭐ สำคัญ
+});
+
 }
 
 /* เพิ่มแถว */
