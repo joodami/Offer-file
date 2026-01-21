@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
 <head>
 <meta charset="UTF-8">
 <title>เจ้าหน้าที่</title>
@@ -8,13 +8,23 @@
 </head>
 <body>
 
-<h2>👩‍💼 เจ้าหน้าที่</h2>
+<nav>
+  <a href="index.html">📁 ผู้เสนอแฟ้ม</a>
+  <a href="staff.html">👩‍💼 เจ้าหน้าที่</a>
+  <a href="dashboard.html">📊 Dashboard</a>
+</nav>
+
+<h2>หน้าเจ้าหน้าที่ (อัปเดตสถานะแฟ้ม)</h2>
 
 <div id="login"></div>
 
 <table>
 <thead>
-<tr><th>รหัสแฟ้ม</th><th>วันที่ออก ผอ.</th><th>บันทึก</th></tr>
+<tr>
+  <th>รหัสแฟ้ม</th>
+  <th>วันที่ออกจาก ผอ.</th>
+  <th>บันทึก</th>
+</tr>
 </thead>
 <tbody id="tb"></tbody>
 </table>
