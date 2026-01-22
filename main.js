@@ -19,28 +19,28 @@ function loadData() {
   fetch(GAS + '?action=getData')
     .then(r => r.json())
     .then(data => {
-  tb.innerHTML = '';
+      tb.innerHTML = '';
 
-  if (!data.length) {
-    tb.innerHTML = `
-      <tr>
-        <td colspan="4" class="text-center text-muted p-4">
-          ยังไม่มีข้อมูล
-        </td>
-      </tr>`;
-    return;
-  }
+      if (!data.length) {
+        tb.innerHTML = `
+          <tr>
+            <td colspan="4" class="text-center text-muted p-4">
+              ยังไม่มีข้อมูล
+            </td>
+          </tr>`;
+        return;
+      }
 
-  data.reverse().forEach(x => appendRow(x)); // ⭐ สำคัญ
-});
-
+      data.reverse().forEach(x => appendRow(x));
+    });
 }
 
 /* เพิ่มแถว */
 function appendRow(x) {
   const statusColor = {
     'เสนอแฟ้มต่อผู้อำนวยการ': 'warning',
-    'พิจารณาเรียบร้อยแล้ว': 'success'
+    'พิจารณาเรียบร้อยแล้ว': 'success',
+    'รับแฟ้มคืนเรียบร้อยแล้ว': 'secondary'
   };
 
   const tr = document.createElement('tr');
@@ -48,9 +48,7 @@ function appendRow(x) {
     <td class="text-center align-middle">${x[1]}</td>
     <td class="text-start align-middle">${x[2]}</td>
     <td class="text-center align-middle">
-      <span class="badge bg-${statusColor[x[3]] || 'secondary'}">
-        ${x[3]}
-      </span>
+      <span class="badge bg-${statusColor[x[3]] || 'secondary'}">${x[3]}</span>
     </td>
     <td class="text-center align-middle">
       ${x[3] === 'พิจารณาเรียบร้อยแล้ว'
@@ -60,58 +58,91 @@ function appendRow(x) {
         : '-'}
     </td>
   `;
-  tb.prepend(tr);   // ✅ ข้อมูลล่าสุดอยู่บนสุด
-}
-
-
-/* เพิ่มแฟ้ม */
-function add(e) {
-  const btn = e.target;
-  btn.disabled = true;
-  btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span>`;
-
-  const data = {
-    action: 'add',
-    date: date.value,
-    code: code.value,
-    sender: sender.value
-  };
-
-  fetch(GAS, {
-    method: 'POST',
-    body: JSON.stringify(data)
-  })
-  .then(() => {
-    appendRow(['', data.code, data.sender, 'เสนอแฟ้มต่อผู้อำนวยการ']);
-    showToast('บันทึกแฟ้มเรียบร้อย');
-    date.value = code.value = sender.value = '';
-  })
-  .finally(() => {
-    btn.disabled = false;
-    btn.innerHTML = 'บันทึก';
-  });
+  tb.prepend(tr);
 }
 
 /* Modal ลายเซ็น */
 function openSign(code) {
   CODE = code;
+  clearC();
   new bootstrap.Modal(document.getElementById('signModal')).show();
 }
 
-/* Canvas */
+/* =========================
+   Canvas ลายเซ็น (Smooth)
+========================= */
 const c = document.getElementById('c');
 const ctx = c.getContext('2d');
-let draw = false;
 
-c.addEventListener('pointerdown', () => draw = true);
-c.addEventListener('pointerup', () => draw = false);
-c.addEventListener('pointermove', e => {
-  if (!draw) return;
-  ctx.lineWidth = 2;
-  ctx.lineCap = 'round';
-  ctx.lineTo(e.offsetX, e.offsetY);
-  ctx.stroke();
+ctx.lineWidth = 2.8;
+ctx.lineCap = 'round';
+ctx.lineJoin = 'round';
+ctx.strokeStyle = '#000';
+
+let drawing = false;
+let lastPoint = null;
+
+/* Mouse */
+c.addEventListener('mousedown', e => {
+  drawing = true;
+  lastPoint = getPos(e);
 });
+
+c.addEventListener('mousemove', e => {
+  if (!drawing) return;
+  const pos = getPos(e);
+  drawSmooth(lastPoint, pos);
+  lastPoint = pos;
+});
+
+c.addEventListener('mouseup', stopDraw);
+c.addEventListener('mouseleave', stopDraw);
+
+/* Touch */
+c.addEventListener('touchstart', e => {
+  e.preventDefault();
+  drawing = true;
+  lastPoint = getTouchPos(e);
+});
+
+c.addEventListener('touchmove', e => {
+  e.preventDefault();
+  if (!drawing) return;
+  const pos = getTouchPos(e);
+  drawSmooth(lastPoint, pos);
+  lastPoint = pos;
+});
+
+c.addEventListener('touchend', stopDraw);
+
+function stopDraw() {
+  drawing = false;
+  lastPoint = null;
+}
+
+function getPos(e) {
+  const r = c.getBoundingClientRect();
+  return { x: e.clientX - r.left, y: e.clientY - r.top };
+}
+
+function getTouchPos(e) {
+  const r = c.getBoundingClientRect();
+  return {
+    x: e.touches[0].clientX - r.left,
+    y: e.touches[0].clientY - r.top
+  };
+}
+
+/* หัวใจของความเนียน */
+function drawSmooth(p1, p2) {
+  const midX = (p1.x + p2.x) / 2;
+  const midY = (p1.y + p2.y) / 2;
+
+  ctx.beginPath();
+  ctx.moveTo(p1.x, p1.y);
+  ctx.quadraticCurveTo(p1.x, p1.y, midX, midY);
+  ctx.stroke();
+}
 
 function clearC() {
   ctx.clearRect(0, 0, c.width, c.height);
@@ -129,14 +160,21 @@ function save(e) {
       action: 'receive',
       code: CODE,
       receiver: receiver.value,
-      receiveDate: new Date().toLocaleDateString(),
-      signature: c.toDataURL()
+      receiveDate: new Date().toISOString().slice(0, 10),
+      signature: c.toDataURL('image/png')
     })
   })
-  .then(() => {
-    showToast('รับแฟ้มคืนเรียบร้อย');
-    bootstrap.Modal.getInstance(document.getElementById('signModal')).hide();
-    loadData();
+  .then(r => r.json())
+  .then(r => {
+    if (r.success) {
+      showToast('รับแฟ้มคืนเรียบร้อย');
+      bootstrap.Modal.getInstance(
+        document.getElementById('signModal')
+      ).hide();
+      loadData();
+    } else {
+      showToast(r.message, false);
+    }
   })
   .finally(() => {
     btn.disabled = false;
