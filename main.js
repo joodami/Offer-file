@@ -131,31 +131,27 @@ function loadData() {
     .then(r => r.json())
     .then(data => {
       tb.innerHTML = '';
+      cardView.innerHTML = '';
 
       if (!data.length) {
         tb.innerHTML = `
           <tr>
-            <td colspan="5" class="text-center text-muted p-4">
+            <td colspan="7" class="text-center text-muted p-4">
               ยังไม่มีข้อมูล
             </td>
           </tr>`;
         return;
       }
 
-      // 👇 ใส่โค้ดเรียงตรงนี้
       data
         .sort((a, b) => new Date(b[8]) - new Date(a[8]))
-        .forEach(x => appendRow(x));
-    })
-    .catch(() => {
-      tb.innerHTML = `
-        <tr>
-          <td colspan="5" class="text-center text-danger p-4">
-            โหลดข้อมูลไม่สำเร็จ
-          </td>
-        </tr>`;
+        .forEach(x => {
+          appendRow(x);   // Desktop
+          appendCard(x);  // Mobile
+        });
     });
 }
+
 
 
 /* =====================
@@ -223,6 +219,67 @@ function appendRow(x) {
   tb.appendChild(tr);
 }
 
+const cardView = document.getElementById('cardView');
+
+function appendCard(x) {
+  const statusColor = {
+    'เสนอแฟ้มต่อผู้อำนวยการ': 'warning',
+    'พิจารณาเรียบร้อยแล้ว': 'success',
+    'รับแฟ้มคืนเรียบร้อยแล้ว': 'secondary'
+  };
+
+  const div = document.createElement('div');
+  div.className = 'file-card';
+
+  div.innerHTML = `
+    <div class="row">
+      <div class="label">วันที่เสนอ</div>
+      <div class="value">${formatDateTH(x[0])}</div>
+    </div>
+
+    <div class="row">
+      <div class="label">รหัสแฟ้ม</div>
+      <div class="value">${x[1]}</div>
+    </div>
+
+    <div class="row">
+      <div class="label">ผู้เสนอ</div>
+      <div class="value">${x[2]}</div>
+    </div>
+
+    <div class="row">
+      <div class="label">สถานะ</div>
+      <span class="badge bg-${statusColor[x[3]] || 'secondary'}">
+        ${x[3]}
+      </span>
+    </div>
+
+    <div class="row">
+      <div class="label">ออกจาก ผอ.</div>
+      <div class="value">${x[4] ? formatDateTH(x[4]) : '-'}</div>
+    </div>
+
+    <div class="row">
+      <div class="label">รับคืน</div>
+      <div class="value">${x[6] ? formatDateTH(x[6]) : '-'}</div>
+    </div>
+
+    <div class="actions">
+      ${
+        x[3] === 'พิจารณาเรียบร้อยแล้ว'
+          ? `<button class="btn btn-success btn-sm"
+               onclick="openSign('${x[1]}')">
+               รับแฟ้มคืน
+             </button>`
+          : x[3] === 'รับแฟ้มคืนเรียบร้อยแล้ว'
+            ? `<span class="text-success">👤 ${x[5]}</span>`
+            : '-'
+      }
+    </div>
+  `;
+
+  cardView.appendChild(div);
+}
 
 
 /* =====================
