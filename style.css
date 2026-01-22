@@ -51,6 +51,11 @@ input[type="date"] {
 .file-card .value {
   font-weight: 500;
 }
+@media (max-width: 767px) {
+  .file-card {
+    font-size: 0.95rem;
+  }
+}
 
 .file-card .actions {
   margin-top: 10px;
