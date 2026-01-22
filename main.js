@@ -39,22 +39,34 @@ function add(e) {
     },
     body: JSON.stringify({
       action: 'add',
-      date: date,
-      sender: sender,
-      codes: codes   // 👈 ส่งเป็น array
+      date,
+      sender,
+      codes
     })
   })
   .then(r => r.json())
   .then(res => {
     if (res.success) {
-      showToast(`บันทึก ${res.count} แฟ้มเรียบร้อย`);
+
+      let msg = `บันทึก ${res.added} แฟ้มเรียบร้อย`;
+
+      if (res.blocked && res.blocked.length) {
+        msg += ` (แฟ้มซ้ำที่ยังไม่ปิดงาน: ${res.blocked.join(', ')})`;
+      }
+
+      showToast(msg);
       document.getElementById('code').value = '';
       loadData();
+
     } else {
-      showToast(res.message, false);
+      showToast(res.message || 'บันทึกไม่สำเร็จ', false);
     }
+  })
+  .catch(() => {
+    showToast('เชื่อมต่อระบบไม่ได้', false);
   });
 }
+
 
 
 /* =====================
