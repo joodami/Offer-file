@@ -15,6 +15,58 @@ function showToast(msg, success = true) {
 }
 
 /* =====================
+   ลงทะเบียนแฟ้มใหม่
+===================== */
+function add(e) {
+  e.preventDefault();
+
+  const btn = e.target;
+  const date = document.getElementById('date').value;
+  const code = document.getElementById('code').value.trim();
+  const sender = document.getElementById('sender').value.trim();
+
+  if (!date || !code || !sender) {
+    showToast('กรุณากรอกข้อมูลให้ครบ', false);
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span>`;
+
+  fetch(GAS, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'text/plain;charset=utf-8'
+    },
+    body: JSON.stringify({
+      action: 'add',
+      date: date,
+      code: code,
+      sender: sender
+    })
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (res.success) {
+      showToast('บันทึกแฟ้มเรียบร้อย');
+      document.getElementById('code').value = '';
+      document.getElementById('sender').value = '';
+      loadData();
+    } else {
+      showToast(res.message || 'บันทึกไม่สำเร็จ', false);
+    }
+  })
+  .catch(() => {
+    showToast('เชื่อมต่อเซิร์ฟเวอร์ไม่ได้', false);
+  })
+  .finally(() => {
+    btn.disabled = false;
+    btn.innerHTML = 'บันทึก';
+  });
+}
+
+
+/* =====================
    โหลดข้อมูล
 ===================== */
 loadData();
