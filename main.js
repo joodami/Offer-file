@@ -20,9 +20,13 @@ function showToast(msg, success = true) {
 function add(e) {
   e.preventDefault();
 
-  const date = document.getElementById('date').value;
-  const sender = document.getElementById('sender').value.trim();
-  const codes = document.getElementById('code').value
+  const dateEl   = document.getElementById('date');
+  const senderEl = document.getElementById('sender');
+  const codeEl   = document.getElementById('code');
+
+  const date   = dateEl.value;
+  const sender = senderEl.value.trim();
+  const codes  = codeEl.value
     .split('\n')
     .map(c => c.trim())
     .filter(c => c);
@@ -46,27 +50,50 @@ function add(e) {
   })
   .then(r => r.json())
   .then(res => {
-    if (res.success) {
+
+    /* =====================
+       CASE 1 : บันทึกได้จริง
+    ====================== */
+    if (res.success && res.added > 0) {
 
       let msg = `บันทึก ${res.added} แฟ้มเรียบร้อย`;
 
-      if (res.blocked && res.blocked.length) {
-        msg += ` (แฟ้มซ้ำที่ยังไม่ปิดงาน: ${res.blocked.join(', ')})`;
+      if (res.blocked?.length) {
+        msg += ` (ข้ามแฟ้มที่ยังไม่ปิดงาน: ${res.blocked.join(', ')})`;
       }
 
       showToast(msg);
-      document.getElementById('code').value = '';
-      loadData();
 
-    } else {
-      showToast(res.message || 'บันทึกไม่สำเร็จ', false);
+      // ✅ เคลียร์ฟอร์ม
+      dateEl.value   = '';
+      senderEl.value = '';
+      codeEl.value   = '';
+
+      loadData();
+      return;
     }
+
+    /* =====================
+       CASE 2 : ซ้ำทั้งหมด
+    ====================== */
+    if (res.success && res.added === 0 && res.blocked?.length) {
+      showToast(
+        `ไม่สามารถลงทะเบียนได้ เนื่องจากยังมีรายการที่ไม่ปิดงาน (${res.blocked.join(', ')})`,
+        false
+      );
+      return;
+    }
+
+    /* =====================
+       CASE 3 : Error อื่น ๆ
+    ====================== */
+    showToast(res.message || 'บันทึกไม่สำเร็จ', false);
+
   })
   .catch(() => {
     showToast('เชื่อมต่อระบบไม่ได้', false);
   });
 }
-
 
 
 /* =====================
