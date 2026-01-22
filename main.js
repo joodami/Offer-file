@@ -20,6 +20,13 @@ function showToast(msg, success = true) {
 function add(e) {
   e.preventDefault();
 
+  const btn = document.getElementById('btnAdd');
+  btn.disabled = true;
+  btn.innerHTML = `
+    <span class="spinner-border spinner-border-sm me-2"></span>
+    กำลังบันทึก...
+  `;
+
   const dateEl   = document.getElementById('date');
   const senderEl = document.getElementById('sender');
   const codeEl   = document.getElementById('code');
@@ -33,6 +40,7 @@ function add(e) {
 
   if (!date || !sender || codes.length === 0) {
     showToast('กรุณากรอกข้อมูลให้ครบ', false);
+    resetBtn();
     return;
   }
 
@@ -51,27 +59,44 @@ function add(e) {
   .then(r => r.json())
   .then(res => {
 
-    /* =====================
-       CASE 1 : บันทึกได้จริง
-    ====================== */
     if (res.success && res.added > 0) {
 
       let msg = `บันทึก ${res.added} แฟ้มเรียบร้อย`;
-
       if (res.blocked?.length) {
         msg += ` (ข้ามแฟ้มที่ยังไม่ปิดงาน: ${res.blocked.join(', ')})`;
       }
 
       showToast(msg);
 
-      // ✅ เคลียร์ฟอร์ม
-      dateEl.value   = '';
+      dateEl.value = '';
       senderEl.value = '';
-      codeEl.value   = '';
-
+      codeEl.value = '';
       loadData();
-      return;
+
+    } else if (res.success && res.added === 0 && res.blocked?.length) {
+
+      showToast(
+        `ไม่สามารถลงทะเบียนได้ เนื่องจากยังมีรายการที่ไม่ปิดงาน (${res.blocked.join(', ')})`,
+        false
+      );
+
+    } else {
+      showToast(res.message || 'บันทึกไม่สำเร็จ', false);
     }
+
+  })
+  .catch(() => {
+    showToast('เชื่อมต่อระบบไม่ได้', false);
+  })
+  .finally(() => {
+    resetBtn();
+  });
+
+  function resetBtn() {
+    btn.disabled = false;
+    btn.innerHTML = 'บันทึก';
+  }
+}
 
     /* =====================
        CASE 2 : ซ้ำทั้งหมด
