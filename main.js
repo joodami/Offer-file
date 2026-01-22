@@ -267,3 +267,9 @@ function save(e) {
     btn.innerHTML = 'บันทึก';
   });
 }
+
+function formatDateTH(d) {
+  if (!d) return '-';
+  const date = new Date(d);
+  return date.toLocaleDateString('th-TH');
+}
