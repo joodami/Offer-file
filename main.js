@@ -107,24 +107,39 @@ function appendRow(x) {
   const tr = document.createElement('tr');
 
   tr.innerHTML = `
-    <td class="text-center">${formatDateTH(x[0])}</td>
-    <td class="text-center">${x[1]}</td>
-    <td>${x[2]}</td>
+    <!-- วันที่เสนอ -->
+    <td class="text-center">
+      ${formatDateTH(x[0])}
+    </td>
 
+    <!-- รหัสแฟ้ม -->
+    <td class="text-center">
+      ${x[1]}
+    </td>
+
+    <!-- ผู้เสนอ -->
+    <td>
+      ${x[2]}
+    </td>
+
+    <!-- สถานะ -->
     <td class="text-center">
       <span class="badge bg-${statusColor[x[3]] || 'secondary'}">
         ${x[3]}
       </span>
     </td>
 
+    <!-- วันออกจาก ผอ. -->
     <td class="text-center">
-      ${formatDateTH(x[4])}
+      ${x[4] ? formatDateTH(x[4]) : '-'}
     </td>
 
+    <!-- วันรับคืน -->
     <td class="text-center">
-      ${formatDateTH(x[6])}
+      ${x[6] ? formatDateTH(x[6]) : '-'}
     </td>
 
+    <!-- ดำเนินการ -->
     <td class="text-center">
       ${
         x[3] === 'พิจารณาเรียบร้อยแล้ว'
@@ -143,6 +158,7 @@ function appendRow(x) {
 
   tb.appendChild(tr);
 }
+
 
 
 /* =====================
