@@ -71,24 +71,28 @@ function loadData() {
       if (!data.length) {
         tb.innerHTML = `
           <tr>
-            <td colspan="4" class="text-center text-muted p-4">
+            <td colspan="5" class="text-center text-muted p-4">
               ยังไม่มีข้อมูล
             </td>
           </tr>`;
         return;
       }
 
-      data.reverse().forEach(x => appendRow(x));
+      // 👇 ใส่โค้ดเรียงตรงนี้
+      data
+        .sort((a, b) => new Date(b[8]) - new Date(a[8]))
+        .forEach(x => appendRow(x));
     })
     .catch(() => {
       tb.innerHTML = `
         <tr>
-          <td colspan="4" class="text-center text-danger p-4">
+          <td colspan="5" class="text-center text-danger p-4">
             โหลดข้อมูลไม่สำเร็จ
           </td>
         </tr>`;
     });
 }
+
 
 /* =====================
    เพิ่มแถวตาราง
