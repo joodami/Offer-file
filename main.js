@@ -154,24 +154,10 @@ function save(e) {
   btn.disabled = true;
   btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span>`;
 
-  if (!receiver.value.trim()) {
-    showToast('กรุณากรอกชื่อผู้รับแฟ้ม', false);
-    btn.disabled = false;
-    btn.innerHTML = 'บันทึก';
-    return;
-  }
-
-  if (c.toDataURL().length < 1000) {
-    showToast('กรุณาลงลายมือชื่อ', false);
-    btn.disabled = false;
-    btn.innerHTML = 'บันทึก';
-    return;
-  }
-
   fetch(GAS, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'text/plain;charset=utf-8'
     },
     body: JSON.stringify({
       action: 'receive',
@@ -195,7 +181,7 @@ function save(e) {
   })
   .catch(err => {
     console.error(err);
-    showToast('ระบบขัดข้อง', false);
+    showToast('เชื่อมต่อ GAS ไม่สำเร็จ', false);
   })
   .finally(() => {
     btn.disabled = false;
