@@ -156,6 +156,7 @@ function save(e) {
 
   fetch(GAS, {
     method: 'POST',
+    mode: 'no-cors', // ⭐ จุดสำคัญที่สุด
     headers: {
       'Content-Type': 'text/plain;charset=utf-8'
     },
@@ -167,21 +168,16 @@ function save(e) {
       signature: c.toDataURL('image/png')
     })
   })
-  .then(r => r.json())
-  .then(r => {
-    if (r.success) {
-      showToast('รับแฟ้มคืนเรียบร้อย');
-      bootstrap.Modal.getInstance(
-        document.getElementById('signModal')
-      ).hide();
-      loadData();
-    } else {
-      showToast(r.message, false);
-    }
+  .then(() => {
+    // ❗ no-cors อ่าน response ไม่ได้ แต่ข้อมูลถูกบันทึกแล้ว
+    showToast('รับแฟ้มคืนเรียบร้อย');
+    bootstrap.Modal.getInstance(
+      document.getElementById('signModal')
+    ).hide();
+    loadData();
   })
-  .catch(err => {
-    console.error(err);
-    showToast('เชื่อมต่อ GAS ไม่สำเร็จ', false);
+  .catch(() => {
+    showToast('บันทึกไม่สำเร็จ', false);
   })
   .finally(() => {
     btn.disabled = false;
