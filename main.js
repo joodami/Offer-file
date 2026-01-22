@@ -101,25 +101,41 @@ function appendRow(x) {
   };
 
   const tr = document.createElement('tr');
+
   tr.innerHTML = `
-    <td class="text-center align-middle">${x[1]}</td>
-    <td class="text-start align-middle">${x[2]}</td>
-    <td class="text-center align-middle">
-      <span class="badge bg-${statusColor[x[3]] || 'secondary'}">
+    <td class="text-center">
+      ${x[0]}
+    </td>
+    <td class="text-center">
+      ${x[1]}
+    </td>
+    <td>
+      ${x[2]}
+    </td>
+    <td class="text-center">
+      <span class="badge bg-${statusColor[x[3]]}">
         ${x[3]}
       </span>
     </td>
-    <td class="text-center align-middle">
-      ${x[3] === 'พิจารณาเรียบร้อยแล้ว'
-        ? `<button class="btn btn-sm btn-success"
-            onclick="openSign('${String(x[1]).trim()}')">
-            รับแฟ้มคืน
-          </button>`
-        : '-'}
+    <td class="text-center">
+      ${
+        x[3] === 'พิจารณาเรียบร้อยแล้ว'
+          ? `<button class="btn btn-sm btn-success"
+               onclick="openSign('${x[1]}')">
+               รับแฟ้มคืน
+             </button>`
+          : x[3] === 'รับแฟ้มคืนเรียบร้อยแล้ว'
+            ? `<span class="text-success">
+                 👤 ${x[5]}
+               </span>`
+            : '-'
+      }
     </td>
   `;
-  tb.prepend(tr);
+
+  tb.append(tr);
 }
+
 
 /* =====================
    Modal ลายเซ็น
