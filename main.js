@@ -1,4 +1,4 @@
-const GAS = 'https://script.google.com/macros/s/AKfycbx102S-XxCGa4eJ5mRKPudTtQ8iKNSxk_-DFfFdYYqufEsKSgwPHn3-S_OaL8QGIXr3Aw/exec';
+const GAS = 'https://script.google.com/macros/s/AKfycbxl0TS1km8Fzg3CZoqcrqynHkg7pIirNVO9ouvDFTTbvmsBio7e28HOAoOcAqRWpZwz/exec';
 
 const tb = document.getElementById('tb');
 let CODE = '';
