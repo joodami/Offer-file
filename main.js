@@ -20,18 +20,17 @@ function showToast(msg, success = true) {
 function add(e) {
   e.preventDefault();
 
-  const btn = e.target;
   const date = document.getElementById('date').value;
-  const code = document.getElementById('code').value.trim();
   const sender = document.getElementById('sender').value.trim();
+  const codes = document.getElementById('code').value
+    .split('\n')
+    .map(c => c.trim())
+    .filter(c => c);
 
-  if (!date || !code || !sender) {
+  if (!date || !sender || codes.length === 0) {
     showToast('กรุณากรอกข้อมูลให้ครบ', false);
     return;
   }
-
-  btn.disabled = true;
-  btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span>`;
 
   fetch(GAS, {
     method: 'POST',
@@ -41,27 +40,19 @@ function add(e) {
     body: JSON.stringify({
       action: 'add',
       date: date,
-      code: code,
-      sender: sender
+      sender: sender,
+      codes: codes   // 👈 ส่งเป็น array
     })
   })
   .then(r => r.json())
   .then(res => {
     if (res.success) {
-      showToast('บันทึกแฟ้มเรียบร้อย');
+      showToast(`บันทึก ${res.count} แฟ้มเรียบร้อย`);
       document.getElementById('code').value = '';
-      document.getElementById('sender').value = '';
       loadData();
     } else {
-      showToast(res.message || 'บันทึกไม่สำเร็จ', false);
+      showToast(res.message, false);
     }
-  })
-  .catch(() => {
-    showToast('เชื่อมต่อเซิร์ฟเวอร์ไม่ได้', false);
-  })
-  .finally(() => {
-    btn.disabled = false;
-    btn.innerHTML = 'บันทึก';
   });
 }
 
