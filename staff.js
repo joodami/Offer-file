@@ -80,17 +80,20 @@ function loadData() {
       </tr>`;
 
     /* Mobile card */
-    staffCardView.innerHTML += `
-      <div class="staff-card">
-        <div class="code">📁 ${r[1]}</div>
-        <div class="date">
-          <input type="date" class="form-control" id="d${r[1]}">
-        </div>
-        <button class="btn btn-success"
-                onclick="updateOut('${r[1]}', this)">
-          บันทึกออกจาก ผอ.
-        </button>
-      </div>`;
+staffCardView.innerHTML += `
+  <div class="staff-card">
+    <div class="code">📁 รหัสแฟ้ม: ${r[1]}</div>
+
+    <div class="label">วันที่ออกจากผู้อำนวยการ</div>
+    <input type="date" class="form-control" id="d${r[1]}">
+
+    <button class="btn btn-primary"
+            onclick="updateOut('${r[1]}', this)">
+      บันทึกวันที่ออกจาก ผอ.
+    </button>
+  </div>
+`;
+
   });
 });
 
