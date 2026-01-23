@@ -106,6 +106,34 @@ input[type="date"] {
   }
 }
 
+/* =====================
+   Staff Mobile Card
+===================== */
+.staff-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,.05);
+}
+
+.staff-card .code {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.staff-card .date input {
+  font-size: 1rem;
+}
+
+.staff-card button {
+  margin-top: 8px;
+  width: 100%;
+  font-size: 1rem;
+}
+
+
 .file-card .actions {
   margin-top: 10px;
   text-align: center;
