@@ -156,3 +156,23 @@ input[type="date"] {
   }
 }
 
+/* ===== Government Navbar ===== */
+.navbar {
+  font-size: 1rem;
+}
+
+.navbar-brand {
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+@media (max-width: 767px) {
+  .navbar-brand {
+    font-size: 1.05rem;
+  }
+
+  .navbar .btn {
+    font-size: 0.85rem;
+    padding: 6px 8px;
+  }
+}
