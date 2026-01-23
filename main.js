@@ -384,6 +384,18 @@ function isCanvasEmpty() {
    SAVE RECEIVE (เดิม)
 ===================== */
 function save(e) {
+  const receiver = document.getElementById('receiver').value.trim();
+
+  if (!receiver) {
+    showToast('กรุณากรอกชื่อผู้รับแฟ้มคืน', false);
+    return;
+  }
+
+  if (isCanvasEmpty()) {
+    showToast('🚫 กรุณาลงลายเซ็นก่อนบันทึก', false);
+    return;
+  }
+
   const btn = e.target;
   btn.disabled = true;
   btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span>`;
@@ -394,7 +406,7 @@ function save(e) {
     body: JSON.stringify({
       action: 'receive',
       code: CODE,
-      receiver: document.getElementById('receiver').value.trim(),
+      receiver: receiver,
       receiveDate: new Date().toISOString().slice(0, 10),
       signature: c.toDataURL('image/png')
     })
@@ -403,7 +415,9 @@ function save(e) {
   .then(res => {
     if (res.success) {
       showToast('รับแฟ้มคืนเรียบร้อย');
-      bootstrap.Modal.getInstance(document.getElementById('signModal')).hide();
+      bootstrap.Modal.getInstance(
+        document.getElementById('signModal')
+      ).hide();
       loadData();
     } else {
       showToast(res.message || 'บันทึกไม่สำเร็จ', false);
@@ -415,6 +429,7 @@ function save(e) {
     btn.innerHTML = 'บันทึก';
   });
 }
+
 
 /* =====================
    UTIL
