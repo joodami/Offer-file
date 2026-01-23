@@ -371,6 +371,15 @@ function clearC() {
   ctx.clearRect(0, 0, c.width, c.height);
 }
 
+function isCanvasEmpty() {
+  const imgData = ctx.getImageData(0, 0, c.width, c.height).data;
+  for (let i = 3; i < imgData.length; i += 4) {
+    if (imgData[i] !== 0) return false; // มี pixel ที่ไม่โปร่งใส
+  }
+  return true;
+}
+
+
 /* =====================
    SAVE RECEIVE (เดิม)
 ===================== */
