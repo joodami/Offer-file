@@ -49,34 +49,51 @@ function login(e) {
 function loadData() {
   fetch(GAS + '?action=getData')
     .then(r => r.json())
-    .then(data => {
-      tb.innerHTML = '';
+.then(data => {
+  tb.innerHTML = '';
+  staffCardView.innerHTML = '';
 
-      const list = data.filter(r => r[3] === 'เสนอแฟ้มต่อผู้อำนวยการ');
+  const list = data.filter(r => r[3] === 'เสนอแฟ้มต่อผู้อำนวยการ');
 
-      if (!list.length) {
-        tb.innerHTML = `
-          <tr>
-            <td colspan="3" class="text-center text-muted p-4">
-              ไม่มีแฟ้มรออัปเดต
-            </td>
-          </tr>`;
-        return;
-      }
+  if (!list.length) {
+    tb.innerHTML = `
+      <tr>
+        <td colspan="3" class="text-center text-muted p-4">
+          ไม่มีแฟ้มรออัปเดต
+        </td>
+      </tr>`;
+    return;
+  }
 
-      list.forEach(r => {
-        tb.innerHTML += `
-          <tr>
-            <td>${r[1]}</td>
-            <td><input type="date" class="form-control" id="d${r[1]}"></td>
-            <td class="text-center">
-              <button class="btn btn-success btn-sm" onclick="updateOut('${r[1]}', this)">
-                บันทึก
-              </button>
-            </td>
-          </tr>`;
-      });
-    });
+  list.forEach(r => {
+    /* Desktop table */
+    tb.innerHTML += `
+      <tr class="d-none d-md-table-row">
+        <td>${r[1]}</td>
+        <td><input type="date" class="form-control" id="d${r[1]}"></td>
+        <td class="text-center">
+          <button class="btn btn-success btn-sm"
+                  onclick="updateOut('${r[1]}', this)">
+            บันทึก
+          </button>
+        </td>
+      </tr>`;
+
+    /* Mobile card */
+    staffCardView.innerHTML += `
+      <div class="staff-card">
+        <div class="code">📁 ${r[1]}</div>
+        <div class="date">
+          <input type="date" class="form-control" id="d${r[1]}">
+        </div>
+        <button class="btn btn-success"
+                onclick="updateOut('${r[1]}', this)">
+          บันทึกออกจาก ผอ.
+        </button>
+      </div>`;
+  });
+});
+
 }
 
 /* บันทึกออกจาก ผอ. */
