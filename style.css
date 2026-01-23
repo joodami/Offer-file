@@ -107,30 +107,49 @@ input[type="date"] {
 }
 
 /* =====================
-   Staff Mobile Card
+   Staff Mobile Card (Government Style)
 ===================== */
 .staff-card {
-  background: #fff;
+  background: #ffffff;
   border-radius: 14px;
   padding: 18px;
-  margin-bottom: 14px;
-  box-shadow: 0 6px 14px rgba(0,0,0,.06);
+  margin-bottom: 16px;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 4px 12px rgba(0,0,0,.05);
 }
 
+/* รหัสแฟ้ม */
 .staff-card .code {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 600;
+  color: #0d6efd;
+  margin-bottom: 8px;
 }
 
+/* label */
+.staff-card .label {
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin-bottom: 4px;
+}
+
+/* input date */
 .staff-card input[type="date"] {
-  font-size: 1.05rem;
+  width: 100%;
+  font-size: 1rem;
   padding: 10px;
+  border-radius: 8px;
 }
 
+/* ปุ่ม */
 .staff-card button {
-  font-size: 1.05rem;
+  margin-top: 12px;
+  width: 100%;
+  font-size: 1rem;
   padding: 10px;
+  font-weight: 500;
 }
+
 
 
 @media (max-width: 767px) {
