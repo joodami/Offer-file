@@ -176,3 +176,25 @@ input[type="date"] {
     padding: 6px 8px;
   }
 }
+
+/* ===== Staff Login ===== */
+#loginBox {
+  border-radius: 14px;
+}
+
+#loginBox .card-header {
+  font-size: 1.05rem;
+  font-weight: 600;
+  background: #f1f3f5;
+}
+
+#loginBox input {
+  font-size: 1rem;
+  padding: 10px;
+}
+
+#loginBox button {
+  font-size: 1rem;
+  padding: 10px;
+}
+
