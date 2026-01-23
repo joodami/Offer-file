@@ -57,6 +57,55 @@ input[type="date"] {
   }
 }
 
+/* =====================
+   Mobile UI Improve
+===================== */
+@media (max-width: 767px) {
+
+  body {
+    font-size: 1rem; /* ขยาย base font */
+  }
+
+  .badge {
+    font-size: 0.95rem;
+    padding: 6px 10px;
+  }
+
+  .file-card {
+    padding: 16px 16px;
+    margin-bottom: 14px;
+  }
+
+  .file-card .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+
+  .file-card .label {
+    font-size: 0.85rem;
+    width: 38%;
+  }
+
+  .file-card .value {
+    font-size: 1rem;
+    width: 60%;
+    text-align: right;
+  }
+
+  .file-card .actions button {
+    font-size: 1rem;
+    padding: 8px 14px;
+  }
+
+  /* Tabs บนมือถือ */
+  .nav-tabs .nav-link {
+    font-size: 1rem;
+    padding: 10px 6px;
+  }
+}
+
 .file-card .actions {
   margin-top: 10px;
   text-align: center;
