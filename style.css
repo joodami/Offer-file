@@ -222,3 +222,29 @@ input[type="date"] {
     display: none;
   }
 }
+
+/* =====================
+   File Card – Clear Content
+===================== */
+.file-card .card-section {
+  margin-bottom: 12px;
+}
+
+.file-card .card-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 2px;
+  letter-spacing: 0.2px;
+}
+
+.file-card .card-value {
+  font-size: 1rem;
+  color: #212529;
+}
+
+.file-card .card-value.strong {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #0d6efd;
+}
