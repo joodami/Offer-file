@@ -213,28 +213,78 @@ function appendCard(x) {
 
   const div = document.createElement('div');
   div.className = 'file-card';
+
   div.innerHTML = `
-    <div class="row"><div class="label">วันที่เสนอ</div><div class="value">${formatDateTH(x[0])}</div></div>
-    <div class="row"><div class="label">รหัสแฟ้ม</div><div class="value">${x[1]}</div></div>
-    <div class="row"><div class="label">ผู้เสนอ</div><div class="value">${x[2]}</div></div>
-    <div class="row">
-      <div class="label">สถานะ</div>
-      <span class="badge bg-${statusColor[x[3]] || 'secondary'}">${x[3]}</span>
+    <div class="card-section">
+      <div class="card-title">
+        📁 รหัสแฟ้ม
+      </div>
+      <div class="card-value strong">
+        ${x[1]}
+      </div>
     </div>
-    <div class="row"><div class="label">ออกจาก ผอ.</div><div class="value">${x[4] ? formatDateTH(x[4]) : '-'}</div></div>
-    <div class="row"><div class="label">รับคืน</div><div class="value">${x[6] ? formatDateTH(x[6]) : '-'}</div></div>
+
+    <div class="card-section">
+      <div class="card-title">
+        📅 วันที่เสนอ
+      </div>
+      <div class="card-value">
+        ${formatDateTH(x[0])}
+      </div>
+    </div>
+
+    <div class="card-section">
+      <div class="card-title">
+        👤 ผู้เสนอ
+      </div>
+      <div class="card-value">
+        ${x[2]}
+      </div>
+    </div>
+
+    <div class="card-section">
+      <div class="card-title">
+        📌 สถานะ
+      </div>
+      <span class="badge bg-${statusColor[x[3]] || 'secondary'}">
+        ${x[3]}
+      </span>
+    </div>
+
+    <div class="card-section">
+      <div class="card-title">
+        🗂️ ออกจาก ผอ.
+      </div>
+      <div class="card-value">
+        ${x[4] ? formatDateTH(x[4]) : '-'}
+      </div>
+    </div>
+
+    <div class="card-section">
+      <div class="card-title">
+        ✍️ รับคืน
+      </div>
+      <div class="card-value">
+        ${x[6] ? formatDateTH(x[6]) : '-'}
+      </div>
+    </div>
+
     <div class="actions">
       ${
         x[3] === 'พิจารณาเรียบร้อยแล้ว'
-          ? `<button class="btn btn-success btn-sm" onclick="openSign('${x[1]}')">รับแฟ้มคืน</button>`
+          ? `<button class="btn btn-success btn-sm w-100" onclick="openSign('${x[1]}')">
+               รับแฟ้มคืน
+             </button>`
           : x[3] === 'รับแฟ้มคืนเรียบร้อยแล้ว'
-            ? `<span class="text-success">👤 ${x[5]}</span>`
-            : '-'
+            ? `<div class="text-success text-center fw-medium">👤 ${x[5]}</div>`
+            : ''
       }
     </div>
   `;
+
   cardView.appendChild(div);
 }
+
 
 /* =====================
    SIGN MODAL + CANVAS (เดิม)
