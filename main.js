@@ -285,46 +285,75 @@ function openSign(code) {
 const c = document.getElementById('c');
 const ctx = c.getContext('2d');
 
-ctx.lineWidth = 2.8;
+/* ===== Canvas Quality ===== */
+const dpr = window.devicePixelRatio || 1;
+const rect = c.getBoundingClientRect();
+c.width = rect.width * dpr;
+c.height = rect.height * dpr;
+ctx.scale(dpr, dpr);
+
+/* ===== Pen Style ===== */
+ctx.strokeStyle = '#000';
+ctx.lineWidth = 2.4;
 ctx.lineCap = 'round';
 ctx.lineJoin = 'round';
-ctx.strokeStyle = '#000';
 
 let drawing = false;
-let lastPoint = null;
+let points = [];
 
+/* ===== Mouse ===== */
 c.addEventListener('mousedown', e => {
   drawing = true;
-  lastPoint = getPos(e);
+  points = [getPos(e)];
 });
+
 c.addEventListener('mousemove', e => {
   if (!drawing) return;
-  const pos = getPos(e);
-  drawSmooth(lastPoint, pos);
-  lastPoint = pos;
+  points.push(getPos(e));
+  drawSmoothLine();
 });
+
 c.addEventListener('mouseup', stopDraw);
 c.addEventListener('mouseleave', stopDraw);
 
+/* ===== Touch ===== */
 c.addEventListener('touchstart', e => {
   e.preventDefault();
   drawing = true;
-  lastPoint = getTouchPos(e);
+  points = [getTouchPos(e)];
 });
+
 c.addEventListener('touchmove', e => {
   e.preventDefault();
   if (!drawing) return;
-  const pos = getTouchPos(e);
-  drawSmooth(lastPoint, pos);
-  lastPoint = pos;
+  points.push(getTouchPos(e));
+  drawSmoothLine();
 });
+
 c.addEventListener('touchend', stopDraw);
+
+/* ===== Draw Logic ===== */
+function drawSmoothLine() {
+  if (points.length < 2) return;
+
+  ctx.beginPath();
+  ctx.moveTo(points[0].x, points[0].y);
+
+  for (let i = 1; i < points.length - 1; i++) {
+    const midX = (points[i].x + points[i + 1].x) / 2;
+    const midY = (points[i].y + points[i + 1].y) / 2;
+    ctx.quadraticCurveTo(points[i].x, points[i].y, midX, midY);
+  }
+
+  ctx.stroke();
+}
 
 function stopDraw() {
   drawing = false;
-  lastPoint = null;
+  points = [];
 }
 
+/* ===== Utils ===== */
 function getPos(e) {
   const r = c.getBoundingClientRect();
   return { x: e.clientX - r.left, y: e.clientY - r.top };
@@ -336,15 +365,6 @@ function getTouchPos(e) {
     x: e.touches[0].clientX - r.left,
     y: e.touches[0].clientY - r.top
   };
-}
-
-function drawSmooth(p1, p2) {
-  const midX = (p1.x + p2.x) / 2;
-  const midY = (p1.y + p2.y) / 2;
-  ctx.beginPath();
-  ctx.moveTo(p1.x, p1.y);
-  ctx.quadraticCurveTo(p1.x, p1.y, midX, midY);
-  ctx.stroke();
 }
 
 function clearC() {
