@@ -277,20 +277,22 @@ function appendCard(x) {
 ===================== */
 function openSign(code) {
   CODE = String(code).trim();
-  clearC();
   document.getElementById('receiver').value = '';
-  new bootstrap.Modal(document.getElementById('signModal')).show();
+
+  const modalEl = document.getElementById('signModal');
+  const modal = new bootstrap.Modal(modalEl);
+  modal.show();
+
+  // ✅ รอให้ modal แสดงก่อน แล้วค่อย resize canvas
+  modalEl.addEventListener('shown.bs.modal', () => {
+    resizeCanvas();
+    clearC();
+  }, { once: true });
 }
+
 
 const c = document.getElementById('c');
 const ctx = c.getContext('2d');
-
-/* ===== Canvas Quality ===== */
-const dpr = window.devicePixelRatio || 1;
-const rect = c.getBoundingClientRect();
-c.width = rect.width * dpr;
-c.height = rect.height * dpr;
-ctx.scale(dpr, dpr);
 
 /* ===== Pen Style ===== */
 ctx.strokeStyle = '#000';
@@ -379,6 +381,20 @@ function isCanvasEmpty() {
   return true;
 }
 
+function resizeCanvas() {
+  const dpr = window.devicePixelRatio || 1;
+  const rect = c.getBoundingClientRect();
+
+  c.width  = rect.width * dpr;
+  c.height = rect.height * dpr;
+
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  ctx.strokeStyle = '#000';
+  ctx.lineWidth = 2.4;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+}
 
 /* =====================
    SAVE RECEIVE (เดิม)
