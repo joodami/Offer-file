@@ -12,7 +12,7 @@ const cardView = document.getElementById('cardView');
 let CODE = '';
 let ALL_DATA = [];
 let FILTERED_DATA = [];
-let CURRENT_STATUS = 'all';
+let CURRENT_STATUS = 'เสนอแฟ้มต่อผู้อำนวยการ';
 
 const BATCH_SIZE = 20;
 let renderedCount = 0;
