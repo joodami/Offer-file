@@ -133,6 +133,17 @@ input[type="date"] {
   font-size: 1rem;
 }
 
+@media (max-width: 767px) {
+  .navbar .btn {
+    font-size: 0.9rem;
+    padding: 6px 8px;
+  }
+
+  .navbar-brand {
+    font-size: 1.05rem;
+  }
+}
+
 
 .file-card .actions {
   margin-top: 10px;
