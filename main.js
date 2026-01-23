@@ -226,10 +226,11 @@ function appendCard(x) {
       <div class="value">${formatDateTH(x[0])}</div>
     </div>
 
-    <div class="row">
-      <div class="label">รหัสแฟ้ม</div>
-      <div class="value">${x[1]}</div>
-    </div>
+   <div class="row code-row">
+  <div class="label">รหัสแฟ้ม</div>
+  <div class="value">${x[1]}</div>
+</div>
+
 
     <div class="row">
       <div class="label">ผู้เสนอ</div>
