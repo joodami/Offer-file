@@ -352,3 +352,37 @@ input[type="date"] {
     font-size: 1.05rem;
   }
 }
+
+/* =====================
+   Highlight File Code
+===================== */
+
+/* แถวรหัสแฟ้ม */
+.file-card .row.code-row {
+  background: #f8f9fa;               /* พื้นหลังอ่อน */
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin: 6px 0 10px;
+}
+
+/* label รหัสแฟ้ม */
+.file-card .row.code-row .label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #6c757d;
+}
+
+/* value รหัสแฟ้ม */
+.file-card .row.code-row .value {
+  font-size: 1.35rem;                /* ใหญ่ขึ้นชัดเจน */
+  font-weight: 800;                  /* หนา */
+  color: #0b5ed7;                     /* น้ำเงินเข้มราชการ */
+  letter-spacing: 0.6px;
+  line-height: 1.3;
+}
+
+/* เพิ่มเส้นเน้นด้านซ้าย (subtle) */
+.file-card .row.code-row {
+  border-left: 4px solid #0d6efd;
+}
+
