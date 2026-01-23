@@ -248,3 +248,42 @@ input[type="date"] {
   font-weight: 600;
   color: #0d6efd;
 }
+
+/* =====================
+   File Card Status Bar
+===================== */
+.file-card {
+  position: relative;
+  overflow: hidden;
+}
+
+/* แถบสีซ้าย */
+.file-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 100%;
+  background: #adb5bd; /* default */
+}
+
+/* สถานะ: เสนอแฟ้ม */
+.file-card.status-offer::before {
+  background: #ffc107; /* เหลือง */
+}
+
+/* สถานะ: พิจารณาแล้ว */
+.file-card.status-approved::before {
+  background: #198754; /* เขียว */
+}
+
+/* สถานะ: รับคืนแล้ว */
+.file-card.status-received::before {
+  background: #6c757d; /* เทา */
+}
+
+/* ขยับ padding กันแถบสี */
+.file-card {
+  padding-left: 20px;
+}
