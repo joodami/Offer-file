@@ -1,7 +1,18 @@
 const GAS = 'https://script.google.com/macros/s/AKfycbxl0TS1km8Fzg3CZoqcrqynHkg7pIirNVO9ouvDFTTbvmsBio7e28HOAoOcAqRWpZwz/exec';
 
 const tb = document.getElementById('tb');
+const cardView = document.getElementById('cardView');
 let CODE = '';
+
+/* =====================
+   Virtual / Filter state
+===================== */
+let ALL_DATA = [];
+let FILTERED_DATA = [];
+let CURRENT_STATUS = 'all';
+
+const BATCH_SIZE = 20;
+let renderedCount = 0;
 
 /* =====================
    Toast
@@ -15,92 +26,41 @@ function showToast(msg, success = true) {
 }
 
 /* =====================
-   ลงทะเบียนแฟ้มใหม่
+   ลงทะเบียนแฟ้มใหม่ (เดิม)
 ===================== */
 function add(e) {
   e.preventDefault();
 
   const btn = document.getElementById('btnAdd');
   btn.disabled = true;
-  btn.innerHTML = `
-    <span class="spinner-border spinner-border-sm me-2"></span>
-    กำลังบันทึก...
-  `;
+  btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>กำลังบันทึก...`;
 
-  const dateEl   = document.getElementById('date');
-  const senderEl = document.getElementById('sender');
-  const codeEl   = document.getElementById('code');
+  const date   = date.value;
+  const sender = sender.value.trim();
+  const codes  = code.value.split('\n').map(c => c.trim()).filter(Boolean);
 
-  const date   = dateEl.value;
-  const sender = senderEl.value.trim();
-  const codes  = codeEl.value
-    .split('\n')
-    .map(c => c.trim())
-    .filter(c => c);
-
-  if (!date || !sender || codes.length === 0) {
+  if (!date || !sender || !codes.length) {
     showToast('กรุณากรอกข้อมูลให้ครบ', false);
-    resetBtn();
+    btn.disabled = false;
+    btn.innerHTML = 'บันทึก';
     return;
   }
 
   fetch(GAS, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'text/plain;charset=utf-8'
-    },
-    body: JSON.stringify({
-      action: 'add',
-      date,
-      sender,
-      codes
-    })
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ action: 'add', date, sender, codes })
   })
   .then(r => r.json())
-  .then(res => {
-
-    if (res.success && res.added > 0) {
-
-      let msg = `บันทึก ${res.added} แฟ้มเรียบร้อย`;
-      if (res.blocked?.length) {
-        msg += ` (ข้ามแฟ้มที่ยังไม่ปิดงาน: ${res.blocked.join(', ')})`;
-      }
-
-      showToast(msg);
-
-      dateEl.value = '';
-      senderEl.value = '';
-      codeEl.value = '';
-      loadData();
-
-    } else if (res.success && res.added === 0 && res.blocked?.length) {
-
-      showToast(
-        `ไม่สามารถลงทะเบียนได้ เนื่องจากยังมีรายการที่ไม่ปิดงาน (${res.blocked.join(', ')})`,
-        false
-      );
-
-    } else {
-      showToast(res.message || 'บันทึกไม่สำเร็จ', false);
-    }
-
-  })
-  .catch(() => {
-    showToast('เชื่อมต่อระบบไม่ได้', false);
-  })
+  .then(() => loadData())
   .finally(() => {
-    resetBtn();
-  });
-
-  function resetBtn() {
     btn.disabled = false;
     btn.innerHTML = 'บันทึก';
-  }
+  });
 }
 
-
 /* =====================
-   โหลดข้อมูล
+   โหลดข้อมูล (แก้ตรงนี้)
 ===================== */
 loadData();
 
@@ -108,29 +68,82 @@ function loadData() {
   fetch(GAS + '?action=getData')
     .then(r => r.json())
     .then(data => {
-      tb.innerHTML = '';
-      cardView.innerHTML = '';
-
-      if (!data.length) {
-        tb.innerHTML = `
-          <tr>
-            <td colspan="7" class="text-center text-muted p-4">
-              ยังไม่มีข้อมูล
-            </td>
-          </tr>`;
-        return;
-      }
-
-      data
-        .sort((a, b) => new Date(b[8]) - new Date(a[8]))
-        .forEach(x => {
-          appendRow(x);   // Desktop
-          appendCard(x);  // Mobile
-        });
+      ALL_DATA = data.sort((a, b) => new Date(b[8]) - new Date(a[8]));
+      applyFilter();
     });
 }
 
+/* =====================
+   Filter + reset virtual
+===================== */
+function applyFilter() {
+  renderedCount = 0;
+  tb.innerHTML = '';
+  cardView.innerHTML = '';
 
+  FILTERED_DATA =
+    CURRENT_STATUS === 'all'
+      ? ALL_DATA
+      : ALL_DATA.filter(x => x[3] === CURRENT_STATUS);
+
+  if (!FILTERED_DATA.length) {
+    tb.innerHTML = `
+      <tr>
+        <td colspan="7" class="text-center text-muted p-4">
+          ไม่พบข้อมูล
+        </td>
+      </tr>`;
+    return;
+  }
+
+  renderNextBatch();
+}
+
+/* =====================
+   Virtual render
+===================== */
+function renderNextBatch() {
+  const slice = FILTERED_DATA.slice(
+    renderedCount,
+    renderedCount + BATCH_SIZE
+  );
+
+  slice.forEach(x => {
+    appendRow(x);
+    appendCard(x);
+  });
+
+  renderedCount += slice.length;
+}
+
+/* =====================
+   Scroll โหลดเพิ่ม
+===================== */
+window.addEventListener('scroll', () => {
+  if (
+    window.innerHeight + window.scrollY >=
+    document.body.offsetHeight - 200
+  ) {
+    if (renderedCount < FILTERED_DATA.length) {
+      renderNextBatch();
+    }
+  }
+});
+
+/* =====================
+   Tabs (Desktop + Mobile)
+===================== */
+document.querySelectorAll('#statusTabs .nav-link')
+  .forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('#statusTabs .nav-link')
+        .forEach(t => t.classList.remove('active'));
+
+      tab.classList.add('active');
+      CURRENT_STATUS = tab.dataset.status;
+      applyFilter();
+    });
+  });
 
 /* =====================
    เพิ่มแถวตาราง
