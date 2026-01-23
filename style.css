@@ -287,3 +287,68 @@ input[type="date"] {
 .file-card {
   padding-left: 20px;
 }
+
+/* =====================
+   File Card – Typography Upgrade
+   (Government Style)
+===================== */
+
+/* ทั้งการ์ด */
+.file-card {
+  font-size: 1rem;
+  color: #212529;
+}
+
+/* หัวข้อ (label) */
+.file-card .label {
+  font-size: 0.9rem;
+  font-weight: 600;          /* หนาขึ้น */
+  color: #495057;            /* เทาเข้ม อ่านง่าย */
+  letter-spacing: 0.2px;
+}
+
+/* ค่าข้อมูล (value) */
+.file-card .value {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: #212529;
+}
+
+/* รหัสแฟ้ม (เด่นเป็นพิเศษ) */
+.file-card .value.code,
+.file-card .code {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0d6efd;            /* น้ำเงินราชการ */
+  letter-spacing: 0.3px;
+}
+
+/* badge สถานะ */
+.file-card .badge {
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 6px 12px;
+}
+
+/* ปุ่ม */
+.file-card .actions button {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* =====================
+   Mobile Extra Clarity
+===================== */
+@media (max-width: 767px) {
+  .file-card {
+    font-size: 1.02rem;
+  }
+
+  .file-card .label {
+    font-size: 0.9rem;
+  }
+
+  .file-card .value {
+    font-size: 1.05rem;
+  }
+}
