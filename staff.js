@@ -4,6 +4,8 @@ const loginBox = document.getElementById('loginBox');
 const staffBox = document.getElementById('staffBox');
 const staffName = document.getElementById('staffName');
 const tb = document.getElementById('tb');
+const staffCardView = document.getElementById('staffCardView');
+
 
 /* Toast */
 function showToast(msg, success = true) {
