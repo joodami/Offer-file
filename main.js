@@ -218,9 +218,10 @@ function appendRow(x) {
                   👤 ${x[5]}
                 </span>
                <button class="btn btn-sm btn-outline-primary view-sign-btn"
-               data-sign="${encodeURIComponent(x[7])}">
-               ดูลายเซ็น
-               </button>
+        data-sign="${encodeURIComponent(x[7])}">
+  ดูลายเซ็น
+</button>
+
 
               </div>
             `
@@ -529,3 +530,10 @@ window.addEventListener('resize', () => {
   }
 });
 
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.view-sign-btn');
+  if (!btn) return;
+
+  const base64 = decodeURIComponent(btn.dataset.sign);
+  viewSignature(base64);
+});
