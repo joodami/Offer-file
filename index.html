@@ -76,28 +76,31 @@
 </ul>
 
   
-  <!-- ตาราง -->
-  <div class="card shadow-sm">
+<!-- ===== DESKTOP VIEW : ตาราง ===== -->
+<div id="desktopView" class="d-none d-md-block">
+
+  <div class="card shadow-sm mb-4">
     <div class="card-header fw-medium bg-light">
       รายการแฟ้ม
     </div>
+
     <div class="card-body p-0">
-      <table class="table table-bordered table-striped mb-0 d-none d-md-table">
-  <thead class="table-primary text-center align-middle">
-<tr>
-  <th width="10%">วันที่เสนอ</th>
-  <th width="10%">รหัสแฟ้ม</th>
-  <th width="20%">ผู้เสนอ</th>
-  <th width="20%">สถานะ</th>
-  <th width="10%">วันออกจาก ผอ.</th>
-  <th width="10%">วันรับคืน</th>
-  <th width="25%">ดำเนินการ</th>
-</tr>
-</thead>
+      <table class="table table-bordered table-striped mb-0">
+        <thead class="table-primary text-center align-middle">
+          <tr>
+            <th width="10%">วันที่เสนอ</th>
+            <th width="10%">รหัสแฟ้ม</th>
+            <th width="20%">ผู้เสนอ</th>
+            <th width="20%">สถานะ</th>
+            <th width="10%">วันออกจาก ผอ.</th>
+            <th width="10%">วันรับคืน</th>
+            <th width="25%">ดำเนินการ</th>
+          </tr>
+        </thead>
 
         <tbody id="tb">
           <tr>
-            <td colspan="4" class="text-center text-muted p-4">
+            <td colspan="7" class="text-center text-muted p-4">
               กำลังโหลดข้อมูล...
             </td>
           </tr>
@@ -108,8 +111,11 @@
 
 </div>
 
-  <!-- Mobile Card View -->
-<div id="cardView" class="d-md-none p-2"></div>
+<!-- ===== MOBILE VIEW : Card ===== -->
+<div id="mobileView" class="d-md-none">
+  <div id="cardView" class="p-2"></div>
+</div>
+
 
 
 <!-- Modal รับลายเซ็น -->
