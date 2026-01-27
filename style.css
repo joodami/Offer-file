@@ -390,3 +390,137 @@ input[type="date"] {
     height: 28px;
   }
 }
+
+/* =====================
+   CI THEME : Dark Red (Executive)
+===================== */
+:root {
+  --ci-red: #6b0f14;        /* แดงเข้มมาก */
+  --ci-red-dark: #4a0a0d;   /* แดงเข้มพิเศษ */
+  --ci-red-soft: #8c1d23;   /* แดงรอง */
+  --ci-gray: #343a40;       /* เทาเข้ม */
+  --ci-gray-light: #f1f3f5; /* เทาอ่อน */
+}
+
+/* =====================
+   Navbar
+===================== */
+.navbar {
+  background: linear-gradient(
+    90deg,
+    var(--ci-red-dark),
+    var(--ci-red)
+  ) !important;
+}
+
+.navbar-brand,
+.navbar .btn {
+  color: #ffffff !important;
+}
+
+.navbar .btn-outline-light {
+  border-color: rgba(255,255,255,.7);
+}
+
+/* =====================
+   Tabs
+===================== */
+.nav-tabs .nav-link {
+  color: var(--ci-gray);
+  font-weight: 500;
+}
+
+.nav-tabs .nav-link.active {
+  color: var(--ci-red-dark);
+  font-weight: 700;
+  border-color: var(--ci-red-dark) var(--ci-red-dark) #fff;
+}
+
+/* =====================
+   Status Badge
+===================== */
+.badge.bg-warning {
+  background-color: var(--ci-red-soft) !important;
+}
+
+.badge.bg-success {
+  background-color: var(--ci-gray) !important;
+}
+
+.badge.bg-secondary {
+  background-color: #6c757d !important;
+}
+
+/* =====================
+   File Card – Status Bar
+===================== */
+.file-card::before {
+  background: var(--ci-gray);
+}
+
+.file-card.status-offer::before {
+  background: var(--ci-red);
+}
+
+.file-card.status-approved::before {
+  background: var(--ci-gray);
+}
+
+.file-card.status-received::before {
+  background: #adb5bd;
+}
+
+/* =====================
+   File Code Highlight
+===================== */
+.file-code-box {
+  background: var(--ci-gray-light);
+  border-left-color: var(--ci-red);
+}
+
+.file-code {
+  color: var(--ci-red-dark);
+}
+
+/* =====================
+   Labels / Text
+===================== */
+.file-card .label {
+  color: var(--ci-gray);
+}
+
+/* =====================
+   Buttons
+===================== */
+.file-card .actions .btn-success {
+  background-color: var(--ci-red);
+  border-color: var(--ci-red);
+}
+
+.file-card .actions .btn-success:hover {
+  background-color: var(--ci-red-dark);
+  border-color: var(--ci-red-dark);
+}
+
+/* =====================
+   Table Header (Desktop)
+===================== */
+.table thead.table-primary {
+  background-color: #dee2e6;
+  color: #212529;
+}
+
+/* =====================
+   Staff Card
+===================== */
+.staff-card .code {
+  color: var(--ci-red);
+}
+
+/* =====================
+   Login Box
+===================== */
+#loginBox .card-header {
+  background: var(--ci-gray-light);
+  color: var(--ci-gray);
+}
