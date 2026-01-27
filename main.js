@@ -252,7 +252,7 @@ function appendCard(x) {
   div.className = `file-card ${statusClassMap[x[3]] || ''}`;
 
   div.innerHTML = `
-    <!-- รหัสแฟ้ม (เด่นที่สุด) -->
+    <!-- รหัสแฟ้ม -->
     <div class="file-code-box">
       <div class="file-code-label">รหัสแฟ้ม</div>
       <div class="file-code">${x[1]}</div>
@@ -289,15 +289,25 @@ function appendCard(x) {
     </div>
 
     <!-- ปุ่ม -->
-    <div class="actions">
+    <div class="actions d-flex flex-column gap-1">
       ${
         x[3] === 'พิจารณาเรียบร้อยแล้ว'
-          ? `<button class="btn btn-success btn-sm"
-                     onclick="openSign('${x[1]}')">
-               รับแฟ้มคืน
-             </button>`
+          ? `
+            <button class="btn btn-success btn-sm"
+                    onclick="openSign('${x[1]}')">
+              รับแฟ้มคืน
+            </button>
+          `
           : x[3] === 'รับแฟ้มคืนเรียบร้อยแล้ว'
-            ? `<span class="text-success fw-semibold">👤 ${x[5]}</span>`
+            ? `
+              <span class="text-success fw-semibold">
+                👤 ${x[5]}
+              </span>
+              <button class="btn btn-outline-primary btn-sm"
+                      onclick="viewSignature('${x[7]}')">
+                ดูลายเซ็น
+              </button>
+            `
             : ''
       }
     </div>
