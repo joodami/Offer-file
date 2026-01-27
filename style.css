@@ -412,7 +412,8 @@ input[type="date"] {
 }
 
 @media (max-width: 767px) {
-  .card-body {
-    min-height: auto;
+  .card.shadow-sm {
+    display: none;
   }
 }
+
