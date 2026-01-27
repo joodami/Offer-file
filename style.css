@@ -349,7 +349,7 @@ input[type="date"] {
 
 .file-card.status-offer .file-code-box::before {
   color: #c1121f;
-  content: '⏳';
+  content: '📁';
 }
 
 /* =====================
