@@ -402,18 +402,4 @@ input[type="date"] {
   }
 }
 
-/* FIX : prevent table sticking to bottom */
-.card-body {
-  min-height: 200px;
-}
-
-.card.shadow-sm {
-  margin-bottom: 40px;
-}
-
-@media (max-width: 767px) {
-  .card.shadow-sm {
-    display: none;
-  }
-}
 
