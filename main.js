@@ -190,10 +190,18 @@ function appendRow(x) {
     <td class="text-center">${x[6] ? formatDateTH(x[6]) : '-'}</td>
     <td class="text-center">
       ${
-        x[3] === 'พิจารณาเรียบร้อยแล้ว'
-          ? `<button class="btn btn-sm btn-success" onclick="openSign('${x[1]}')">รับแฟ้มคืน</button>`
-          : x[3] === 'รับแฟ้มคืนเรียบร้อยแล้ว'
-            ? `<span class="text-success">👤 ${x[5]}</span>`
+       x[3] === 'รับแฟ้มคืนเรียบร้อยแล้ว'
+  ? `
+    <div class="d-flex flex-column align-items-center gap-1">
+      <span class="text-success fw-semibold">
+        👤 ${x[5]}
+      </span>
+      <button class="btn btn-sm btn-outline-primary"
+              onclick="viewSignature('${x[7]}')">
+        ดูลายเซ็น
+      </button>
+    </div>
+  `
             : '-'
       }
     </td>
