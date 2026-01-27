@@ -294,3 +294,95 @@ input[type="date"] {
 .table td .badge {
   margin-bottom: 2px;
 }
+
+/* =====================
+   Mobile Card : File Code Color by Status
+===================== */
+
+/* เสนอแฟ้ม = แดง */
+.file-card.status-offer .file-code {
+  color: #c1121f;
+}
+
+/* พิจารณาแล้ว = เขียว */
+.file-card.status-approved .file-code {
+  color: #2e7d32;
+}
+
+/* รับคืนแล้ว = ฟ้า */
+.file-card.status-received .file-code {
+  color: #1565c0;
+}
+
+/* =====================
+   Mobile Card : Code Box by Status
+===================== */
+
+/* base */
+.file-card .file-code-box {
+  position: relative;
+  padding-left: 42px; /* เผื่อที่ให้ icon */
+}
+
+/* icon หน้าเลขแฟ้ม */
+.file-card .file-code-box::before {
+  content: '📁';
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+/* =====================
+   เสนอแฟ้ม = แดง
+===================== */
+.file-card.status-offer .file-code-box {
+  background: #fdecec;
+  border-left-color: #c1121f;
+}
+
+.file-card.status-offer .file-code {
+  color: #c1121f;
+}
+
+.file-card.status-offer .file-code-box::before {
+  color: #c1121f;
+  content: '⏳';
+}
+
+/* =====================
+   พิจารณาแล้ว = เขียว
+===================== */
+.file-card.status-approved .file-code-box {
+  background: #e9f5ee;
+  border-left-color: #2e7d32;
+}
+
+.file-card.status-approved .file-code {
+  color: #2e7d32;
+}
+
+.file-card.status-approved .file-code-box::before {
+  color: #2e7d32;
+  content: '✔';
+}
+
+/* =====================
+   รับคืนแล้ว = ฟ้า
+===================== */
+.file-card.status-received .file-code-box {
+  background: #e8f1fb;
+  border-left-color: #1565c0;
+}
+
+.file-card.status-received .file-code {
+  color: #1565c0;
+}
+
+.file-card.status-received .file-code-box::before {
+  color: #1565c0;
+  content: '📥';
+}
+
