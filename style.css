@@ -167,17 +167,18 @@ input[type="date"] {
   text-align: center;
 }
 
-.file-card .actions button {
+/* ปุ่มหลัก (รับแฟ้มคืน) */
+.file-card .actions .btn-success {
   font-size: 1rem;
   font-weight: 600;
   padding: 8px 18px;
-  background-color: var(--gov-blue);
-  border-color: var(--gov-blue);
 }
 
-.file-card .actions button:hover {
-  background-color: var(--gov-blue-dark);
-  border-color: var(--gov-blue-dark);
+/* ปุ่มรอง (ดูลายเซ็น) */
+.file-card .actions .btn-outline-primary {
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 6px 14px;
 }
 
 /* =====================
