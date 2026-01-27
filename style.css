@@ -410,3 +410,9 @@ input[type="date"] {
 .card.shadow-sm {
   margin-bottom: 40px;
 }
+
+@media (max-width: 767px) {
+  .card-body {
+    min-height: auto;
+  }
+}
