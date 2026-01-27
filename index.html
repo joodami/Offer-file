@@ -11,113 +11,106 @@
 
 <body>
 
-<!-- Navbar -->
-<nav class="navbar navbar-dark shadow-sm mb-4">
+<nav class="navbar navbar-dark bg-primary shadow-sm mb-4">
   <div class="container-fluid">
     <span class="navbar-brand d-flex align-items-center gap-2">
-      <img src="https://github.com/joodami/school-assets/blob/main/logo.png?raw=true" class="gov-logo">
+      <img src="https://github.com/joodami/school-assets/blob/main/logo.png?raw=true"
+           class="gov-logo">
       ระบบเสนอแฟ้มผู้อำนวยการ
     </span>
+    <div>
+      <a href="staff.html" class="btn btn-outline-light btn-sm">👩‍💼 เจ้าหน้าที่</a>
+      <a href="dashboard.html" class="btn btn-outline-light btn-sm">📊 Dashboard</a>
+    </div>
   </div>
 </nav>
 
 <div class="container">
 
-  <!-- ฟอร์มเสนอแฟ้ม -->
-  <div class="card shadow-sm mb-4">
-    <div class="card-header bg-light fw-medium">ลงทะเบียนเสนอแฟ้ม</div>
-    <div class="card-body row g-3">
-      <div class="col-md-3">
-        <input type="date" id="date" class="form-control">
-      </div>
-      <div class="col-md-4">
-        <textarea id="code" class="form-control" placeholder="กรอกรหัสแฟ้ม (บรรทัดละ 1 รหัส)"></textarea>
-      </div>
-      <div class="col-md-3">
-        <input type="text" id="sender" class="form-control" placeholder="ผู้เสนอ">
-      </div>
-      <div class="col-md-2 d-grid">
-        <button class="btn btn-primary" id="btnAdd" onclick="add(event)">บันทึก</button>
-      </div>
+<!-- ฟอร์ม -->
+<div class="card shadow-sm mb-4">
+  <div class="card-header bg-light fw-medium">ลงทะเบียนเสนอแฟ้ม</div>
+  <div class="card-body row g-3">
+    <div class="col-md-3">
+      <input type="date" id="date" class="form-control">
+    </div>
+    <div class="col-md-4">
+      <textarea id="code" class="form-control" placeholder="กรอกรหัสแฟ้ม (บรรทัดละ 1 รหัส)"></textarea>
+    </div>
+    <div class="col-md-3">
+      <input type="text" id="sender" class="form-control" placeholder="ผู้เสนอ">
+    </div>
+    <div class="col-md-2 d-grid">
+      <button class="btn btn-primary" id="btnAdd" onclick="add(event)">บันทึก</button>
     </div>
   </div>
+</div>
 
-  <!-- Status Tabs -->
-  <ul class="nav nav-tabs mb-3" id="statusTabs">
-    <li class="nav-item"><button class="nav-link active" data-status="เสนอแฟ้มต่อผู้อำนวยการ">เสนอแฟ้ม</button></li>
-    <li class="nav-item"><button class="nav-link" data-status="พิจารณาเรียบร้อยแล้ว">พิจารณาแล้ว</button></li>
-    <li class="nav-item"><button class="nav-link" data-status="รับแฟ้มคืนเรียบร้อยแล้ว">รับคืนแล้ว</button></li>
-  </ul>
+<ul class="nav nav-tabs mb-3" id="statusTabs">
+  <li class="nav-item"><button class="nav-link active" data-status="เสนอแฟ้มต่อผู้อำนวยการ">เสนอแฟ้ม</button></li>
+  <li class="nav-item"><button class="nav-link" data-status="พิจารณาเรียบร้อยแล้ว">พิจารณาแล้ว</button></li>
+  <li class="nav-item"><button class="nav-link" data-status="รับแฟ้มคืนเรียบร้อยแล้ว">รับคืนแล้ว</button></li>
+</ul>
 
-  <!-- ตาราง Desktop -->
-  <div class="card shadow-sm table-card">
-    <div class="card-header bg-light fw-medium">รายการแฟ้ม</div>
-    <div class="card-body p-0">
-      <table class="table table-bordered table-striped mb-0 d-none d-md-table">
-        <thead class="table-primary text-center">
-          <tr>
-            <th>วันที่เสนอ</th>
-            <th>รหัสแฟ้ม</th>
-            <th>ผู้เสนอ</th>
-            <th>สถานะ</th>
-            <th>ออกจาก ผอ.</th>
-            <th>รับคืน</th>
-            <th>ดำเนินการ</th>
-          </tr>
-        </thead>
-        <tbody id="tb">
-          <tr><td colspan="7" class="text-center p-4 text-muted">กำลังโหลดข้อมูล...</td></tr>
-        </tbody>
-      </table>
-    </div>
+<!-- ตาราง Desktop -->
+<div class="card shadow-sm mb-4 d-none d-md-block">
+  <div class="card-header bg-light fw-medium">รายการแฟ้ม</div>
+  <div class="card-body p-0">
+    <table class="table table-bordered table-striped mb-0">
+      <thead class="table-primary text-center">
+        <tr>
+          <th>วันที่เสนอ</th>
+          <th>รหัสแฟ้ม</th>
+          <th>ผู้เสนอ</th>
+          <th>สถานะ</th>
+          <th>ออกจาก ผอ.</th>
+          <th>รับคืน</th>
+          <th>ดำเนินการ</th>
+        </tr>
+      </thead>
+      <tbody id="tb">
+        <tr><td colspan="7" class="text-center text-muted p-4">กำลังโหลดข้อมูล...</td></tr>
+      </tbody>
+    </table>
   </div>
+</div>
+
+<!-- Card Mobile -->
+<div id="cardView" class="d-md-none"></div>
 
 </div>
 
-<!-- Mobile Cards -->
-<div id="cardView" class="d-md-none p-2"></div>
-
-<!-- Modal รับลายเซ็น -->
-<div class="modal fade" id="signModal" tabindex="-1">
+<!-- Modal เซ็น -->
+<div class="modal fade" id="signModal">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5>✍️ รับแฟ้มคืน</h5>
+        <h5 class="modal-title">✍️ รับแฟ้มคืน</h5>
         <button class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
         <input id="receiver" class="form-control mb-2" placeholder="ผู้รับแฟ้มคืน">
-        <canvas id="c" class="w-100 border" height="160"></canvas>
+        <canvas id="c" class="w-100" height="150"></canvas>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-secondary btn-sm" onclick="clearC()">ล้าง</button>
+        <button class="btn btn-secondary btn-sm" onclick="clearC()">ล้างลายเซ็น</button>
         <button class="btn btn-success btn-sm" onclick="save(event)">บันทึก</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Modal ดูลายเซ็น -->
-<div class="modal fade" id="viewSignModal" tabindex="-1">
+<!-- ดูลายเซ็น -->
+<div class="modal fade" id="viewSignModal">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5>🖊️ ลายเซ็น</h5>
+        <h5 class="modal-title">🖊️ ลายเซ็น</h5>
         <button class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body text-center">
         <img id="signImage" class="img-fluid border rounded">
       </div>
-    </div>
-  </div>
-</div>
-
-<!-- Toast -->
-<div class="toast-container position-fixed top-0 end-0 p-3">
-  <div id="toast" class="toast text-bg-success border-0">
-    <div class="d-flex">
-      <div class="toast-body" id="toastMsg"></div>
-      <button class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
     </div>
   </div>
 </div>
