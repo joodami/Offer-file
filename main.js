@@ -190,35 +190,47 @@ function appendRow(x) {
   };
 
   const tr = document.createElement('tr');
+
   tr.innerHTML = `
     <td class="text-center">${formatDateTH(x[0])}</td>
     <td class="text-center">${x[1]}</td>
     <td>${x[2]}</td>
     <td class="text-center">
-      <span class="badge bg-${statusColor[x[3]] || 'secondary'}">${x[3]}</span>
+      <span class="badge bg-${statusColor[x[3]] || 'secondary'}">
+        ${x[3]}
+      </span>
     </td>
     <td class="text-center">${x[4] ? formatDateTH(x[4]) : '-'}</td>
     <td class="text-center">${x[6] ? formatDateTH(x[6]) : '-'}</td>
     <td class="text-center">
       ${
-       x[3] === 'รับแฟ้มคืนเรียบร้อยแล้ว'
-  ? `
-    <div class="d-flex flex-column align-items-center gap-1">
-      <span class="text-success fw-semibold">
-        👤 ${x[5]}
-      </span>
-      <button class="btn btn-sm btn-outline-primary"
-              onclick="viewSignature('${x[7]}')">
-        ดูลายเซ็น
-      </button>
-    </div>
-  `
+        x[3] === 'พิจารณาเรียบร้อยแล้ว'
+          ? `
+            <button class="btn btn-sm btn-success"
+                    onclick="openSign('${x[1]}')">
+              รับแฟ้มคืน
+            </button>
+          `
+          : x[3] === 'รับแฟ้มคืนเรียบร้อยแล้ว'
+            ? `
+              <div class="d-flex flex-column align-items-center gap-1">
+                <span class="text-success fw-semibold">
+                  👤 ${x[5]}
+                </span>
+                <button class="btn btn-sm btn-outline-primary"
+                        onclick="viewSignature('${x[7]}')">
+                  ดูลายเซ็น
+                </button>
+              </div>
+            `
             : '-'
       }
     </td>
   `;
+
   tb.appendChild(tr);
 }
+
 
 /* =====================
    MOBILE CARD (เดิม)
