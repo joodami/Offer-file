@@ -217,10 +217,11 @@ function appendRow(x) {
                 <span class="text-success fw-semibold">
                   👤 ${x[5]}
                 </span>
-                <button class="btn btn-sm btn-outline-primary"
-                        onclick="viewSignature('${x[7]}')">
-                  ดูลายเซ็น
-                </button>
+               <button class="btn btn-sm btn-outline-primary view-sign-btn"
+               data-sign="${encodeURIComponent(x[7])}">
+               ดูลายเซ็น
+               </button>
+
               </div>
             `
             : '-'
@@ -303,10 +304,11 @@ function appendCard(x) {
               <span class="text-success fw-semibold">
                 👤 ${x[5]}
               </span>
-              <button class="btn btn-outline-primary btn-sm"
-                      onclick="viewSignature('${x[7]}')">
-                ดูลายเซ็น
-              </button>
+             <button class="btn btn-outline-primary btn-sm view-sign-btn"
+        data-sign="${encodeURIComponent(x[7])}">
+  ดูลายเซ็น
+</button>
+
             `
             : ''
       }
