@@ -524,3 +524,36 @@ input[type="date"] {
   background: var(--ci-gray-light);
   color: var(--ci-gray);
 }
+
+/* =====================
+   STATUS COLOR OVERRIDE
+   เสนอแฟ้ม = แดง
+   พิจารณาแล้ว = เขียว
+   รับคืนแล้ว = ฟ้า
+===================== */
+
+/* ===== Badge (ข้อความสถานะ) ===== */
+.badge.bg-warning {
+  background-color: #c1121f !important;   /* แดงเข้ม */
+}
+
+.badge.bg-success {
+  background-color: #2e7d32 !important;   /* เขียวเข้ม */
+}
+
+.badge.bg-secondary {
+  background-color: #1565c0 !important;   /* ฟ้าเข้ม */
+}
+
+/* ===== File Card Status Bar (แถบซ้าย) ===== */
+.file-card.status-offer::before {
+  background-color: #c1121f;               /* แดง */
+}
+
+.file-card.status-approved::before {
+  background-color: #2e7d32;               /* เขียว */
+}
+
+.file-card.status-received::before {
+  background-color: #1565c0;               /* ฟ้า */
+}
