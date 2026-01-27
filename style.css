@@ -244,3 +244,137 @@ input[type="date"] {
   font-size: 1rem;
   padding: 10px;
 }
+
+/* =====================
+   THEME : Gray - Dark Red
+===================== */
+
+:root {
+  --gov-red: #8b1e24;        /* แดงเข้มราชการ */
+  --gov-red-dark: #6f161b;   /* แดงเข้มมาก */
+  --gov-gray: #495057;       /* เทาเข้ม */
+  --gov-gray-light: #f1f3f5; /* เทาอ่อน */
+}
+
+/* =====================
+   Navbar
+===================== */
+.navbar {
+  background-color: var(--gov-red) !important;
+}
+
+.navbar-brand,
+.navbar .btn {
+  color: #ffffff !important;
+}
+
+.navbar .btn-outline-light {
+  border-color: rgba(255,255,255,.7);
+}
+
+/* =====================
+   Tabs
+===================== */
+.nav-tabs .nav-link {
+  color: var(--gov-gray);
+  font-weight: 500;
+}
+
+.nav-tabs .nav-link.active {
+  color: var(--gov-red-dark);
+  font-weight: 600;
+  border-color: var(--gov-red-dark) var(--gov-red-dark) #fff;
+}
+
+/* =====================
+   Badge Status
+===================== */
+.badge.bg-warning {
+  background-color: #b02a37 !important; /* เสนอแฟ้ม */
+}
+
+.badge.bg-success {
+  background-color: #495057 !important; /* พิจารณาแล้ว */
+}
+
+.badge.bg-secondary {
+  background-color: #6c757d !important; /* รับคืนแล้ว */
+}
+
+/* =====================
+   File Card – Status Bar
+===================== */
+.file-card::before {
+  background: var(--gov-gray);
+}
+
+.file-card.status-offer::before {
+  background: var(--gov-red);
+}
+
+.file-card.status-approved::before {
+  background: var(--gov-gray);
+}
+
+.file-card.status-received::before {
+  background: #adb5bd;
+}
+
+/* =====================
+   File Code Highlight
+===================== */
+.file-code-box {
+  background: var(--gov-gray-light);
+  border-left-color: var(--gov-red);
+}
+
+.file-code {
+  color: var(--gov-red);
+}
+
+/* =====================
+   Labels / Text
+===================== */
+.file-card .label {
+  color: var(--gov-gray);
+}
+
+.file-card .value {
+  color: #212529;
+}
+
+/* =====================
+   Buttons
+===================== */
+.file-card .actions .btn-success {
+  background-color: var(--gov-red);
+  border-color: var(--gov-red);
+}
+
+.file-card .actions .btn-success:hover {
+  background-color: var(--gov-red-dark);
+  border-color: var(--gov-red-dark);
+}
+
+/* =====================
+   Table Header (Desktop)
+===================== */
+.table thead.table-primary {
+  background-color: #dee2e6;
+  color: #212529;
+}
+
+/* =====================
+   Staff Card
+===================== */
+.staff-card .code {
+  color: var(--gov-red);
+}
+
+/* =====================
+   Login Box
+===================== */
+#loginBox .card-header {
+  background: var(--gov-gray-light);
+  color: var(--gov-gray);
+}
