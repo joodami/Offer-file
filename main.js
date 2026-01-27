@@ -221,39 +221,43 @@ function appendCard(x) {
   div.className = `file-card ${statusClassMap[x[3]] || ''}`;
 
   div.innerHTML = `
-    <div class="row">
-      <div class="label">วันที่เสนอ</div>
-      <div class="value">${formatDateTH(x[0])}</div>
+    <!-- รหัสแฟ้ม (เด่นที่สุด) -->
+    <div class="file-code-box">
+      <div class="file-code-label">รหัสแฟ้ม</div>
+      <div class="file-code">${x[1]}</div>
     </div>
 
-   <div class="row code-row">
-  <div class="label">รหัสแฟ้ม</div>
-  <div class="value">${x[1]}</div>
-</div>
-
-
-    <div class="row">
-      <div class="label">ผู้เสนอ</div>
-      <div class="value">${x[2]}</div>
-    </div>
-
-    <div class="row">
-      <div class="label">สถานะ</div>
+    <!-- สถานะ -->
+    <div class="status-row">
       <span class="badge bg-${statusColor[x[3]] || 'secondary'}">
         ${x[3]}
       </span>
     </div>
 
-    <div class="row">
-      <div class="label">ออกจาก ผอ.</div>
-      <div class="value">${x[4] ? formatDateTH(x[4]) : '-'}</div>
+    <!-- ข้อมูล -->
+    <div class="info-row">
+      <div>
+        <div class="label">วันที่เสนอ</div>
+        <div class="value">${formatDateTH(x[0])}</div>
+      </div>
+      <div>
+        <div class="label">ผู้เสนอ</div>
+        <div class="value">${x[2]}</div>
+      </div>
     </div>
 
-    <div class="row">
-      <div class="label">รับคืน</div>
-      <div class="value">${x[6] ? formatDateTH(x[6]) : '-'}</div>
+    <div class="info-row">
+      <div>
+        <div class="label">ออกจาก ผอ.</div>
+        <div class="value">${x[4] ? formatDateTH(x[4]) : '-'}</div>
+      </div>
+      <div>
+        <div class="label">รับคืน</div>
+        <div class="value">${x[6] ? formatDateTH(x[6]) : '-'}</div>
+      </div>
     </div>
 
+    <!-- ปุ่ม -->
     <div class="actions">
       ${
         x[3] === 'พิจารณาเรียบร้อยแล้ว'
@@ -262,8 +266,8 @@ function appendCard(x) {
                รับแฟ้มคืน
              </button>`
           : x[3] === 'รับแฟ้มคืนเรียบร้อยแล้ว'
-            ? `<span class="text-success">👤 ${x[5]}</span>`
-            : '-'
+            ? `<span class="text-success fw-semibold">👤 ${x[5]}</span>`
+            : ''
       }
     </div>
   `;
