@@ -401,3 +401,12 @@ input[type="date"] {
     max-height: 28px; /* Mobile */
   }
 }
+
+/* FIX : prevent table sticking to bottom */
+.card-body {
+  min-height: 200px;
+}
+
+.card.shadow-sm {
+  margin-bottom: 40px;
+}
