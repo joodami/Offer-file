@@ -71,33 +71,92 @@ input[type="date"] {
     padding: 6px 10px;
   }
 
-  .file-card {
-    padding: 16px 16px;
-    margin-bottom: 14px;
-  }
+  /* ===== File Card Layout ===== */
+.file-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 16px 16px 18px;
+  margin-bottom: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.06);
+  position: relative;
+}
 
-  .file-card .row {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 10px;
-  }
+/* แถบสถานะซ้าย */
+.file-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 6px;
+  height: 100%;
+  background: #adb5bd;
+}
+.file-card.status-offer::before { background: #ffc107; }
+.file-card.status-approved::before { background: #198754; }
+.file-card.status-received::before { background: #6c757d; }
 
-  .file-card .label {
-    font-size: 0.85rem;
-    width: 38%;
-  }
+/* ===== รหัสแฟ้ม ===== */
+.file-code-box {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-left: 4px solid #0d6efd;
+}
 
-  .file-card .value {
-    font-size: 1rem;
-    width: 60%;
-    text-align: right;
-  }
+.file-code-label {
+  font-size: 0.8rem;
+  color: #6c757d;
+  font-weight: 600;
+}
 
-  .file-card .actions button {
-    font-size: 1rem;
-    padding: 8px 14px;
-  }
+.file-code {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #0d6efd;
+  letter-spacing: 0.6px;
+}
+
+/* ===== สถานะ ===== */
+.status-row {
+  margin-bottom: 10px;
+}
+.status-row .badge {
+  font-size: 0.95rem;
+  padding: 6px 12px;
+  font-weight: 600;
+}
+
+/* ===== ข้อมูล ===== */
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.info-row .label {
+  font-size: 0.85rem;
+  color: #6c757d;
+  font-weight: 600;
+}
+
+.info-row .value {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #212529;
+}
+
+/* ===== ปุ่ม ===== */
+.file-card .actions {
+  margin-top: 12px;
+  text-align: center;
+}
+.file-card .actions button {
+  font-size: 1rem;
+  padding: 8px 18px;
+  font-weight: 600;
+}
 
   /* Tabs บนมือถือ */
   .nav-tabs .nav-link {
