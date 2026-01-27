@@ -378,3 +378,15 @@ input[type="date"] {
   background: var(--gov-gray-light);
   color: var(--gov-gray);
 }
+
+/* ===== Government Logo ===== */
+.gov-logo {
+  height: 34px;
+  width: auto;
+}
+
+@media (max-width: 767px) {
+  .gov-logo {
+    height: 28px;
+  }
+}
