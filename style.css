@@ -402,4 +402,12 @@ input[type="date"] {
   }
 }
 
+/* ===== Mobile Layout ===== */
+#mobileView {
+  padding-bottom: 24px;
+}
+
+#mobileView .file-card:last-child {
+  margin-bottom: 0;
+}
 
