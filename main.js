@@ -273,8 +273,19 @@ function appendCard(x) {
                      onclick="openSign('${x[1]}')">
                รับแฟ้มคืน
              </button>`
-          : x[3] === 'รับแฟ้มคืนเรียบร้อยแล้ว'
-            ? `<span class="text-success fw-semibold">👤 ${x[5]}</span>`
+         x[3] === 'รับแฟ้มคืนเรียบร้อยแล้ว'
+  ? `
+    <div class="text-center">
+      <div class="text-success fw-semibold mb-1">
+        👤 ${x[5]}
+      </div>
+      <button class="btn btn-outline-primary btn-sm"
+              onclick="viewSignature('${x[7]}')">
+        👁 ดูลายเซ็น
+      </button>
+    </div>
+  `
+
             : ''
       }
     </div>
