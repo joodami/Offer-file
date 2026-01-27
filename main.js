@@ -101,6 +101,8 @@ function loadData() {
 ===================== */
 function applyFilter() {
   renderedCount = 0;
+
+  // ล้างข้อมูลทั้ง Desktop และ Mobile
   tb.innerHTML = '';
   cardView.innerHTML = '';
 
@@ -109,18 +111,26 @@ function applyFilter() {
       ? ALL_DATA
       : ALL_DATA.filter(x => x[3] === CURRENT_STATUS);
 
+  // ===== ไม่พบข้อมูล =====
   if (!FILTERED_DATA.length) {
-    tb.innerHTML = `
-      <tr>
-        <td colspan="7" class="text-center text-muted p-4">
-          ไม่พบข้อมูล
-        </td>
-      </tr>`;
+
+    // Desktop : แสดงในตาราง
+    if (window.innerWidth >= 768) {
+      tb.innerHTML = `
+        <tr>
+          <td colspan="7" class="text-center text-muted p-4">
+            ไม่พบข้อมูล
+          </td>
+        </tr>`;
+    }
+
+    // Mobile : ไม่ต้องสร้างการ์ดใด ๆ (ปล่อยว่าง)
     return;
   }
 
   renderNextBatch();
 }
+
 
 /* =====================
    VIRTUAL RENDER
@@ -131,10 +141,11 @@ function renderNextBatch() {
     renderedCount + BATCH_SIZE
   );
 
-  slice.forEach(x => {
-    appendRow(x);
-    appendCard(x);
-  });
+slice.forEach(x => {
+  if (isDesktop()) appendRow(x);
+  if (isMobile()) appendCard(x);
+});
+
 
   renderedCount += slice.length;
 }
@@ -475,3 +486,22 @@ function formatDateTH(d) {
   if (!d) return '-';
   return new Date(d).toLocaleDateString('th-TH');
 }
+
+function isMobile() {
+  return window.innerWidth < 768;
+}
+
+function isDesktop() {
+  return window.innerWidth >= 768;
+}
+
+let lastMode = isMobile() ? 'mobile' : 'desktop';
+
+window.addEventListener('resize', () => {
+  const mode = isMobile() ? 'mobile' : 'desktop';
+  if (mode !== lastMode) {
+    lastMode = mode;
+    applyFilter();
+  }
+});
+
