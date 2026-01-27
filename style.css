@@ -411,11 +411,3 @@ input[type="date"] {
   margin-bottom: 40px;
 }
 
-/* =====================
-   FIX : hide empty table card on mobile
-===================== */
-@media (max-width: 767px) {
-  .card.shadow-sm {
-    display: none;
-  }
-}
