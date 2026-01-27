@@ -339,6 +339,14 @@ c.addEventListener('touchmove', e => {
 
 c.addEventListener('touchend', stopDraw);
 
+function viewSignature(base64) {
+  document.getElementById('signImage').src = base64;
+  new bootstrap.Modal(
+    document.getElementById('viewSignModal')
+  ).show();
+}
+
+
 /* ===== Draw Logic ===== */
 function drawSmoothLine() {
   if (points.length < 2) return;
