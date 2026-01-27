@@ -386,3 +386,18 @@ input[type="date"] {
   content: '📥';
 }
 
+/* =====================
+   FIX : Government Logo Size
+===================== */
+.gov-logo {
+  max-height: 36px;   /* Desktop */
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+@media (max-width: 767px) {
+  .gov-logo {
+    max-height: 28px; /* Mobile */
+  }
+}
