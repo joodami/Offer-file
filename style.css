@@ -12,15 +12,36 @@ body {
 }
 
 /* =====================
+   THEME : Government Blue
+===================== */
+:root {
+  --gov-blue: #0d6efd;
+  --gov-blue-dark: #0b5ed7;
+  --gov-blue-soft: #e7f1ff;
+  --gov-gray: #495057;
+  --gov-gray-light: #f1f3f5;
+}
+
+/* =====================
    Navbar
 ===================== */
 .navbar {
   font-size: 1rem;
+  background-color: var(--gov-blue) !important;
 }
 
 .navbar-brand {
   font-weight: 600;
   letter-spacing: 0.3px;
+  color: #ffffff !important;
+}
+
+.navbar .btn {
+  color: #ffffff !important;
+}
+
+.navbar .btn-outline-light {
+  border-color: rgba(255,255,255,.7);
 }
 
 @media (max-width: 767px) {
@@ -54,7 +75,7 @@ input[type="date"] {
 }
 
 /* =====================
-   File Card (Mobile / Shared)
+   File Card
 ===================== */
 .file-card {
   background: #ffffff;
@@ -68,7 +89,7 @@ input[type="date"] {
   color: #212529;
 }
 
-/* แถบสถานะซ้าย */
+/* แถบสถานะซ้าย (default) */
 .file-card::before {
   content: '';
   position: absolute;
@@ -79,27 +100,15 @@ input[type="date"] {
   background: #adb5bd;
 }
 
-.file-card.status-offer::before {
-  background: #ffc107;
-}
-
-.file-card.status-approved::before {
-  background: #198754;
-}
-
-.file-card.status-received::before {
-  background: #6c757d;
-}
-
 /* =====================
-   File Code (Highlight)
+   File Code Highlight
 ===================== */
 .file-code-box {
-  background: #f8f9fa;
+  background: var(--gov-blue-soft);
   border-radius: 10px;
   padding: 12px;
   margin-bottom: 10px;
-  border-left: 4px solid #0d6efd;
+  border-left: 4px solid var(--gov-blue);
 }
 
 .file-code-label {
@@ -111,7 +120,7 @@ input[type="date"] {
 .file-code {
   font-size: 1.4rem;
   font-weight: 800;
-  color: #0d6efd;
+  color: var(--gov-blue-dark);
   letter-spacing: 0.6px;
 }
 
@@ -128,7 +137,7 @@ input[type="date"] {
 .file-card .label {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #495057;
+  color: var(--gov-gray);
 }
 
 .file-card .value {
@@ -162,6 +171,13 @@ input[type="date"] {
   font-size: 1rem;
   font-weight: 600;
   padding: 8px 18px;
+  background-color: var(--gov-blue);
+  border-color: var(--gov-blue);
+}
+
+.file-card .actions button:hover {
+  background-color: var(--gov-blue-dark);
+  border-color: var(--gov-blue-dark);
 }
 
 /* =====================
@@ -197,7 +213,7 @@ input[type="date"] {
 .staff-card .code {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #0d6efd;
+  color: var(--gov-blue);
   margin-bottom: 8px;
 }
 
@@ -220,6 +236,8 @@ input[type="date"] {
   font-size: 1rem;
   padding: 10px;
   font-weight: 500;
+  background-color: var(--gov-blue);
+  border-color: var(--gov-blue);
 }
 
 /* =====================
@@ -232,328 +250,43 @@ input[type="date"] {
 #loginBox .card-header {
   font-size: 1.05rem;
   font-weight: 600;
-  background: #f1f3f5;
+  background: var(--gov-gray-light);
+  color: var(--gov-gray);
 }
 
-#loginBox input {
-  font-size: 1rem;
-  padding: 10px;
-}
-
+#loginBox input,
 #loginBox button {
   font-size: 1rem;
   padding: 10px;
 }
 
 /* =====================
-   THEME : Gray - Dark Red
-===================== */
-
-:root {
-  --gov-red: #8b1e24;        /* แดงเข้มราชการ */
-  --gov-red-dark: #6f161b;   /* แดงเข้มมาก */
-  --gov-gray: #495057;       /* เทาเข้ม */
-  --gov-gray-light: #f1f3f5; /* เทาอ่อน */
-}
-
-/* =====================
-   Navbar
-===================== */
-.navbar {
-  background-color: var(--gov-red) !important;
-}
-
-.navbar-brand,
-.navbar .btn {
-  color: #ffffff !important;
-}
-
-.navbar .btn-outline-light {
-  border-color: rgba(255,255,255,.7);
-}
-
-/* =====================
-   Tabs
-===================== */
-.nav-tabs .nav-link {
-  color: var(--gov-gray);
-  font-weight: 500;
-}
-
-.nav-tabs .nav-link.active {
-  color: var(--gov-red-dark);
-  font-weight: 600;
-  border-color: var(--gov-red-dark) var(--gov-red-dark) #fff;
-}
-
-/* =====================
-   Badge Status
-===================== */
-.badge.bg-warning {
-  background-color: #b02a37 !important; /* เสนอแฟ้ม */
-}
-
-.badge.bg-success {
-  background-color: #495057 !important; /* พิจารณาแล้ว */
-}
-
-.badge.bg-secondary {
-  background-color: #6c757d !important; /* รับคืนแล้ว */
-}
-
-/* =====================
-   File Card – Status Bar
-===================== */
-.file-card::before {
-  background: var(--gov-gray);
-}
-
-.file-card.status-offer::before {
-  background: var(--gov-red);
-}
-
-.file-card.status-approved::before {
-  background: var(--gov-gray);
-}
-
-.file-card.status-received::before {
-  background: #adb5bd;
-}
-
-/* =====================
-   File Code Highlight
-===================== */
-.file-code-box {
-  background: var(--gov-gray-light);
-  border-left-color: var(--gov-red);
-}
-
-.file-code {
-  color: var(--gov-red);
-}
-
-/* =====================
-   Labels / Text
-===================== */
-.file-card .label {
-  color: var(--gov-gray);
-}
-
-.file-card .value {
-  color: #212529;
-}
-
-/* =====================
-   Buttons
-===================== */
-.file-card .actions .btn-success {
-  background-color: var(--gov-red);
-  border-color: var(--gov-red);
-}
-
-.file-card .actions .btn-success:hover {
-  background-color: var(--gov-red-dark);
-  border-color: var(--gov-red-dark);
-}
-
-/* =====================
-   Table Header (Desktop)
-===================== */
-.table thead.table-primary {
-  background-color: #dee2e6;
-  color: #212529;
-}
-
-/* =====================
-   Staff Card
-===================== */
-.staff-card .code {
-  color: var(--gov-red);
-}
-
-/* =====================
-   Login Box
-===================== */
-#loginBox .card-header {
-  background: var(--gov-gray-light);
-  color: var(--gov-gray);
-}
-
-/* ===== Government Logo ===== */
-.gov-logo {
-  height: 34px;
-  width: auto;
-}
-
-@media (max-width: 767px) {
-  .gov-logo {
-    height: 28px;
-  }
-}
-
-/* =====================
-   CI THEME : Dark Red (Executive)
-===================== */
-:root {
-  --ci-red: #6b0f14;        /* แดงเข้มมาก */
-  --ci-red-dark: #4a0a0d;   /* แดงเข้มพิเศษ */
-  --ci-red-soft: #8c1d23;   /* แดงรอง */
-  --ci-gray: #343a40;       /* เทาเข้ม */
-  --ci-gray-light: #f1f3f5; /* เทาอ่อน */
-}
-
-/* =====================
-   Navbar
-===================== */
-.navbar {
-  background: linear-gradient(
-    90deg,
-    var(--ci-red-dark),
-    var(--ci-red)
-  ) !important;
-}
-
-.navbar-brand,
-.navbar .btn {
-  color: #ffffff !important;
-}
-
-.navbar .btn-outline-light {
-  border-color: rgba(255,255,255,.7);
-}
-
-/* =====================
-   Tabs
-===================== */
-.nav-tabs .nav-link {
-  color: var(--ci-gray);
-  font-weight: 500;
-}
-
-.nav-tabs .nav-link.active {
-  color: var(--ci-red-dark);
-  font-weight: 700;
-  border-color: var(--ci-red-dark) var(--ci-red-dark) #fff;
-}
-
-/* =====================
-   Status Badge
-===================== */
-.badge.bg-warning {
-  background-color: var(--ci-red-soft) !important;
-}
-
-.badge.bg-success {
-  background-color: var(--ci-gray) !important;
-}
-
-.badge.bg-secondary {
-  background-color: #6c757d !important;
-}
-
-/* =====================
-   File Card – Status Bar
-===================== */
-.file-card::before {
-  background: var(--ci-gray);
-}
-
-.file-card.status-offer::before {
-  background: var(--ci-red);
-}
-
-.file-card.status-approved::before {
-  background: var(--ci-gray);
-}
-
-.file-card.status-received::before {
-  background: #adb5bd;
-}
-
-/* =====================
-   File Code Highlight
-===================== */
-.file-code-box {
-  background: var(--ci-gray-light);
-  border-left-color: var(--ci-red);
-}
-
-.file-code {
-  color: var(--ci-red-dark);
-}
-
-/* =====================
-   Labels / Text
-===================== */
-.file-card .label {
-  color: var(--ci-gray);
-}
-
-/* =====================
-   Buttons
-===================== */
-.file-card .actions .btn-success {
-  background-color: var(--ci-red);
-  border-color: var(--ci-red);
-}
-
-.file-card .actions .btn-success:hover {
-  background-color: var(--ci-red-dark);
-  border-color: var(--ci-red-dark);
-}
-
-/* =====================
-   Table Header (Desktop)
-===================== */
-.table thead.table-primary {
-  background-color: #dee2e6;
-  color: #212529;
-}
-
-/* =====================
-   Staff Card
-===================== */
-.staff-card .code {
-  color: var(--ci-red);
-}
-
-/* =====================
-   Login Box
-===================== */
-#loginBox .card-header {
-  background: var(--ci-gray-light);
-  color: var(--ci-gray);
-}
-
-/* =====================
    STATUS COLOR OVERRIDE
-   เสนอแฟ้ม = แดง
-   พิจารณาแล้ว = เขียว
-   รับคืนแล้ว = ฟ้า
+   (คงตามที่ขอ: แดง / เขียว / ฟ้า)
 ===================== */
 
-/* ===== Badge (ข้อความสถานะ) ===== */
+/* Badge */
 .badge.bg-warning {
-  background-color: #c1121f !important;   /* แดงเข้ม */
+  background-color: #c1121f !important; /* เสนอแฟ้ม */
 }
 
 .badge.bg-success {
-  background-color: #2e7d32 !important;   /* เขียวเข้ม */
+  background-color: #2e7d32 !important; /* พิจารณาแล้ว */
 }
 
 .badge.bg-secondary {
-  background-color: #1565c0 !important;   /* ฟ้าเข้ม */
+  background-color: #1565c0 !important; /* รับคืนแล้ว */
 }
 
-/* ===== File Card Status Bar (แถบซ้าย) ===== */
+/* Status Bar */
 .file-card.status-offer::before {
-  background-color: #c1121f;               /* แดง */
+  background-color: #c1121f;
 }
 
 .file-card.status-approved::before {
-  background-color: #2e7d32;               /* เขียว */
+  background-color: #2e7d32;
 }
 
 .file-card.status-received::before {
-  background-color: #1565c0;               /* ฟ้า */
+  background-color: #1565c0;
 }
