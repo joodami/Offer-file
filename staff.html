@@ -9,7 +9,6 @@
 <link rel="stylesheet" href="style.css">
 </head>
 
-
 <body>
 
 <!-- Navbar -->
@@ -41,9 +40,21 @@
 
   <!-- Staff -->
   <div class="card shadow-sm d-none" id="staffBox">
-    <div class="card-header bg-light fw-medium d-flex justify-content-between">
-      <span id="staffName"></span>
-      <span class="text-muted">รายการแฟ้มรอออกจาก ผอ.</span>
+
+    <!-- Tabs -->
+    <div class="card-header bg-light fw-medium">
+      <ul class="nav nav-tabs card-header-tabs">
+        <li class="nav-item">
+          <button class="nav-link active" onclick="showTab('out')">
+            📤 รอออกจาก ผอ.
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" onclick="showTab('receive')">
+            📥 รับแฟ้มคืน
+          </button>
+        </li>
+      </ul>
     </div>
 
     <div class="card-body p-0">
@@ -51,8 +62,8 @@
         <thead class="table-primary">
           <tr>
             <th width="30%">รหัสแฟ้ม</th>
-            <th>วันที่ออกจาก ผอ.</th>
-            <th width="20%">บันทึก</th>
+            <th id="col2">วันที่ออกจาก ผอ.</th>
+            <th width="20%">จัดการ</th>
           </tr>
         </thead>
         <tbody id="tb">
@@ -67,9 +78,9 @@
   </div>
 
 </div>
-  <!-- Mobile Card View -->
-<div id="staffCardView" class="d-md-none p-2"></div>
 
+<!-- Mobile Card -->
+<div id="staffCardView" class="d-md-none p-2"></div>
 
 <!-- Toast -->
 <div class="toast-container position-fixed top-0 end-0 p-3">
