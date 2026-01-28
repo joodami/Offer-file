@@ -217,12 +217,10 @@ function appendRow(x) {
                 <span class="text-success fw-semibold">
                   👤 ${x[5]}
                 </span>
-               <button class="btn btn-sm btn-outline-primary view-sign-btn"
-        data-sign="${encodeURIComponent(x[7])}">
+            <button class="btn btn-sm btn-outline-primary view-sign-btn"
+        data-url="${x[7]}">
   ดูลายเซ็น
 </button>
-
-
               </div>
             `
             : '-'
@@ -305,8 +303,8 @@ function appendCard(x) {
               <span class="text-success fw-semibold">
                 👤 ${x[5]}
               </span>
-             <button class="btn btn-outline-primary btn-sm view-sign-btn"
-        data-sign="${encodeURIComponent(x[7])}">
+        <button class="btn btn-outline-primary btn-sm view-sign-btn"
+        data-url="${x[7]}">
   ดูลายเซ็น
 </button>
 
@@ -383,12 +381,19 @@ c.addEventListener('touchmove', e => {
 
 c.addEventListener('touchend', stopDraw);
 
-function viewSignature(base64) {
-  document.getElementById('signImage').src = base64;
+function viewSignature(url) {
+  const img = document.getElementById('signImage');
+  img.src = url;
+  img.onerror = () => {
+    img.src = '';
+    alert('ไม่สามารถแสดงลายเซ็นได้');
+  };
+
   new bootstrap.Modal(
     document.getElementById('viewSignModal')
   ).show();
 }
+
 
 
 /* ===== Draw Logic ===== */
@@ -534,6 +539,7 @@ document.addEventListener('click', e => {
   const btn = e.target.closest('.view-sign-btn');
   if (!btn) return;
 
-  const base64 = decodeURIComponent(btn.dataset.sign);
-  viewSignature(base64);
+  const url = btn.dataset.url;
+  viewSignature(url);
 });
+
