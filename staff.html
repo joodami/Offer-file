@@ -28,7 +28,7 @@
   <div class="card-header text-center">เข้าสู่ระบบเจ้าหน้าที่</div>
   <div class="card-body">
     <input id="phone" class="form-control mb-2" placeholder="กรอกเบอร์โทรศัพท์">
-    <button class="btn btn-primary w-100" onclick="login(event)">เข้าสู่ระบบ</button>
+    <button class="btn btn-primary w-100" onclick="login()">เข้าสู่ระบบ</button>
     <div id="msg" class="text-danger text-center mt-2"></div>
   </div>
 </div>
@@ -52,7 +52,9 @@
 
   <div class="card-body p-0">
 
-    <!-- TABLE : OUT DIRECTOR -->
+    <!-- =========================
+         TABLE : OUT (DESKTOP)
+    ========================== -->
     <table class="table table-bordered mb-0" id="tableOut">
       <thead class="table-primary text-center align-middle">
         <tr>
@@ -66,7 +68,9 @@
       <tbody id="tbOut"></tbody>
     </table>
 
-    <!-- TABLE : RECEIVE -->
+    <!-- =========================
+         TABLE : RECEIVE (DESKTOP)
+    ========================== -->
     <table class="table table-bordered mb-0 d-none" id="tableReceive">
       <thead class="table-primary text-center align-middle">
         <tr>
@@ -80,11 +84,21 @@
       <tbody id="tbReceive"></tbody>
     </table>
 
+    <!-- =========================
+         MOBILE CARD VIEW
+         (แสดงเฉพาะมือถือ)
+    ========================== -->
+    <div id="cardOut" class="d-md-none p-3"></div>
+    <div id="cardReceive" class="d-md-none p-3 d-none"></div>
+
   </div>
 </div>
 
 </div>
-  <!-- Global Loading -->
+
+<!-- =========================
+     Global Loading
+========================== -->
 <div id="globalLoading"
      class="position-fixed top-0 start-0 w-100 h-100 d-none"
      style="background:rgba(255,255,255,.75); z-index:2000">
@@ -96,7 +110,9 @@
   </div>
 </div>
 
-  <!-- Confirm Close Job Modal -->
+<!-- =========================
+     Confirm Close Job Modal
+========================== -->
 <div class="modal fade" id="confirmCloseModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -115,12 +131,10 @@
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-secondary"
-                data-bs-dismiss="modal">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">
           ยกเลิก
         </button>
-        <button class="btn btn-danger"
-                id="confirmCloseBtn">
+        <button class="btn btn-danger" id="confirmCloseBtn">
           ปิดงาน
         </button>
       </div>
@@ -128,7 +142,6 @@
     </div>
   </div>
 </div>
-
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="staff.js"></script>
