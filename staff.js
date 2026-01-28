@@ -182,32 +182,19 @@ function updateOut(code, btn) {
 
 
 /* CLOSE JOB */
+let closeJobCode = '';
+let closeJobBtn = null;
+
 function closeJobFront(code, btn) {
-  if (!confirm('ยืนยันปิดงานแฟ้มนี้ใช่หรือไม่')) return;
+  closeJobCode = code;
+  closeJobBtn = btn;
 
-  btn.disabled = true;
-  btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span>`;
+  document.getElementById('closeJobCode').innerText = code;
 
-  showLoading('กำลังปิดงาน');
-
-  fetch(GAS, {
-    method: 'POST',
-    body: JSON.stringify({
-      action: 'closeJob',
-      code
-    })
-  })
-  .then(r => r.json())
-  .then(res => {
-    if (res.success) {
-      showToast('ปิดงานเรียบร้อย');
-      loadReceive();
-    } else {
-      showToast('ปิดงานไม่สำเร็จ', false);
-      btn.disabled = false;
-    }
-  })
-  .finally(() => hideLoading());
+  const modal = new bootstrap.Modal(
+    document.getElementById('confirmCloseModal')
+  );
+  modal.show();
 }
 
 
@@ -233,3 +220,50 @@ function showLoading(text = 'กำลังประมวลผล...') {
 function hideLoading() {
   document.getElementById('globalLoading').classList.add('d-none');
 }
+
+
+document.getElementById('confirmCloseBtn')
+  .addEventListener('click', () => {
+
+    const btn = closeBtnRef;
+    btn.disabled = true;
+    btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span>`;
+
+    bootstrap.Modal
+      .getInstance(document.getElementById('confirmCloseModal'))
+      .hide();
+
+    showLoading('กำลังปิดงาน');
+
+    fetch(GAS, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        action: 'closeJob',
+        code: closeCode
+      })
+    })
+    .then(r => r.json())
+    .then(res => {
+      if (res.success) {
+        showToast('ปิดงานเรียบร้อย');
+        loadReceive();
+      } else {
+        showToast(res.message || 'ปิดงานไม่สำเร็จ', false);
+        btn.disabled = false;
+        btn.innerHTML = 'ปิดงาน';
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      showToast('เกิดข้อผิดพลาด', false);
+      btn.disabled = false;
+      btn.innerHTML = 'ปิดงาน';
+    })
+    .finally(() => {
+      hideLoading();
+    });
+  });
+
