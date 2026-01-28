@@ -8,8 +8,11 @@ const tableReceive = document.getElementById('tableReceive');
 const tbOut = document.getElementById('tbOut');
 const tbReceive = document.getElementById('tbReceive');
 
+const cardOut = document.getElementById('cardOut');
+const cardReceive = document.getElementById('cardReceive');
+
 /* Login */
-function login(e) {
+function login() {
   fetch(GAS, {
     method: 'POST',
     body: JSON.stringify({
@@ -41,18 +44,21 @@ function showTab(tab) {
       document.querySelectorAll('.nav-link')[0].classList.add('active');
       tableOut.classList.remove('d-none');
       tableReceive.classList.add('d-none');
+      cardOut.classList.remove('d-none');
+      cardReceive.classList.add('d-none');
       loadOut();
     } else {
       document.querySelectorAll('.nav-link')[1].classList.add('active');
       tableReceive.classList.remove('d-none');
       tableOut.classList.add('d-none');
+      cardReceive.classList.remove('d-none');
+      cardOut.classList.add('d-none');
       loadReceive();
     }
   }, 200);
 }
 
-
-/* OUT FROM DIRECTOR */
+/* OUT */
 function loadOut() {
   showLoading('กำลังโหลดแฟ้มรอออกจากห้อง ผอ.');
 
@@ -60,52 +66,48 @@ function loadOut() {
     .then(r => r.json())
     .then(data => {
       tbOut.innerHTML = '';
+      cardOut.innerHTML = '';
 
       const list = data.filter(r => r[3] === 'เสนอแฟ้มต่อผู้อำนวยการ');
 
       if (!list.length) {
-        tbOut.innerHTML = `
-          <tr>
-            <td colspan="5" class="text-center text-muted p-4">
-              ไม่มีข้อมูล
-            </td>
-          </tr>`;
+        tbOut.innerHTML = `<tr><td colspan="5" class="text-center">ไม่มีข้อมูล</td></tr>`;
+        cardOut.innerHTML = `<div class="text-center text-muted">ไม่มีข้อมูล</div>`;
         return;
       }
 
       list.forEach(r => {
+
+        // TABLE
         tbOut.innerHTML += `
           <tr>
             <td class="text-center">${r[1]}</td>
-            <td class="text-start">${formatDateTH(r[0])}</td>
-            <td class="text-start">${r[2]}</td>
-            <td>
-              <input type="date"
-                     class="form-control"
-                     id="d${r[1]}">
-            </td>
+            <td>${formatDateTH(r[0])}</td>
+            <td>${r[2]}</td>
+            <td><input type="date" class="form-control" id="d${r[1]}"></td>
             <td class="text-center">
               <button class="btn btn-success btn-sm"
-                      onclick="updateOut('${r[1]}', this)">
-                บันทึก
-              </button>
+                onclick="updateOut('${r[1]}', this)">บันทึก</button>
             </td>
           </tr>
         `;
+
+        // CARD
+        cardOut.innerHTML += `
+          <div class="staff-card">
+            <div class="code">📁 ${r[1]}</div>
+            <div class="label">วันที่เสนอ</div>
+            <div>${formatDateTH(r[0])}</div>
+            <div class="label mt-2">ผู้เสนอ</div>
+            <div>${r[2]}</div>
+            <input type="date" class="form-control mt-3" id="d${r[1]}">
+            <button class="btn btn-success mt-3"
+              onclick="updateOut('${r[1]}', this)">บันทึก</button>
+          </div>
+        `;
       });
     })
-    .catch(err => {
-      tbOut.innerHTML = `
-        <tr>
-          <td colspan="5" class="text-center text-danger p-4">
-            เกิดข้อผิดพลาดในการโหลดข้อมูล
-          </td>
-        </tr>`;
-      console.error(err);
-    })
-    .finally(() => {
-      hideLoading();
-    });
+    .finally(hideLoading);
 }
 
 /* RECEIVE */
@@ -116,70 +118,48 @@ function loadReceive() {
     .then(r => r.json())
     .then(data => {
       tbReceive.innerHTML = '';
+      cardReceive.innerHTML = '';
 
       const list = data.filter(r => r[3] === 'รับแฟ้มคืนเรียบร้อยแล้ว');
 
       if (!list.length) {
-        tbReceive.innerHTML = `
-          <tr>
-            <td colspan="5" class="text-center text-muted p-4">
-              ไม่มีข้อมูล
-            </td>
-          </tr>`;
+        tbReceive.innerHTML = `<tr><td colspan="5" class="text-center">ไม่มีข้อมูล</td></tr>`;
+        cardReceive.innerHTML = `<div class="text-center text-muted">ไม่มีข้อมูล</div>`;
         return;
       }
 
       list.forEach(r => {
+
         tbReceive.innerHTML += `
           <tr>
             <td class="text-center">${r[1]}</td>
-            <td class="text-start">${r[2]}</td>
-            <td class="text-start">${formatDateTH(r[6])}</td>
-            <td class="text-start">${r[5]}</td>
+            <td>${r[2]}</td>
+            <td>${formatDateTH(r[6])}</td>
+            <td>${r[5]}</td>
             <td class="text-center">
               <button class="btn btn-secondary btn-sm"
-                      onclick="closeJobFront('${r[1]}', this)">
-                ปิดงาน
-              </button>
+                onclick="closeJobFront('${r[1]}', this)">ปิดงาน</button>
             </td>
           </tr>
         `;
+
+        cardReceive.innerHTML += `
+          <div class="staff-card">
+            <div class="code">📁 ${r[1]}</div>
+            <div class="label">ผู้เสนอ</div>
+            <div>${r[2]}</div>
+            <div class="label mt-2">วันที่รับคืน</div>
+            <div>${formatDateTH(r[6])}</div>
+            <div class="label mt-2">ผู้รับคืน</div>
+            <div>${r[5]}</div>
+            <button class="btn btn-danger mt-3"
+              onclick="closeJobFront('${r[1]}', this)">ปิดงาน</button>
+          </div>
+        `;
       });
     })
-    .catch(err => {
-      tbReceive.innerHTML = `
-        <tr>
-          <td colspan="5" class="text-center text-danger p-4">
-            เกิดข้อผิดพลาดในการโหลดข้อมูล
-          </td>
-        </tr>`;
-      console.error(err);
-    })
-    .finally(() => {
-      hideLoading();
-    });
+    .finally(hideLoading);
 }
-
-
-/* UPDATE OUT */
-function updateOut(code, btn) {
-  btn.disabled = true;
-  btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span>`;
-
-  fetch(GAS, {
-    method: 'POST',
-    body: JSON.stringify({
-      action: 'outDirector',
-      code,
-      outDate: document.getElementById('d' + code).value
-    })
-  })
-  .then(() => {
-    showToast('บันทึกเรียบร้อย');
-    loadOut();
-  });
-}
-
 
 /* CLOSE JOB */
 let closeJobCode = '';
@@ -188,82 +168,33 @@ let closeJobBtn = null;
 function closeJobFront(code, btn) {
   closeJobCode = code;
   closeJobBtn = btn;
-
   document.getElementById('closeJobCode').innerText = code;
-
-  const modal = new bootstrap.Modal(
-    document.getElementById('confirmCloseModal')
-  );
-  modal.show();
+  new bootstrap.Modal(document.getElementById('confirmCloseModal')).show();
 }
 
+document.getElementById('confirmCloseBtn').addEventListener('click', () => {
+  closeJobBtn.disabled = true;
+  showLoading('กำลังปิดงาน');
 
-function formatDateTH(dateValue) {
-  if (!dateValue) return '-';
+  fetch(GAS, {
+    method: 'POST',
+    body: JSON.stringify({ action: 'closeJob', code: closeJobCode })
+  })
+  .then(() => loadReceive())
+  .finally(hideLoading);
+});
 
-  const d = new Date(dateValue);
-  if (isNaN(d)) return '-';
-
-  return d.toLocaleDateString('th-TH', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit'
-  });
+function formatDateTH(v) {
+  if (!v) return '-';
+  const d = new Date(v);
+  return isNaN(d) ? '-' : d.toLocaleDateString('th-TH');
 }
 
-function showLoading(text = 'กำลังประมวลผล...') {
+function showLoading(text) {
   const box = document.getElementById('globalLoading');
   box.querySelector('.fw-medium').innerText = text;
   box.classList.remove('d-none');
 }
-
 function hideLoading() {
   document.getElementById('globalLoading').classList.add('d-none');
 }
-
-
-document.getElementById('confirmCloseBtn')
-  .addEventListener('click', () => {
-
-    const btn = closeBtnRef;
-    btn.disabled = true;
-    btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span>`;
-
-    bootstrap.Modal
-      .getInstance(document.getElementById('confirmCloseModal'))
-      .hide();
-
-    showLoading('กำลังปิดงาน');
-
-    fetch(GAS, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        action: 'closeJob',
-        code: closeCode
-      })
-    })
-    .then(r => r.json())
-    .then(res => {
-      if (res.success) {
-        showToast('ปิดงานเรียบร้อย');
-        loadReceive();
-      } else {
-        showToast(res.message || 'ปิดงานไม่สำเร็จ', false);
-        btn.disabled = false;
-        btn.innerHTML = 'ปิดงาน';
-      }
-    })
-    .catch(err => {
-      console.error(err);
-      showToast('เกิดข้อผิดพลาด', false);
-      btn.disabled = false;
-      btn.innerHTML = 'ปิดงาน';
-    })
-    .finally(() => {
-      hideLoading();
-    });
-  });
-
