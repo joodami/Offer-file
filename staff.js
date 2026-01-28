@@ -64,7 +64,7 @@ function loadOut() {
         tbOut.innerHTML += `
           <tr>
             <td class="text-center">${r[1]}</td>
-            <td>${r[0]}</td>
+            <td>${formatDateTH(r[0])}</td>
             <td>${r[2]}</td>
             <td>
               <input type="date" class="form-control" id="d${r[1]}">
@@ -97,7 +97,7 @@ function loadReceive() {
           <tr>
             <td class="text-center">${r[1]}</td>
             <td>${r[2]}</td>
-            <td>${r[6]}</td>
+            <td>${formatDateTH(r[6])}</td>
             <td>${r[5]}</td>
             <td class="text-center">
               <button class="btn btn-secondary btn-sm"
@@ -131,4 +131,17 @@ function closeJobFront(code) {
       code
     })
   }).then(() => loadReceive());
+}
+
+function formatDateTH(dateValue) {
+  if (!dateValue) return '-';
+
+  const d = new Date(dateValue);
+  if (isNaN(d)) return '-';
+
+  return d.toLocaleDateString('th-TH', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  });
 }
