@@ -31,23 +31,31 @@ function login(e) {
 
 /* Tabs */
 function showTab(tab) {
-  document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
+  showLoading('กำลังเปลี่ยนแท็บ');
 
-  if (tab === 'out') {
-    document.querySelectorAll('.nav-link')[0].classList.add('active');
-    tableOut.classList.remove('d-none');
-    tableReceive.classList.add('d-none');
-    loadOut();
-  } else {
-    document.querySelectorAll('.nav-link')[1].classList.add('active');
-    tableReceive.classList.remove('d-none');
-    tableOut.classList.add('d-none');
-    loadReceive();
-  }
+  setTimeout(() => {
+    document.querySelectorAll('.nav-link')
+      .forEach(b => b.classList.remove('active'));
+
+    if (tab === 'out') {
+      document.querySelectorAll('.nav-link')[0].classList.add('active');
+      tableOut.classList.remove('d-none');
+      tableReceive.classList.add('d-none');
+      loadOut();
+    } else {
+      document.querySelectorAll('.nav-link')[1].classList.add('active');
+      tableReceive.classList.remove('d-none');
+      tableOut.classList.add('d-none');
+      loadReceive();
+    }
+  }, 200);
 }
+
 
 /* OUT FROM DIRECTOR */
 function loadOut() {
+  showLoading('กำลังโหลดแฟ้มรอออกจากห้อง ผอ.');
+
   fetch(GAS + '?action=getData')
     .then(r => r.json())
     .then(data => {
@@ -56,7 +64,12 @@ function loadOut() {
       const list = data.filter(r => r[3] === 'เสนอแฟ้มต่อผู้อำนวยการ');
 
       if (!list.length) {
-        tbOut.innerHTML = `<tr><td colspan="5" class="text-center">ไม่มีข้อมูล</td></tr>`;
+        tbOut.innerHTML = `
+          <tr>
+            <td colspan="5" class="text-center text-muted p-4">
+              ไม่มีข้อมูล
+            </td>
+          </tr>`;
         return;
       }
 
@@ -64,22 +77,41 @@ function loadOut() {
         tbOut.innerHTML += `
           <tr>
             <td class="text-center">${r[1]}</td>
-            <td>${formatDateTH(r[0])}</td>
-            <td>${r[2]}</td>
+            <td class="text-start">${formatDateTH(r[0])}</td>
+            <td class="text-start">${r[2]}</td>
             <td>
-              <input type="date" class="form-control" id="d${r[1]}">
+              <input type="date"
+                     class="form-control"
+                     id="d${r[1]}">
             </td>
             <td class="text-center">
               <button class="btn btn-success btn-sm"
-                onclick="updateOut('${r[1]}')">บันทึก</button>
+                      onclick="updateOut('${r[1]}', this)">
+                บันทึก
+              </button>
             </td>
-          </tr>`;
+          </tr>
+        `;
       });
+    })
+    .catch(err => {
+      tbOut.innerHTML = `
+        <tr>
+          <td colspan="5" class="text-center text-danger p-4">
+            เกิดข้อผิดพลาดในการโหลดข้อมูล
+          </td>
+        </tr>`;
+      console.error(err);
+    })
+    .finally(() => {
+      hideLoading();
     });
 }
 
 /* RECEIVE */
 function loadReceive() {
+  showLoading('กำลังโหลดแฟ้มรับคืน');
+
   fetch(GAS + '?action=getData')
     .then(r => r.json())
     .then(data => {
@@ -88,7 +120,12 @@ function loadReceive() {
       const list = data.filter(r => r[3] === 'รับแฟ้มคืนเรียบร้อยแล้ว');
 
       if (!list.length) {
-        tbReceive.innerHTML = `<tr><td colspan="5" class="text-center">ไม่มีข้อมูล</td></tr>`;
+        tbReceive.innerHTML = `
+          <tr>
+            <td colspan="5" class="text-center text-muted p-4">
+              ไม่มีข้อมูล
+            </td>
+          </tr>`;
         return;
       }
 
@@ -96,20 +133,39 @@ function loadReceive() {
         tbReceive.innerHTML += `
           <tr>
             <td class="text-center">${r[1]}</td>
-            <td>${r[2]}</td>
-            <td>${formatDateTH(r[6])}</td>
-            <td>${r[5]}</td>
+            <td class="text-start">${r[2]}</td>
+            <td class="text-start">${formatDateTH(r[6])}</td>
+            <td class="text-start">${r[5]}</td>
             <td class="text-center">
               <button class="btn btn-secondary btn-sm"
-                onclick="closeJobFront('${r[1]}')">ปิดงาน</button>
+                      onclick="closeJobFront('${r[1]}', this)">
+                ปิดงาน
+              </button>
             </td>
-          </tr>`;
+          </tr>
+        `;
       });
+    })
+    .catch(err => {
+      tbReceive.innerHTML = `
+        <tr>
+          <td colspan="5" class="text-center text-danger p-4">
+            เกิดข้อผิดพลาดในการโหลดข้อมูล
+          </td>
+        </tr>`;
+      console.error(err);
+    })
+    .finally(() => {
+      hideLoading();
     });
 }
 
+
 /* UPDATE OUT */
-function updateOut(code) {
+function updateOut(code, btn) {
+  btn.disabled = true;
+  btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span>`;
+
   fetch(GAS, {
     method: 'POST',
     body: JSON.stringify({
@@ -117,12 +173,22 @@ function updateOut(code) {
       code,
       outDate: document.getElementById('d' + code).value
     })
-  }).then(() => loadOut());
+  })
+  .then(() => {
+    showToast('บันทึกเรียบร้อย');
+    loadOut();
+  });
 }
 
+
 /* CLOSE JOB */
-function closeJobFront(code) {
-  if (!confirm('ยืนยันปิดงาน')) return;
+function closeJobFront(code, btn) {
+  if (!confirm('ยืนยันปิดงานแฟ้มนี้ใช่หรือไม่')) return;
+
+  btn.disabled = true;
+  btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span>`;
+
+  showLoading('กำลังปิดงาน');
 
   fetch(GAS, {
     method: 'POST',
@@ -130,8 +196,20 @@ function closeJobFront(code) {
       action: 'closeJob',
       code
     })
-  }).then(() => loadReceive());
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (res.success) {
+      showToast('ปิดงานเรียบร้อย');
+      loadReceive();
+    } else {
+      showToast('ปิดงานไม่สำเร็จ', false);
+      btn.disabled = false;
+    }
+  })
+  .finally(() => hideLoading());
 }
+
 
 function formatDateTH(dateValue) {
   if (!dateValue) return '-';
@@ -144,4 +222,14 @@ function formatDateTH(dateValue) {
     month: '2-digit',
     day: '2-digit'
   });
+}
+
+function showLoading(text = 'กำลังประมวลผล...') {
+  const box = document.getElementById('globalLoading');
+  box.querySelector('.fw-medium').innerText = text;
+  box.classList.remove('d-none');
+}
+
+function hideLoading() {
+  document.getElementById('globalLoading').classList.add('d-none');
 }
