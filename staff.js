@@ -198,3 +198,48 @@ function showLoading(text) {
 function hideLoading() {
   document.getElementById('globalLoading').classList.add('d-none');
 }
+
+/* UPDATE OUT FROM DIRECTOR */
+function updateOut(code, btn) {
+  const dateInput = document.getElementById('d' + code);
+
+  if (!dateInput || !dateInput.value) {
+    alert('กรุณาเลือกวันที่ออกจากห้อง ผอ.');
+    return;
+  }
+
+  btn.disabled = true;
+  const oldText = btn.innerHTML;
+  btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span>`;
+
+  showLoading('กำลังบันทึกวันที่ออกจากห้อง ผอ.');
+
+  fetch(GAS, {
+    method: 'POST',
+    body: JSON.stringify({
+      action: 'outDirector',
+      code: code,
+      outDate: dateInput.value
+    })
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (res.success) {
+      loadOut(); // รีเฟรชรายการ
+    } else {
+      alert(res.message || 'บันทึกไม่สำเร็จ');
+      btn.disabled = false;
+      btn.innerHTML = oldText;
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    alert('เกิดข้อผิดพลาด');
+    btn.disabled = false;
+    btn.innerHTML = oldText;
+  })
+  .finally(() => {
+    hideLoading();
+  });
+}
+
