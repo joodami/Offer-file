@@ -62,7 +62,7 @@ function showTab(tab) {
   }
 }
 
-/* โหลดข้อมูล (รอออกจาก ผอ.) */
+/* โหลดข้อมูล : รอออกจาก ผอ. (เดิม ไม่แตะ) */
 function loadData() {
   fetch(GAS + '?action=getData')
     .then(r => r.json())
@@ -75,7 +75,7 @@ function loadData() {
       if (!list.length) {
         tb.innerHTML = `
           <tr>
-            <td colspan="3" class="text-center text-muted p-4">
+            <td colspan="5" class="text-center text-muted p-4">
               ไม่มีแฟ้มรออัปเดต
             </td>
           </tr>`;
@@ -85,31 +85,21 @@ function loadData() {
       list.forEach(r => {
         tb.innerHTML += `
           <tr class="d-none d-md-table-row">
-            <td>${r[1]}</td>
-            <td><input type="date" class="form-control" id="d${r[1]}"></td>
+            <td class="text-center">${r[1]}</td>
+            <td colspan="3"></td>
             <td class="text-center">
-              <button class="btn btn-success btn-sm"
+              <input type="date" class="form-control mb-1" id="d${r[1]}">
+              <button class="btn btn-success btn-sm w-100"
                       onclick="updateOut('${r[1]}', this)">
                 บันทึก
               </button>
             </td>
           </tr>`;
-
-        staffCardView.innerHTML += `
-          <div class="staff-card">
-            <div class="code">📁 รหัสแฟ้ม: ${r[1]}</div>
-            <div class="label">วันที่ออกจากผู้อำนวยการ</div>
-            <input type="date" class="form-control" id="d${r[1]}">
-            <button class="btn btn-primary"
-                    onclick="updateOut('${r[1]}', this)">
-              บันทึกวันที่ออกจาก ผอ.
-            </button>
-          </div>`;
       });
     });
 }
 
-/* โหลดข้อมูล (รับแฟ้มคืน / ปิดงาน) */
+/* โหลดข้อมูล : รับแฟ้มคืน / ปิดงาน (แก้ตรงนี้) */
 function loadReceiveData() {
   fetch(GAS + '?action=getData')
     .then(r => r.json())
@@ -117,12 +107,14 @@ function loadReceiveData() {
       tb.innerHTML = '';
       staffCardView.innerHTML = '';
 
-      const list = data.filter(r => r[3] === 'รับแฟ้มคืนเรียบร้อยแล้ว');
+      const list = data.filter(r =>
+        r[3] === 'รับแฟ้มคืนเรียบร้อยแล้ว'
+      );
 
       if (!list.length) {
         tb.innerHTML = `
           <tr>
-            <td colspan="3" class="text-center text-muted p-4">
+            <td colspan="5" class="text-center text-muted p-4">
               ไม่มีแฟ้มรอปิดงาน
             </td>
           </tr>`;
@@ -130,10 +122,14 @@ function loadReceiveData() {
       }
 
       list.forEach(r => {
+        /* Desktop Table */
         tb.innerHTML += `
           <tr class="d-none d-md-table-row">
-            <td>${r[1]}</td>
-            <td class="text-center" colspan="2">
+            <td class="text-center">${r[1]}</td>
+            <td class="text-start">${r[2] || '-'}</td>
+            <td class="text-start">${r[6] || '-'}</td>
+            <td class="text-start">${r[5] || '-'}</td>
+            <td class="text-center">
               <button class="btn btn-secondary btn-sm"
                       onclick="closeJobFront('${r[1]}', this)">
                 ปิดงาน
@@ -141,13 +137,21 @@ function loadReceiveData() {
             </td>
           </tr>`;
 
+        /* Mobile Card */
         staffCardView.innerHTML += `
-          <div class="staff-card">
-            <div class="code">📁 รหัสแฟ้ม: ${r[1]}</div>
-            <button class="btn btn-outline-secondary w-100"
-                    onclick="closeJobFront('${r[1]}', this)">
-              ปิดงาน
-            </button>
+          <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+              <div class="fw-bold text-center mb-2">
+                📁 รหัสแฟ้ม: ${r[1]}
+              </div>
+              <div>👤 ผู้เสนอแฟ้ม: ${r[2] || '-'}</div>
+              <div>📅 วันที่รับแฟ้มคืน: ${r[6] || '-'}</div>
+              <div>📥 ผู้รับแฟ้มคืน: ${r[5] || '-'}</div>
+              <button class="btn btn-outline-secondary w-100 mt-2"
+                      onclick="closeJobFront('${r[1]}', this)">
+                ปิดงาน
+              </button>
+            </div>
           </div>`;
       });
     });
