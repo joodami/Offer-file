@@ -7,7 +7,30 @@ const tb = document.getElementById('tb');
 const cardView = document.getElementById('cardView');
 
 /* =====================
-   STATE (Virtual + Filter)
+   CACHE
+===================== */
+let PRESENT_CACHE = null;
+let PRESENT_CACHE_TIME = 0;
+const CACHE_TTL = 60 * 1000; // 1 นาที
+
+function getPresentData(force = false) {
+  const now = Date.now();
+
+  if (!force && PRESENT_CACHE && (now - PRESENT_CACHE_TIME < CACHE_TTL)) {
+    return Promise.resolve(PRESENT_CACHE);
+  }
+
+  return fetch(GAS + '?action=getData')
+    .then(r => r.json())
+    .then(data => {
+      PRESENT_CACHE = data;
+      PRESENT_CACHE_TIME = Date.now();
+      return data;
+    });
+}
+
+/* =====================
+   STATE
 ===================== */
 let CODE = '';
 let ALL_DATA = [];
@@ -30,98 +53,38 @@ function showToast(msg, success = true) {
 
 function showMobileLoading() {
   if (!isMobile()) return;
-
   cardView.innerHTML = `
     <div class="card shadow-sm text-center mt-2">
-      <div class="text-muted fw-medium py-4 loading-text">
+      <div class="text-muted fw-medium py-4">
         กำลังโหลดข้อมูล...
       </div>
     </div>
   `;
 }
 
-
 /* =====================
-   ADD FILE (เดิม แค่แก้การอ้าง DOM)
-===================== */
-function add(e) {
-  e.preventDefault();
-
-  const btn = document.getElementById('btnAdd');
-  btn.disabled = true;
-  btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>กำลังบันทึก...`;
-
-  const dateEl   = document.getElementById('date');
-  const senderEl = document.getElementById('sender');
-  const codeEl   = document.getElementById('code');
-
-  const date   = dateEl.value;
-  const sender = senderEl.value.trim();
-  const codes  = codeEl.value
-    .split('\n')
-    .map(c => c.trim())
-    .filter(Boolean);
-
-  if (!date || !sender || !codes.length) {
-    showToast('กรุณากรอกข้อมูลให้ครบ', false);
-    resetBtn();
-    return;
-  }
-
-  fetch(GAS, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify({ action: 'add', date, sender, codes })
-  })
-  .then(r => r.json())
-  .then(res => {
-    if (res.success) {
-      showToast('บันทึกข้อมูลเรียบร้อย');
-      dateEl.value = '';
-      senderEl.value = '';
-      codeEl.value = '';
-      loadData();
-    } else {
-      showToast(res.message || 'บันทึกไม่สำเร็จ', false);
-    }
-  })
-  .catch(() => showToast('เชื่อมต่อระบบไม่ได้', false))
-  .finally(resetBtn);
-
-  function resetBtn() {
-    btn.disabled = false;
-    btn.innerHTML = 'บันทึก';
-  }
-}
-
-/* =====================
-   LOAD DATA (Virtual)
+   LOAD DATA (FAST)
 ===================== */
 loadData();
 
-function loadData() {
-
-  // แสดง loading บนมือถือ
+function loadData(force = false) {
   showMobileLoading();
 
-  fetch(GAS + '?action=getData')
-    .then(r => r.json())
+  getPresentData(force)
     .then(data => {
-      ALL_DATA = data.sort((a, b) => new Date(b[8]) - new Date(a[8]));
-      applyFilter(); // จะล้าง loading ตอน render จริง
+      ALL_DATA = [...data].sort(
+        (a, b) => new Date(b[8]) - new Date(a[8])
+      );
+      applyFilter();
     })
     .catch(() => showToast('โหลดข้อมูลไม่ได้', false));
 }
 
-
-
 /* =====================
-   FILTER + RESET
+   FILTER
 ===================== */
 function applyFilter() {
   renderedCount = 0;
-
-  // ล้างเฉพาะ desktop
   tb.innerHTML = '';
 
   FILTERED_DATA =
@@ -129,10 +92,7 @@ function applyFilter() {
       ? ALL_DATA
       : ALL_DATA.filter(x => x[3] === CURRENT_STATUS);
 
-  // ===== ไม่พบข้อมูล =====
   if (!FILTERED_DATA.length) {
-
-    // Desktop
     if (isDesktop()) {
       tb.innerHTML = `
         <tr>
@@ -143,7 +103,6 @@ function applyFilter() {
       `;
     }
 
-    // Mobile
     if (isMobile()) {
       cardView.innerHTML = `
         <div class="card shadow-sm text-center text-muted p-4 mt-3">
@@ -151,7 +110,6 @@ function applyFilter() {
         </div>
       `;
     }
-
     return;
   }
 
@@ -162,8 +120,6 @@ function applyFilter() {
    VIRTUAL RENDER
 ===================== */
 function renderNextBatch() {
-
-  // ล้าง loading ก่อน render ชุดแรก
   if (renderedCount === 0 && isMobile()) {
     cardView.innerHTML = '';
   }
@@ -181,9 +137,8 @@ function renderNextBatch() {
   renderedCount += slice.length;
 }
 
-
 /* =====================
-   INFINITE SCROLL
+   SCROLL
 ===================== */
 window.addEventListener('scroll', () => {
   if (
@@ -197,7 +152,7 @@ window.addEventListener('scroll', () => {
 });
 
 /* =====================
-   STATUS TABS (Desktop + Mobile)
+   STATUS TABS
 ===================== */
 document.querySelectorAll('#statusTabs .nav-link')
   .forEach(tab => {
@@ -212,297 +167,56 @@ document.querySelectorAll('#statusTabs .nav-link')
   });
 
 /* =====================
-   TABLE ROW (เดิม)
+   ADD FILE
 ===================== */
-function appendRow(x) {
-  const statusColor = {
-    'เสนอแฟ้มต่อผู้อำนวยการ': 'warning',
-    'พิจารณาเรียบร้อยแล้ว': 'success',
-    'รับแฟ้มคืนเรียบร้อยแล้ว': 'secondary'
-  };
-
-  const tr = document.createElement('tr');
-
-  tr.innerHTML = `
-    <td class="text-center">${formatDateTH(x[0])}</td>
-    <td class="text-center">${x[1]}</td>
-    <td>${x[2]}</td>
-    <td class="text-center">
-      <span class="badge bg-${statusColor[x[3]] || 'secondary'}">
-        ${x[3]}
-      </span>
-    </td>
-    <td class="text-center">${x[4] ? formatDateTH(x[4]) : '-'}</td>
-    <td class="text-center">${x[6] ? formatDateTH(x[6]) : '-'}</td>
-    <td class="text-center">
-      ${
-        x[3] === 'พิจารณาเรียบร้อยแล้ว'
-          ? `
-            <button class="btn btn-sm btn-success"
-                    onclick="openSign('${x[1]}')">
-              รับแฟ้มคืน
-            </button>
-          `
-          : x[3] === 'รับแฟ้มคืนเรียบร้อยแล้ว'
-            ? `
-              <div class="d-flex flex-column align-items-center gap-1">
-                <span class="text-success fw-semibold">
-                  👤 ${x[5]}
-                </span>
-            <button class="btn btn-sm btn-outline-primary view-sign-btn"
-        data-url="${x[7]}">
-  ดูลายเซ็น
-</button>
-              </div>
-            `
-            : '-'
-      }
-    </td>
-  `;
-
-  tb.appendChild(tr);
-}
-
-
-/* =====================
-   MOBILE CARD (เดิม)
-===================== */
-function appendCard(x) {
-  const statusColor = {
-    'เสนอแฟ้มต่อผู้อำนวยการ': 'warning',
-    'พิจารณาเรียบร้อยแล้ว': 'success',
-    'รับแฟ้มคืนเรียบร้อยแล้ว': 'secondary'
-  };
-
-  const statusClassMap = {
-    'เสนอแฟ้มต่อผู้อำนวยการ': 'status-offer',
-    'พิจารณาเรียบร้อยแล้ว': 'status-approved',
-    'รับแฟ้มคืนเรียบร้อยแล้ว': 'status-received'
-  };
-
-  const div = document.createElement('div');
-  div.className = `file-card ${statusClassMap[x[3]] || ''}`;
-
-  div.innerHTML = `
-    <!-- รหัสแฟ้ม -->
-    <div class="file-code-box">
-      <div class="file-code-label">รหัสแฟ้ม</div>
-      <div class="file-code">${x[1]}</div>
-    </div>
-
-    <!-- สถานะ -->
-    <div class="status-row">
-      <span class="badge bg-${statusColor[x[3]] || 'secondary'}">
-        ${x[3]}
-      </span>
-    </div>
-
-    <!-- ข้อมูล -->
-    <div class="info-row">
-      <div>
-        <div class="label">วันที่เสนอ</div>
-        <div class="value">${formatDateTH(x[0])}</div>
-      </div>
-      <div>
-        <div class="label">ผู้เสนอ</div>
-        <div class="value">${x[2]}</div>
-      </div>
-    </div>
-
-    <div class="info-row">
-      <div>
-        <div class="label">ออกจาก ผอ.</div>
-        <div class="value">${x[4] ? formatDateTH(x[4]) : '-'}</div>
-      </div>
-      <div>
-        <div class="label">รับคืน</div>
-        <div class="value">${x[6] ? formatDateTH(x[6]) : '-'}</div>
-      </div>
-    </div>
-
-    <!-- ปุ่ม -->
-    <div class="actions d-flex flex-column gap-1">
-      ${
-        x[3] === 'พิจารณาเรียบร้อยแล้ว'
-          ? `
-            <button class="btn btn-success btn-sm"
-                    onclick="openSign('${x[1]}')">
-              รับแฟ้มคืน
-            </button>
-          `
-          : x[3] === 'รับแฟ้มคืนเรียบร้อยแล้ว'
-            ? `
-              <span class="text-success fw-semibold">
-                👤 ${x[5]}
-              </span>
-        <button class="btn btn-outline-primary btn-sm view-sign-btn"
-        data-url="${x[7]}">
-  ดูลายเซ็น
-</button>
-
-            `
-            : ''
-      }
-    </div>
-  `;
-
-  cardView.appendChild(div);
-}
-
-
-
-/* =====================
-   SIGN MODAL + CANVAS (เดิม)
-===================== */
-function openSign(code) {
-  CODE = String(code).trim();
-  document.getElementById('receiver').value = '';
-
-  const modalEl = document.getElementById('signModal');
-  const modal = new bootstrap.Modal(modalEl);
-  modal.show();
-
-  // ✅ รอให้ modal แสดงก่อน แล้วค่อย resize canvas
-  modalEl.addEventListener('shown.bs.modal', () => {
-    resizeCanvas();
-    clearC();
-  }, { once: true });
-}
-
-
-const c = document.getElementById('c');
-const ctx = c.getContext('2d');
-
-/* ===== Pen Style ===== */
-ctx.strokeStyle = '#000';
-ctx.lineWidth = 2.4;
-ctx.lineCap = 'round';
-ctx.lineJoin = 'round';
-
-let drawing = false;
-let points = [];
-
-/* ===== Mouse ===== */
-c.addEventListener('mousedown', e => {
-  drawing = true;
-  points = [getPos(e)];
-});
-
-c.addEventListener('mousemove', e => {
-  if (!drawing) return;
-  points.push(getPos(e));
-  drawSmoothLine();
-});
-
-c.addEventListener('mouseup', stopDraw);
-c.addEventListener('mouseleave', stopDraw);
-
-/* ===== Touch ===== */
-c.addEventListener('touchstart', e => {
+function add(e) {
   e.preventDefault();
-  drawing = true;
-  points = [getTouchPos(e)];
-});
 
-c.addEventListener('touchmove', e => {
-  e.preventDefault();
-  if (!drawing) return;
-  points.push(getTouchPos(e));
-  drawSmoothLine();
-});
+  const btn = document.getElementById('btnAdd');
+  btn.disabled = true;
+  btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>กำลังบันทึก...`;
 
-c.addEventListener('touchend', stopDraw);
+  const date = dateEl.value;
+  const sender = senderEl.value.trim();
+  const codes = codeEl.value.split('\n').map(c => c.trim()).filter(Boolean);
 
-function viewSignature(url) {
-  const img = document.getElementById('signImage');
-  img.src = url;
-  img.onerror = () => {
-    img.src = '';
-    alert('ไม่สามารถแสดงลายเซ็นได้');
-  };
-
-  new bootstrap.Modal(
-    document.getElementById('viewSignModal')
-  ).show();
-}
-
-
-
-/* ===== Draw Logic ===== */
-function drawSmoothLine() {
-  if (points.length < 2) return;
-
-  ctx.beginPath();
-  ctx.moveTo(points[0].x, points[0].y);
-
-  for (let i = 1; i < points.length - 1; i++) {
-    const midX = (points[i].x + points[i + 1].x) / 2;
-    const midY = (points[i].y + points[i + 1].y) / 2;
-    ctx.quadraticCurveTo(points[i].x, points[i].y, midX, midY);
-  }
-
-  ctx.stroke();
-}
-
-function stopDraw() {
-  drawing = false;
-  points = [];
-}
-
-/* ===== Utils ===== */
-function getPos(e) {
-  const r = c.getBoundingClientRect();
-  return { x: e.clientX - r.left, y: e.clientY - r.top };
-}
-
-function getTouchPos(e) {
-  const r = c.getBoundingClientRect();
-  return {
-    x: e.touches[0].clientX - r.left,
-    y: e.touches[0].clientY - r.top
-  };
-}
-
-function clearC() {
-  ctx.clearRect(0, 0, c.width, c.height);
-}
-
-function isCanvasEmpty() {
-  const imgData = ctx.getImageData(0, 0, c.width, c.height).data;
-  for (let i = 3; i < imgData.length; i += 4) {
-    if (imgData[i] !== 0) return false; // มี pixel ที่ไม่โปร่งใส
-  }
-  return true;
-}
-
-function resizeCanvas() {
-  const dpr = window.devicePixelRatio || 1;
-  const rect = c.getBoundingClientRect();
-
-  c.width  = rect.width * dpr;
-  c.height = rect.height * dpr;
-
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-  ctx.strokeStyle = '#000';
-  ctx.lineWidth = 2.4;
-  ctx.lineCap = 'round';
-  ctx.lineJoin = 'round';
-}
-
-/* =====================
-   SAVE RECEIVE (เดิม)
-===================== */
-function save(e) {
-  const receiver = document.getElementById('receiver').value.trim();
-
-  if (!receiver) {
-    showToast('กรุณากรอกชื่อผู้รับแฟ้มคืน', false);
+  if (!date || !sender || !codes.length) {
+    showToast('กรุณากรอกข้อมูลให้ครบ', false);
+    reset();
     return;
   }
 
-  if (isCanvasEmpty()) {
-    showToast('🚫 กรุณาลงลายเซ็นก่อนบันทึก', false);
+  fetch(GAS, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ action: 'add', date, sender, codes })
+  })
+    .then(r => r.json())
+    .then(res => {
+      if (res.success) {
+        showToast('บันทึกข้อมูลเรียบร้อย');
+        PRESENT_CACHE = null; // 🔥 clear cache
+        loadData(true);
+        dateEl.value = senderEl.value = codeEl.value = '';
+      } else {
+        showToast(res.message || 'บันทึกไม่สำเร็จ', false);
+      }
+    })
+    .finally(reset);
+
+  function reset() {
+    btn.disabled = false;
+    btn.innerHTML = 'บันทึก';
+  }
+}
+
+/* =====================
+   SAVE RECEIVE
+===================== */
+function save(e) {
+  const receiver = document.getElementById('receiver').value.trim();
+  if (!receiver || isCanvasEmpty()) {
+    showToast('กรุณากรอกข้อมูลให้ครบ', false);
     return;
   }
 
@@ -516,30 +230,29 @@ function save(e) {
     body: JSON.stringify({
       action: 'receive',
       code: CODE,
-      receiver: receiver,
+      receiver,
       receiveDate: new Date().toISOString().slice(0, 10),
       signature: c.toDataURL('image/png')
     })
   })
-  .then(r => r.json())
-  .then(res => {
-    if (res.success) {
-      showToast('รับแฟ้มคืนเรียบร้อย');
-      bootstrap.Modal.getInstance(
-        document.getElementById('signModal')
-      ).hide();
-      loadData();
-    } else {
-      showToast(res.message || 'บันทึกไม่สำเร็จ', false);
-    }
-  })
-  .catch(() => showToast('เชื่อมต่อเซิร์ฟเวอร์ไม่ได้', false))
-  .finally(() => {
-    btn.disabled = false;
-    btn.innerHTML = 'บันทึก';
-  });
+    .then(r => r.json())
+    .then(res => {
+      if (res.success) {
+        showToast('รับแฟ้มคืนเรียบร้อย');
+        PRESENT_CACHE = null; // 🔥 clear cache
+        loadData(true);
+        bootstrap.Modal.getInstance(
+          document.getElementById('signModal')
+        ).hide();
+      } else {
+        showToast(res.message || 'บันทึกไม่สำเร็จ', false);
+      }
+    })
+    .finally(() => {
+      btn.disabled = false;
+      btn.innerHTML = 'บันทึก';
+    });
 }
-
 
 /* =====================
    UTIL
@@ -549,29 +262,5 @@ function formatDateTH(d) {
   return new Date(d).toLocaleDateString('th-TH');
 }
 
-function isMobile() {
-  return window.innerWidth < 768;
-}
-
-function isDesktop() {
-  return window.innerWidth >= 768;
-}
-
-let lastMode = isMobile() ? 'mobile' : 'desktop';
-
-window.addEventListener('resize', () => {
-  const mode = isMobile() ? 'mobile' : 'desktop';
-  if (mode !== lastMode) {
-    lastMode = mode;
-    applyFilter();
-  }
-});
-
-document.addEventListener('click', e => {
-  const btn = e.target.closest('.view-sign-btn');
-  if (!btn) return;
-
-  const url = btn.dataset.url;
-  viewSignature(url);
-});
-
+function isMobile() { return window.innerWidth < 768; }
+function isDesktop() { return window.innerWidth >= 768; }
