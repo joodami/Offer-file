@@ -1,34 +1,5 @@
-/***********************
- * CONFIG
- ***********************/
 const GAS = 'https://script.google.com/macros/s/AKfycbxl0TS1km8Fzg3CZoqcrqynHkg7pIirNVO9ouvDFTTbvmsBio7e28HOAoOcAqRWpZwz/exec';
 
-/***********************
- * CACHE
- ***********************/
-let STAFF_CACHE = null;
-let STAFF_CACHE_TIME = 0;
-const CACHE_TTL = 60 * 1000; // 1 นาที
-
-function getStaffData(force = false) {
-  const now = Date.now();
-
-  if (!force && STAFF_CACHE && (now - STAFF_CACHE_TIME < CACHE_TTL)) {
-    return Promise.resolve(STAFF_CACHE);
-  }
-
-  return fetch(GAS + '?action=getData')
-    .then(r => r.json())
-    .then(data => {
-      STAFF_CACHE = data;
-      STAFF_CACHE_TIME = Date.now();
-      return data;
-    });
-}
-
-/***********************
- * ELEMENTS
- ***********************/
 const loginBox = document.getElementById('loginBox');
 const staffBox = document.getElementById('staffBox');
 
@@ -40,9 +11,7 @@ const tbReceive = document.getElementById('tbReceive');
 const cardOut = document.getElementById('cardOut');
 const cardReceive = document.getElementById('cardReceive');
 
-/***********************
- * LOGIN
- ***********************/
+/* Login */
 function login() {
   const btn = document.getElementById('loginBtn');
   msg.innerText = '';
@@ -58,68 +27,73 @@ function login() {
       phone: phone.value
     })
   })
-    .then(r => r.json())
-    .then(r => {
-      if (!r.allow) {
-        msg.innerText = 'ไม่มีสิทธิ์ใช้งาน';
-        btn.disabled = false;
-        btn.innerHTML = oldText;
-        return;
-      }
-
-      loginBox.classList.add('d-none');
-      staffBox.classList.remove('d-none');
-
-      showTab('out');
-    })
-    .catch(() => {
-      msg.innerText = 'เกิดข้อผิดพลาด กรุณาลองใหม่';
+  .then(r => r.json())
+  .then(r => {
+    if (!r.allow) {
+      msg.innerText = 'ไม่มีสิทธิ์ใช้งาน';
       btn.disabled = false;
       btn.innerHTML = oldText;
-    });
+      return;
+    }
+
+    loginBox.classList.add('d-none');
+    staffBox.classList.remove('d-none');
+
+    // 👉 โหลดแท็บแรกทันที
+    showTab('out');
+  })
+  .catch(() => {
+    msg.innerText = 'เกิดข้อผิดพลาด กรุณาลองใหม่';
+    btn.disabled = false;
+    btn.innerHTML = oldText;
+  });
 }
 
-/***********************
- * TAB CONTROL
- ***********************/
-function showTab(tab) {
-  document.querySelectorAll('.nav-link')
-    .forEach(b => b.classList.remove('active'));
 
-  if (tab === 'out') {
-    document.querySelectorAll('.nav-link')[0].classList.add('active');
-    tableOut.classList.remove('d-none');
-    tableReceive.classList.add('d-none');
-    cardOut.classList.remove('d-none');
-    cardReceive.classList.add('d-none');
-    loadOut();
-  } else {
-    document.querySelectorAll('.nav-link')[1].classList.add('active');
-    tableReceive.classList.remove('d-none');
-    tableOut.classList.add('d-none');
-    cardReceive.classList.remove('d-none');
-    cardOut.classList.add('d-none');
-    loadReceive();
-  }
+/* Tabs */
+function showTab(tab) {
+  showLoading('กำลังเปลี่ยนแท็บ');
+
+  setTimeout(() => {
+    document.querySelectorAll('.nav-link')
+      .forEach(b => b.classList.remove('active'));
+
+    if (tab === 'out') {
+      document.querySelectorAll('.nav-link')[0].classList.add('active');
+      tableOut.classList.remove('d-none');
+      tableReceive.classList.add('d-none');
+      cardOut.classList.remove('d-none');
+      cardReceive.classList.add('d-none');
+      loadOut();
+    } else {
+      document.querySelectorAll('.nav-link')[1].classList.add('active');
+      tableReceive.classList.remove('d-none');
+      tableOut.classList.add('d-none');
+      cardReceive.classList.remove('d-none');
+      cardOut.classList.add('d-none');
+      loadReceive();
+    }
+  }, 200);
 }
 
 function showStaffLoading(target) {
   target.innerHTML = `
-    <div class="text-center text-muted py-4">
-      <span class="spinner-border spinner-border-sm"></span><br>
-      กำลังโหลดข้อมูล...
+    <div class="card shadow-sm text-center mt-2">
+      <div class="text-muted fw-medium py-4 loading-text">
+        กำลังโหลดข้อมูล...
+      </div>
     </div>
   `;
 }
 
-/***********************
- * OUT TAB
- ***********************/
+
+/* OUT */
 function loadOut() {
   tbOut.innerHTML = '';
   showStaffLoading(cardOut);
 
-  getStaffData()
+  fetch(GAS + '?action=getData')
+    .then(r => r.json())
     .then(data => {
       tbOut.innerHTML = '';
       cardOut.innerHTML = '';
@@ -133,14 +107,13 @@ function loadOut() {
       }
 
       list.forEach(r => {
-        // TABLE
         tbOut.innerHTML += `
           <tr>
             <td class="text-center">${r[1]}</td>
             <td>${formatDateTH(r[0])}</td>
             <td>${r[2]}</td>
             <td>
-              <input type="date" class="form-control">
+              <input type="date" class="form-control" placeholder="เลือกวันที่">
             </td>
             <td class="text-center">
               <button class="btn btn-success btn-sm"
@@ -149,7 +122,6 @@ function loadOut() {
           </tr>
         `;
 
-        // CARD (MOBILE)
         cardOut.innerHTML += `
           <div class="staff-card">
             <div class="code">📁 ${r[1]}</div>
@@ -161,9 +133,10 @@ function loadOut() {
             <div>${r[2]}</div>
 
             <div class="label mt-3 text-secondary">
-              วันที่ออกจากห้อง ผอ. <span class="text-danger">*</span>
-            </div>
-            <input type="date" class="form-control mt-1">
+  วันที่ออกจากห้อง ผอ. <span class="text-danger">*</span>
+</div>
+<input type="date" class="form-control mt-1">
+
 
             <button class="btn btn-success mt-3"
               onclick="updateOut('${r[1]}', this)">บันทึก</button>
@@ -173,14 +146,12 @@ function loadOut() {
     });
 }
 
-/***********************
- * RECEIVE TAB
- ***********************/
+/* RECEIVE */
 function loadReceive() {
-  tbReceive.innerHTML = '';
-  showStaffLoading(cardReceive);
+  showLoading('กำลังโหลดแฟ้มรับคืน');
 
-  getStaffData()
+  fetch(GAS + '?action=getData')
+    .then(r => r.json())
     .then(data => {
       tbReceive.innerHTML = '';
       cardReceive.innerHTML = '';
@@ -194,6 +165,7 @@ function loadReceive() {
       }
 
       list.forEach(r => {
+
         tbReceive.innerHTML += `
           <tr>
             <td class="text-center">${r[1]}</td>
@@ -221,51 +193,11 @@ function loadReceive() {
           </div>
         `;
       });
-    });
+    })
+    .finally(hideLoading);
 }
 
-/***********************
- * UPDATE OUT
- ***********************/
-function updateOut(code, btn) {
-  const wrapper = btn.closest('.staff-card') || btn.closest('tr');
-  const dateInput = wrapper.querySelector('input[type="date"]');
-
-  if (!dateInput.value) {
-    alert('กรุณาเลือกวันที่ออกจากห้อง ผอ.');
-    return;
-  }
-
-  btn.disabled = true;
-  btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span>`;
-
-  fetch(GAS, {
-    method: 'POST',
-    body: JSON.stringify({
-      action: 'outDirector',
-      code,
-      outDate: dateInput.value
-    })
-  })
-    .then(r => r.json())
-    .then(res => {
-      if (res.success) {
-        showSuccessToast('บันทึกวันที่ออกจากห้อง ผอ. เรียบร้อย');
-        STAFF_CACHE = null; // clear cache
-        loadOut();
-      } else {
-        alert(res.message || 'บันทึกไม่สำเร็จ');
-      }
-    })
-    .finally(() => {
-      btn.disabled = false;
-      btn.innerHTML = 'บันทึก';
-    });
-}
-
-/***********************
- * CLOSE JOB
- ***********************/
+/* CLOSE JOB */
 let closeJobCode = '';
 let closeJobBtn = null;
 
@@ -277,11 +209,19 @@ function closeJobFront(code, btn) {
 }
 
 document.getElementById('confirmCloseBtn').addEventListener('click', () => {
-  const modalEl = document.getElementById('confirmCloseModal');
-  bootstrap.Modal.getInstance(modalEl).hide();
 
+  // 👉 1. ปิด modal ก่อน
+  const modalEl = document.getElementById('confirmCloseModal');
+  const modal = bootstrap.Modal.getInstance(modalEl);
+  modal.hide();
+
+  // 👉 2. ป้องกันกดซ้ำ
   closeJobBtn.disabled = true;
 
+  // 👉 3. แสดง loading
+  showLoading('กำลังปิดงาน');
+
+  // 👉 4. เรียก API ปิดงาน
   fetch(GAS, {
     method: 'POST',
     body: JSON.stringify({
@@ -289,24 +229,73 @@ document.getElementById('confirmCloseBtn').addEventListener('click', () => {
       code: closeJobCode
     })
   })
-    .then(() => {
-      showSuccessToast('ปิดงานเรียบร้อยแล้ว');
-      STAFF_CACHE = null;
-      loadReceive();
-    });
+  .then(() => {
+    showSuccessToast('ปิดงานเรียบร้อยแล้ว');
+    loadReceive();
+  })
+  .finally(hideLoading);
 });
 
-/***********************
- * UTIL
- ***********************/
+
 function formatDateTH(v) {
   if (!v) return '-';
   const d = new Date(v);
   return isNaN(d) ? '-' : d.toLocaleDateString('th-TH');
 }
 
-function showSuccessToast(text) {
+function showLoading(text) {
+  const box = document.getElementById('globalLoading');
+  box.querySelector('.fw-medium').innerText = text;
+  box.classList.remove('d-none');
+}
+function hideLoading() {
+  document.getElementById('globalLoading').classList.add('d-none');
+}
+
+/* UPDATE OUT FROM DIRECTOR */
+function updateOut(code, btn) {
+  const wrapper = btn.closest('.staff-card') || btn.closest('tr');
+  const dateInput = wrapper.querySelector('input[type="date"]');
+
+  if (!dateInput.value) {
+    alert('กรุณาเลือกวันที่ออกจากห้อง ผอ.');
+    return;
+  }
+
+  btn.disabled = true;
+  const oldText = btn.innerHTML;
+  btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span>`;
+
+  fetch(GAS, {
+    method: 'POST',
+    body: JSON.stringify({
+      action: 'outDirector',
+      code: code,
+      outDate: dateInput.value
+    })
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (res.success) {
+      showSuccessToast('บันทึกวันที่ออกจากห้อง ผอ. เรียบร้อย');
+      loadOut();
+    } else {
+      alert(res.message || 'บันทึกไม่สำเร็จ');
+      btn.disabled = false;
+      btn.innerHTML = oldText;
+    }
+  })
+  .catch(() => {
+    alert('เกิดข้อผิดพลาด');
+    btn.disabled = false;
+    btn.innerHTML = oldText;
+  });
+}
+
+
+function showSuccessToast(text = 'บันทึกข้อมูลเรียบร้อยแล้ว') {
   const toastEl = document.getElementById('successToast');
   toastEl.querySelector('.toast-body').innerText = '✅ ' + text;
-  new bootstrap.Toast(toastEl, { delay: 2000 }).show();
+  const toast = new bootstrap.Toast(toastEl, { delay: 2000 });
+  toast.show();
 }
