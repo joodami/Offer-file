@@ -4,34 +4,37 @@ const d = document.getElementById('d');
 fetch(GAS + '?action=dashboard')
   .then(r => r.json())
   .then(x => {
-    d.innerHTML = `
-      <div class="col-12 col-md-4">
-        <div class="card shadow-sm text-center">
-          <div class="card-body">
-            <h5>📁 แฟ้มทั้งหมด</h5>
-            <h2 class="text-primary dashboard-num">${x.total}</h2>
-          </div>
-        </div>
+d.innerHTML = `
+  <div class="col-12 col-md-4">
+    <div class="card shadow-sm text-center dashboard-card">
+      <div class="card-body">
+        <div class="dashboard-icon">📁</div>
+        <div class="dashboard-label">แฟ้มทั้งหมด</div>
+        <div class="dashboard-num text-primary">${x.total}</div>
       </div>
+    </div>
+  </div>
 
-      <div class="col-12 col-md-4">
-        <div class="card shadow-sm text-center">
-          <div class="card-body">
-            <h5>⏳ รอผู้อำนวยการ</h5>
-            <h2 class="text-warning dashboard-num">${x.waiting}</h2>
-          </div>
-        </div>
+  <div class="col-12 col-md-4">
+    <div class="card shadow-sm text-center dashboard-card">
+      <div class="card-body">
+        <div class="dashboard-icon">⏳</div>
+        <div class="dashboard-label">รอผู้อำนวยการ</div>
+        <div class="dashboard-num text-warning">${x.waiting}</div>
       </div>
+    </div>
+  </div>
 
-      <div class="col-12 col-md-4">
-        <div class="card shadow-sm text-center">
-          <div class="card-body">
-            <h5>✅ เสร็จสิ้น</h5>
-            <h2 class="text-success dashboard-num">${x.done}</h2>
-          </div>
-        </div>
+  <div class="col-12 col-md-4">
+    <div class="card shadow-sm text-center dashboard-card">
+      <div class="card-body">
+        <div class="dashboard-icon">✅</div>
+        <div class="dashboard-label">เสร็จสิ้น</div>
+        <div class="dashboard-num text-success">${x.done}</div>
       </div>
-    `;
+    </div>
+  </div>
+`;
   })
   .catch(() => {
     d.innerHTML = `
