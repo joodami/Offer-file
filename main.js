@@ -29,15 +29,17 @@ function showToast(msg, success = true) {
 }
 
 function showMobileLoading() {
-  if (!isMobile()) return;
+if (!isMobile()) return;
 
-  cardView.innerHTML = `
-    <div class="card shadow-sm p-4 text-center text-muted mt-3">
+cardView.innerHTML = `
+  <div class="card shadow-sm mt-3" style="min-height: 180px;">
+    <div class="d-flex flex-column justify-content-center align-items-center h-100 text-muted">
       <div class="spinner-border text-primary mb-3"></div>
       <div>กำลังโหลดข้อมูล...</div>
     </div>
-  `;
-}
+  </div>
+`;
+
 
 
 /* =====================
