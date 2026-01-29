@@ -249,14 +249,16 @@ function updateOut(code, btn) {
   })
   .then(r => r.json())
   .then(res => {
-    if (res.success) {
-      loadOut();
-    } else {
-      alert(res.message || 'บันทึกไม่สำเร็จ');
-      btn.disabled = false;
-      btn.innerHTML = oldText;
-    }
-  })
+  if (res.success) {
+    showSuccessToast('บันทึกวันที่ออกจากห้อง ผอ. เรียบร้อย');
+    loadOut();
+  } else {
+    alert(res.message || 'บันทึกไม่สำเร็จ');
+    btn.disabled = false;
+    btn.innerHTML = oldText;
+  }
+})
+
   .catch(() => {
     alert('เกิดข้อผิดพลาด');
     btn.disabled = false;
@@ -265,4 +267,10 @@ function updateOut(code, btn) {
   .finally(hideLoading);
 }
 
+function showSuccessToast(text = 'บันทึกข้อมูลเรียบร้อยแล้ว') {
+  const toastEl = document.getElementById('successToast');
+  toastEl.querySelector('.toast-body').innerText = '✅ ' + text;
+  const toast = new bootstrap.Toast(toastEl, { delay: 2000 });
+  toast.show();
+}
 
