@@ -132,9 +132,11 @@ function loadOut() {
             <div class="label mt-2">ผู้เสนอ</div>
             <div>${r[2]}</div>
 
-            <input type="date"
-              class="form-control mt-3"
-              placeholder="เลือกวันที่ออกจากห้อง ผอ.">
+            <div class="label mt-3 text-secondary">
+  วันที่ออกจากห้อง ผอ. <span class="text-danger">*</span>
+</div>
+<input type="date" class="form-control mt-1">
+
 
             <button class="btn btn-success mt-3"
               onclick="updateOut('${r[1]}', this)">บันทึก</button>
