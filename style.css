@@ -455,3 +455,12 @@ input[type="date"] {
     font-size: 2.2rem;
   }
 }
+
+.loading-text {
+  animation: fade 1.4s ease-in-out infinite;
+}
+
+@keyframes fade {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
