@@ -35,7 +35,7 @@ function showMobileLoading() {
     <div class="d-flex justify-content-center align-items-center"
          style="min-height: 70vh;">
       <div class="card shadow-sm w-100 text-center">
-        <div class="text-muted fw-medium p-4">
+        <div class="text-muted fw-medium p-4 loading-text">
           กำลังโหลดข้อมูล...
         </div>
       </div>
@@ -104,17 +104,18 @@ loadData();
 
 function loadData() {
 
-  // ✅ ใช้ loading แบบข้อความล้วน
+  // แสดง loading บนมือถือ
   showMobileLoading();
 
   fetch(GAS + '?action=getData')
     .then(r => r.json())
     .then(data => {
       ALL_DATA = data.sort((a, b) => new Date(b[8]) - new Date(a[8]));
-      applyFilter();   // ตัวนี้จะล้าง loading ให้อัตโนมัติ
+      applyFilter(); // จะล้าง loading ตอน render จริง
     })
     .catch(() => showToast('โหลดข้อมูลไม่ได้', false));
 }
+
 
 
 /* =====================
@@ -123,64 +124,66 @@ function loadData() {
 function applyFilter() {
   renderedCount = 0;
 
-  // ล้างข้อมูลทั้ง Desktop และ Mobile
+  // ล้างเฉพาะ desktop
   tb.innerHTML = '';
-  cardView.innerHTML = '';
 
   FILTERED_DATA =
     CURRENT_STATUS === 'all'
       ? ALL_DATA
       : ALL_DATA.filter(x => x[3] === CURRENT_STATUS);
 
-// ===== ไม่พบข้อมูล =====
-if (!FILTERED_DATA.length) {
+  // ===== ไม่พบข้อมูล =====
+  if (!FILTERED_DATA.length) {
 
-  // Desktop
-  if (isDesktop()) {
-    tb.innerHTML = `
-      <tr>
-        <td colspan="7" class="text-center text-muted p-4">
-          ไม่มีรายการแฟ้ม
-        </td>
-      </tr>
-    `;
+    // Desktop
+    if (isDesktop()) {
+      tb.innerHTML = `
+        <tr>
+          <td colspan="7" class="text-center text-muted p-4">
+            ไม่มีรายการแฟ้ม
+          </td>
+        </tr>
+      `;
+    }
+
+    // Mobile
+    if (isMobile()) {
+      cardView.innerHTML = `
+        <div class="card shadow-sm text-center text-muted p-4 mt-3">
+          📂 ไม่มีรายการแฟ้ม
+        </div>
+      `;
+    }
+
+    return;
   }
-
-  // Mobile
-  if (isMobile()) {
-cardView.innerHTML = `
-  <div class="card shadow-sm text-center text-muted p-4 mt-3">
-    📂 ไม่มีรายการแฟ้ม
-  </div>
-`;
-
-  }
-
-  return;
-}
-
 
   renderNextBatch();
 }
-
 
 /* =====================
    VIRTUAL RENDER
 ===================== */
 function renderNextBatch() {
+
+  // ล้าง loading ก่อน render ชุดแรก
+  if (renderedCount === 0 && isMobile()) {
+    cardView.innerHTML = '';
+  }
+
   const slice = FILTERED_DATA.slice(
     renderedCount,
     renderedCount + BATCH_SIZE
   );
 
-slice.forEach(x => {
-  if (isDesktop()) appendRow(x);
-  if (isMobile()) appendCard(x);
-});
-
+  slice.forEach(x => {
+    if (isDesktop()) appendRow(x);
+    if (isMobile()) appendCard(x);
+  });
 
   renderedCount += slice.length;
 }
+
 
 /* =====================
    INFINITE SCROLL
