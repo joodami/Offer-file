@@ -106,17 +106,28 @@ function showTab(tab) {
 function showStaffLoading(target) {
   target.innerHTML = `
     <div class="text-center text-muted py-4">
-      <span class="spinner-border spinner-border-sm"></span><br>
       กำลังโหลดข้อมูล...
     </div>
   `;
 }
 
+function showTableLoading(tbody, col = 5) {
+  tbody.innerHTML = `
+    <tr>
+      <td colspan="${col}" class="text-center text-muted py-4">
+        กำลังโหลดข้อมูล...
+      </td>
+    </tr>
+  `;
+}
+
+
 /***********************
  * OUT TAB
  ***********************/
 function loadOut() {
-  tbOut.innerHTML = '';
+  // แสดงข้อความกำลังโหลด
+  showTableLoading(tbOut, 5);
   showStaffLoading(cardOut);
 
   getStaffData()
@@ -127,8 +138,14 @@ function loadOut() {
       const list = data.filter(r => r[3] === 'เสนอแฟ้มต่อผู้อำนวยการ');
 
       if (!list.length) {
-        tbOut.innerHTML = `<tr><td colspan="5" class="text-center">ไม่มีข้อมูล</td></tr>`;
-        cardOut.innerHTML = `<div class="text-center text-muted">ไม่มีข้อมูล</div>`;
+        tbOut.innerHTML = `
+          <tr>
+            <td colspan="5" class="text-center">ไม่มีข้อมูล</td>
+          </tr>
+        `;
+        cardOut.innerHTML = `
+          <div class="text-center text-muted">ไม่มีข้อมูล</div>
+        `;
         return;
       }
 
@@ -173,11 +190,13 @@ function loadOut() {
     });
 }
 
+
 /***********************
  * RECEIVE TAB
  ***********************/
 function loadReceive() {
-  tbReceive.innerHTML = '';
+  // แสดงข้อความกำลังโหลด
+  showTableLoading(tbReceive, 5);
   showStaffLoading(cardReceive);
 
   getStaffData()
@@ -188,12 +207,19 @@ function loadReceive() {
       const list = data.filter(r => r[3] === 'รับแฟ้มคืนเรียบร้อยแล้ว');
 
       if (!list.length) {
-        tbReceive.innerHTML = `<tr><td colspan="5" class="text-center">ไม่มีข้อมูล</td></tr>`;
-        cardReceive.innerHTML = `<div class="text-center text-muted">ไม่มีข้อมูล</div>`;
+        tbReceive.innerHTML = `
+          <tr>
+            <td colspan="5" class="text-center">ไม่มีข้อมูล</td>
+          </tr>
+        `;
+        cardReceive.innerHTML = `
+          <div class="text-center text-muted">ไม่มีข้อมูล</div>
+        `;
         return;
       }
 
       list.forEach(r => {
+        // TABLE
         tbReceive.innerHTML += `
           <tr>
             <td class="text-center">${r[1]}</td>
@@ -207,15 +233,20 @@ function loadReceive() {
           </tr>
         `;
 
+        // CARD (MOBILE)
         cardReceive.innerHTML += `
           <div class="staff-card">
             <div class="code">📁 ${r[1]}</div>
+
             <div class="label">ผู้เสนอ</div>
             <div>${r[2]}</div>
+
             <div class="label mt-2">วันที่รับคืน</div>
             <div>${formatDateTH(r[6])}</div>
+
             <div class="label mt-2">ผู้รับคืน</div>
             <div>${r[5]}</div>
+
             <button class="btn btn-danger mt-3"
               onclick="closeJobFront('${r[1]}', this)">ปิดงาน</button>
           </div>
