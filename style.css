@@ -428,3 +428,19 @@ input[type="date"] {
     transform: translateX(-50%);
   }
 }
+
+@media (max-width: 767px) {
+  .nav-tabs {
+    flex-wrap: nowrap;
+  }
+
+  .nav-tabs .nav-item {
+    flex: 1;
+  }
+
+  .nav-tabs .nav-link {
+    white-space: nowrap;
+    text-align: center;
+    font-size: 0.9rem;
+  }
+}
