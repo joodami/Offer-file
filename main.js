@@ -111,22 +111,33 @@ function applyFilter() {
       ? ALL_DATA
       : ALL_DATA.filter(x => x[3] === CURRENT_STATUS);
 
-  // ===== ไม่พบข้อมูล =====
-  if (!FILTERED_DATA.length) {
+// ===== ไม่พบข้อมูล =====
+if (!FILTERED_DATA.length) {
 
-    // Desktop : แสดงในตาราง
-    if (window.innerWidth >= 768) {
-      tb.innerHTML = `
-        <tr>
-          <td colspan="7" class="text-center text-muted p-4">
-            ไม่พบข้อมูล
-          </td>
-        </tr>`;
-    }
-
-    // Mobile : ไม่ต้องสร้างการ์ดใด ๆ (ปล่อยว่าง)
-    return;
+  // Desktop
+  if (isDesktop()) {
+    tb.innerHTML = `
+      <tr>
+        <td colspan="7" class="text-center text-muted p-4">
+          ไม่มีรายการแฟ้ม
+        </td>
+      </tr>
+    `;
   }
+
+  // Mobile
+  if (isMobile()) {
+cardView.innerHTML = `
+  <div class="card shadow-sm text-center text-muted p-4 mt-3">
+    📂 ไม่มีรายการแฟ้ม
+  </div>
+`;
+
+  }
+
+  return;
+}
+
 
   renderNextBatch();
 }
