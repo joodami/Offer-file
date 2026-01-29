@@ -412,3 +412,19 @@ input[type="date"] {
   margin-bottom: 0;
 }
 
+/* Desktop / Tablet */
+.toast-responsive {
+  bottom: 1rem;
+  right: 1rem;
+}
+
+/* Mobile */
+@media (max-width: 576px) {
+  .toast-responsive {
+    top: 1rem;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    transform: translateX(-50%);
+  }
+}
