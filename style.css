@@ -464,3 +464,43 @@ input[type="date"] {
   0%, 100% { opacity: 0.4; }
   50% { opacity: 1; }
 }
+
+/* =====================
+   DASHBOARD (Mobile First)
+===================== */
+.dashboard-card {
+  border-radius: 16px;
+}
+
+.dashboard-icon {
+  font-size: 1.8rem;
+  margin-bottom: 6px;
+}
+
+.dashboard-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 4px;
+}
+
+.dashboard-num {
+  font-size: 2.4rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+/* Mobile ปรับให้แตะแล้วอ่านได้เลย */
+@media (max-width: 576px) {
+  .dashboard-card {
+    padding: 6px;
+  }
+
+  .dashboard-label {
+    font-size: 0.95rem;
+  }
+
+  .dashboard-num {
+    font-size: 2rem;
+  }
+}
