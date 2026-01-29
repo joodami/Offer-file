@@ -13,6 +13,17 @@ const cardReceive = document.getElementById('cardReceive');
 
 /* Login */
 function login() {
+  const btn = document.getElementById('loginBtn');
+  msg.innerText = '';
+
+  // ปิดปุ่ม + แสดง spinner บนปุ่ม
+  btn.disabled = true;
+  const oldText = btn.innerHTML;
+  btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> กำลังเข้าสู่ระบบ`;
+
+  // แสดง Global loading
+  showLoading('กำลังตรวจสอบสิทธิ์');
+
   fetch(GAS, {
     method: 'POST',
     body: JSON.stringify({
@@ -24,11 +35,23 @@ function login() {
   .then(r => {
     if (!r.allow) {
       msg.innerText = 'ไม่มีสิทธิ์ใช้งาน';
+      btn.disabled = false;
+      btn.innerHTML = oldText;
       return;
     }
+
     loginBox.classList.add('d-none');
     staffBox.classList.remove('d-none');
     showTab('out');
+  })
+  .catch(err => {
+    console.error(err);
+    msg.innerText = 'เกิดข้อผิดพลาด กรุณาลองใหม่';
+    btn.disabled = false;
+    btn.innerHTML = oldText;
+  })
+  .finally(() => {
+    hideLoading();
   });
 }
 
