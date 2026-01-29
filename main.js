@@ -104,15 +104,8 @@ loadData();
 
 function loadData() {
 
-  // 🔹 แสดง Loading เฉพาะมือถือ
-  if (isMobile()) {
-    cardView.innerHTML = `
-      <div class="card shadow-sm p-4 text-center text-muted mt-3">
-        <div class="spinner-border text-primary mb-3"></div>
-        <div>กำลังโหลดข้อมูล...</div>
-      </div>
-    `;
-  }
+  // ✅ ใช้ loading แบบข้อความล้วน
+  showMobileLoading();
 
   fetch(GAS + '?action=getData')
     .then(r => r.json())
