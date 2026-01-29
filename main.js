@@ -32,14 +32,15 @@ function showMobileLoading() {
   if (!isMobile()) return;
 
   cardView.innerHTML = `
-    <div class="card shadow-sm mt-3" style="min-height: 180px;">
-      <div class="d-flex flex-column justify-content-center align-items-center h-100 text-muted">
+    <div class="card shadow-sm mt-3 w-100">
+      <div class="d-flex flex-column justify-content-center align-items-center text-muted"
+           style="min-height: 180px;">
         <div class="spinner-border text-primary mb-3"></div>
         <div>กำลังโหลดข้อมูล...</div>
       </div>
     </div>
   `;
-} // ✅ ต้องมี
+}
 
 
 /* =====================
