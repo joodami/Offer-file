@@ -28,6 +28,18 @@ function showToast(msg, success = true) {
   new bootstrap.Toast(toastEl).show();
 }
 
+function showMobileLoading() {
+  if (!isMobile()) return;
+
+  cardView.innerHTML = `
+    <div class="card shadow-sm p-4 text-center text-muted mt-3">
+      <div class="spinner-border text-primary mb-3"></div>
+      <div>กำลังโหลดข้อมูล...</div>
+    </div>
+  `;
+}
+
+
 /* =====================
    ADD FILE (เดิม แค่แก้การอ้าง DOM)
 ===================== */
@@ -87,14 +99,26 @@ function add(e) {
 loadData();
 
 function loadData() {
+
+  // 🔹 แสดง Loading เฉพาะมือถือ
+  if (isMobile()) {
+    cardView.innerHTML = `
+      <div class="card shadow-sm p-4 text-center text-muted mt-3">
+        <div class="spinner-border text-primary mb-3"></div>
+        <div>กำลังโหลดข้อมูล...</div>
+      </div>
+    `;
+  }
+
   fetch(GAS + '?action=getData')
     .then(r => r.json())
     .then(data => {
       ALL_DATA = data.sort((a, b) => new Date(b[8]) - new Date(a[8]));
-      applyFilter();
+      applyFilter();   // ตัวนี้จะล้าง loading ให้อัตโนมัติ
     })
     .catch(() => showToast('โหลดข้อมูลไม่ได้', false));
 }
+
 
 /* =====================
    FILTER + RESET
