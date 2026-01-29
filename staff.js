@@ -224,7 +224,9 @@ function hideLoading() {
 
 /* UPDATE OUT FROM DIRECTOR */
 function updateOut(code, btn) {
-  const dateInput = document.getElementById('d' + code);
+  // หา input date ที่อยู่ในการ์ด / แถวเดียวกับปุ่ม
+  const wrapper = btn.closest('.staff-card') || btn.closest('tr');
+  const dateInput = wrapper.querySelector('input[type="date"]');
 
   if (!dateInput || !dateInput.value) {
     alert('กรุณาเลือกวันที่ออกจากห้อง ผอ.');
@@ -248,21 +250,19 @@ function updateOut(code, btn) {
   .then(r => r.json())
   .then(res => {
     if (res.success) {
-      loadOut(); // รีเฟรชรายการ
+      loadOut();
     } else {
       alert(res.message || 'บันทึกไม่สำเร็จ');
       btn.disabled = false;
       btn.innerHTML = oldText;
     }
   })
-  .catch(err => {
-    console.error(err);
+  .catch(() => {
     alert('เกิดข้อผิดพลาด');
     btn.disabled = false;
     btn.innerHTML = oldText;
   })
-  .finally(() => {
-    hideLoading();
-  });
+  .finally(hideLoading);
 }
+
 
