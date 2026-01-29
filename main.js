@@ -32,12 +32,9 @@ function showMobileLoading() {
   if (!isMobile()) return;
 
   cardView.innerHTML = `
-    <div class="d-flex justify-content-center align-items-center"
-         style="min-height: 70vh;">
-      <div class="card shadow-sm w-100 text-center">
-        <div class="text-muted fw-medium p-4 loading-text">
-          กำลังโหลดข้อมูล...
-        </div>
+    <div class="card shadow-sm text-center mt-2">
+      <div class="text-muted fw-medium py-4 loading-text">
+        กำลังโหลดข้อมูล...
       </div>
     </div>
   `;
