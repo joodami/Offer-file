@@ -196,16 +196,33 @@ function closeJobFront(code, btn) {
 }
 
 document.getElementById('confirmCloseBtn').addEventListener('click', () => {
+
+  // 👉 1. ปิด modal ก่อน
+  const modalEl = document.getElementById('confirmCloseModal');
+  const modal = bootstrap.Modal.getInstance(modalEl);
+  modal.hide();
+
+  // 👉 2. ป้องกันกดซ้ำ
   closeJobBtn.disabled = true;
+
+  // 👉 3. แสดง loading
   showLoading('กำลังปิดงาน');
 
+  // 👉 4. เรียก API ปิดงาน
   fetch(GAS, {
     method: 'POST',
-    body: JSON.stringify({ action: 'closeJob', code: closeJobCode })
+    body: JSON.stringify({
+      action: 'closeJob',
+      code: closeJobCode
+    })
   })
-  .then(() => loadReceive())
+  .then(() => {
+    showSuccessToast('ปิดงานเรียบร้อยแล้ว');
+    loadReceive();
+  })
   .finally(hideLoading);
 });
+
 
 function formatDateTH(v) {
   if (!v) return '-';
