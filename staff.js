@@ -16,13 +16,9 @@ function login() {
   const btn = document.getElementById('loginBtn');
   msg.innerText = '';
 
-  // ปิดปุ่ม + แสดง spinner บนปุ่ม
   btn.disabled = true;
   const oldText = btn.innerHTML;
-  btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> กำลังเข้าสู่ระบบ`;
-
-  // แสดง Global loading
-  showLoading('กำลังตรวจสอบสิทธิ์');
+  btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span>`;
 
   fetch(GAS, {
     method: 'POST',
@@ -42,18 +38,17 @@ function login() {
 
     loginBox.classList.add('d-none');
     staffBox.classList.remove('d-none');
+
+    // 👉 โหลดแท็บแรกทันที
     showTab('out');
   })
-  .catch(err => {
-    console.error(err);
+  .catch(() => {
     msg.innerText = 'เกิดข้อผิดพลาด กรุณาลองใหม่';
     btn.disabled = false;
     btn.innerHTML = oldText;
-  })
-  .finally(() => {
-    hideLoading();
   });
 }
+
 
 /* Tabs */
 function showTab(tab) {
@@ -81,9 +76,21 @@ function showTab(tab) {
   }, 200);
 }
 
+function showStaffLoading(target) {
+  target.innerHTML = `
+    <div class="card shadow-sm text-center mt-2">
+      <div class="text-muted fw-medium py-4 loading-text">
+        กำลังโหลดข้อมูล...
+      </div>
+    </div>
+  `;
+}
+
+
 /* OUT */
 function loadOut() {
-  showLoading('กำลังโหลดแฟ้มรอออกจากห้อง ผอ.');
+  tbOut.innerHTML = '';
+  showStaffLoading(cardOut);
 
   fetch(GAS + '?action=getData')
     .then(r => r.json())
@@ -100,14 +107,14 @@ function loadOut() {
       }
 
       list.forEach(r => {
-
-        // TABLE
         tbOut.innerHTML += `
           <tr>
             <td class="text-center">${r[1]}</td>
             <td>${formatDateTH(r[0])}</td>
             <td>${r[2]}</td>
-            <td><input type="date" class="form-control" id="d${r[1]}"></td>
+            <td>
+              <input type="date" class="form-control" placeholder="เลือกวันที่">
+            </td>
             <td class="text-center">
               <button class="btn btn-success btn-sm"
                 onclick="updateOut('${r[1]}', this)">บันทึก</button>
@@ -115,22 +122,26 @@ function loadOut() {
           </tr>
         `;
 
-        // CARD
         cardOut.innerHTML += `
           <div class="staff-card">
             <div class="code">📁 ${r[1]}</div>
+
             <div class="label">วันที่เสนอ</div>
             <div>${formatDateTH(r[0])}</div>
+
             <div class="label mt-2">ผู้เสนอ</div>
             <div>${r[2]}</div>
-            <input type="date" class="form-control mt-3" id="d${r[1]}">
+
+            <input type="date"
+              class="form-control mt-3"
+              placeholder="เลือกวันที่ออกจากห้อง ผอ.">
+
             <button class="btn btn-success mt-3"
               onclick="updateOut('${r[1]}', this)">บันทึก</button>
           </div>
         `;
       });
-    })
-    .finally(hideLoading);
+    });
 }
 
 /* RECEIVE */
@@ -241,11 +252,10 @@ function hideLoading() {
 
 /* UPDATE OUT FROM DIRECTOR */
 function updateOut(code, btn) {
-  // หา input date ที่อยู่ในการ์ด / แถวเดียวกับปุ่ม
   const wrapper = btn.closest('.staff-card') || btn.closest('tr');
   const dateInput = wrapper.querySelector('input[type="date"]');
 
-  if (!dateInput || !dateInput.value) {
+  if (!dateInput.value) {
     alert('กรุณาเลือกวันที่ออกจากห้อง ผอ.');
     return;
   }
@@ -253,8 +263,6 @@ function updateOut(code, btn) {
   btn.disabled = true;
   const oldText = btn.innerHTML;
   btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span>`;
-
-  showLoading('กำลังบันทึกวันที่ออกจากห้อง ผอ.');
 
   fetch(GAS, {
     method: 'POST',
@@ -266,23 +274,22 @@ function updateOut(code, btn) {
   })
   .then(r => r.json())
   .then(res => {
-  if (res.success) {
-    showSuccessToast('บันทึกวันที่ออกจากห้อง ผอ. เรียบร้อย');
-    loadOut();
-  } else {
-    alert(res.message || 'บันทึกไม่สำเร็จ');
-    btn.disabled = false;
-    btn.innerHTML = oldText;
-  }
-})
-
+    if (res.success) {
+      showSuccessToast('บันทึกวันที่ออกจากห้อง ผอ. เรียบร้อย');
+      loadOut();
+    } else {
+      alert(res.message || 'บันทึกไม่สำเร็จ');
+      btn.disabled = false;
+      btn.innerHTML = oldText;
+    }
+  })
   .catch(() => {
     alert('เกิดข้อผิดพลาด');
     btn.disabled = false;
     btn.innerHTML = oldText;
-  })
-  .finally(hideLoading);
+  });
 }
+
 
 function showSuccessToast(text = 'บันทึกข้อมูลเรียบร้อยแล้ว') {
   const toastEl = document.getElementById('successToast');
