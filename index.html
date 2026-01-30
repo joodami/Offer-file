@@ -9,16 +9,15 @@
 <link rel="stylesheet" href="style.css">
 </head>
 
-
 <body>
 
 <!-- Navbar -->
 <nav class="navbar navbar-dark bg-primary shadow-sm mb-4">
   <div class="container-fluid">
     <span class="navbar-brand d-flex align-items-center gap-2">
-  <img src="https://github.com/joodami/school-assets/blob/main/logo.png?raw=true" alt="logo" class="gov-logo">
-   ระบบเสนอแฟ้มผู้อำนวยการ
-</span>
+      <img src="https://github.com/joodami/school-assets/blob/main/logo.png?raw=true" alt="logo" class="gov-logo">
+      ระบบเสนอแฟ้มผู้อำนวยการ
+    </span>
     <div>
       <a href="staff.html" class="btn btn-outline-light btn-sm">👩‍💼 เจ้าหน้าที่</a>
       <a href="dashboard.html" class="btn btn-outline-light btn-sm">📊 Dashboard</a>
@@ -39,114 +38,106 @@
       </div>
       <div class="col-md-4">
         <textarea id="code" class="form-control"
-  placeholder="กรอกรหัสแฟ้ม (บรรทัดละ 1 รหัส)"></textarea>
+          placeholder="กรอกรหัสแฟ้ม (บรรทัดละ 1 รหัส)"></textarea>
       </div>
       <div class="col-md-3">
         <input type="text" id="sender" class="form-control" placeholder="ผู้เสนอ">
       </div>
       <div class="col-md-2 d-grid">
-<button class="btn btn-primary" id="btnAdd" onclick="add(event)">
-  บันทึก
-</button>
-
-      </div>
-    </div>
-  </div>
-
-<!-- 🔍 Search Box (ตำแหน่งที่ถูกต้อง) -->
-<div class="card shadow-sm mb-3">
-  <div class="card-body">
-    <div class="row g-2 align-items-center">
-      <div class="col-md-6">
-        <input
-          type="text"
-          id="searchInput"
-          class="form-control"
-          placeholder="🔍 ค้นหาด้วยรหัสแฟ้ม หรือ ชื่อ-สกุลผู้เสนอ"
-        >
-      </div>
-      <div class="col-md-3 d-grid">
-        <button class="btn btn-outline-primary" id="btnSearch">
-          ค้นหา
-        </button>
-      </div>
-      <div class="col-md-3 d-grid">
-        <button class="btn btn-outline-secondary" id="btnClearSearch">
-          ล้างการค้นหา
+        <button class="btn btn-primary" id="btnAdd" onclick="add(event)">
+          บันทึก
         </button>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Status Tabs -->
-<ul class="nav nav-tabs mb-3" id="statusTabs">
-
-
-<!-- Status Tabs (Desktop + Mobile) -->
-<ul class="nav nav-tabs mb-3" id="statusTabs">
-  <li class="nav-item">
-    <button class="nav-link active"
-            data-status="เสนอแฟ้มต่อผู้อำนวยการ">
-      เสนอแฟ้ม
-    </button>
-  </li>
-  <li class="nav-item">
-    <button class="nav-link"
-            data-status="พิจารณาเรียบร้อยแล้ว">
-      พิจารณาแล้ว
-    </button>
-  </li>
-  <li class="nav-item">
-    <button class="nav-link"
-            data-status="รับแฟ้มคืนเรียบร้อยแล้ว">
-      รับคืนแล้ว
-    </button>
-  </li>
-</ul>
-
-  
-<!-- ===== DESKTOP VIEW : ตาราง ===== -->
-<div id="desktopView" class="d-none d-md-block">
-
-  <div class="card shadow-sm mb-4">
-    <div class="card-header fw-medium bg-light">
-      รายการแฟ้ม
-    </div>
-
-    <div class="card-body p-0">
-      <table class="table table-bordered table-striped mb-0">
-        <thead class="table-primary text-center align-middle">
-          <tr>
-            <th width="10%">วันที่เสนอ</th>
-            <th width="10%">รหัสแฟ้ม</th>
-            <th width="20%">ผู้เสนอ</th>
-            <th width="20%">สถานะ</th>
-            <th width="10%">วันออกจาก ผอ.</th>
-            <th width="10%">วันรับคืน</th>
-            <th width="25%">ดำเนินการ</th>
-          </tr>
-        </thead>
-
-        <tbody id="tb">
-          <tr>
-            <td colspan="7" class="text-center text-muted p-4">
-              กำลังโหลดข้อมูล...
-            </td>
-          </tr>
-        </tbody>
-      </table>
+  <!-- 🔍 Search Box -->
+  <div class="card shadow-sm mb-3">
+    <div class="card-body">
+      <div class="row g-2 align-items-center">
+        <div class="col-md-6">
+          <input
+            type="text"
+            id="searchInput"
+            class="form-control"
+            placeholder="🔍 ค้นหาด้วยรหัสแฟ้ม หรือ ชื่อ-สกุลผู้เสนอ"
+          >
+        </div>
+        <div class="col-md-3 d-grid">
+          <button class="btn btn-outline-primary" id="btnSearch">
+            ค้นหา
+          </button>
+        </div>
+        <div class="col-md-3 d-grid">
+          <button class="btn btn-outline-secondary" id="btnClearSearch">
+            ล้างการค้นหา
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
+  <!-- Status Tabs -->
+  <ul class="nav nav-tabs mb-3" id="statusTabs">
+    <li class="nav-item">
+      <button class="nav-link active"
+              data-status="เสนอแฟ้มต่อผู้อำนวยการ">
+        เสนอแฟ้ม
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link"
+              data-status="พิจารณาเรียบร้อยแล้ว">
+        พิจารณาแล้ว
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link"
+              data-status="รับแฟ้มคืนเรียบร้อยแล้ว">
+        รับคืนแล้ว
+      </button>
+    </li>
+  </ul>
+
+  <!-- ===== DESKTOP VIEW : ตาราง ===== -->
+  <div id="desktopView" class="d-none d-md-block">
+    <div class="card shadow-sm mb-4">
+      <div class="card-header fw-medium bg-light">
+        รายการแฟ้ม
+      </div>
+
+      <div class="card-body p-0">
+        <table class="table table-bordered table-striped mb-0">
+          <thead class="table-primary text-center align-middle">
+            <tr>
+              <th width="10%">วันที่เสนอ</th>
+              <th width="10%">รหัสแฟ้ม</th>
+              <th width="20%">ผู้เสนอ</th>
+              <th width="20%">สถานะ</th>
+              <th width="10%">วันออกจาก ผอ.</th>
+              <th width="10%">วันรับคืน</th>
+              <th width="25%">ดำเนินการ</th>
+            </tr>
+          </thead>
+
+          <tbody id="tb">
+            <tr>
+              <td colspan="7" class="text-center text-muted p-4">
+                กำลังโหลดข้อมูล...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MOBILE VIEW : Card ===== -->
+  <div id="mobileView" class="d-md-none">
+    <div id="cardView" class="p-2"></div>
+  </div>
+
 </div>
-
-<!-- ===== MOBILE VIEW : Card ===== -->
-<div id="mobileView" class="d-md-none">
-  <div id="cardView" class="p-2"></div>
-</div>
-
-
 
 <!-- Modal รับลายเซ็น -->
 <div class="modal fade" id="signModal" tabindex="-1">
@@ -168,7 +159,7 @@
   </div>
 </div>
 
-  <!-- Modal ดูลายเซ็น -->
+<!-- Modal ดูลายเซ็น -->
 <div class="modal fade" id="viewSignModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-md">
     <div class="modal-content">
@@ -184,7 +175,6 @@
     </div>
   </div>
 </div>
-
 
 <!-- Toast -->
 <div class="toast-container position-fixed top-0 end-0 p-3">
