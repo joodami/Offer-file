@@ -13,6 +13,7 @@ let CODE = '';
 let ALL_DATA = [];
 let FILTERED_DATA = [];
 let CURRENT_STATUS = 'เสนอแฟ้มต่อผู้อำนวยการ';
+let SEARCH_KEYWORD = '';
 
 const BATCH_SIZE = 20;
 let renderedCount = 0;
@@ -124,10 +125,28 @@ function applyFilter() {
   // ล้างเฉพาะ desktop
   tb.innerHTML = '';
 
-  FILTERED_DATA =
+ FILTERED_DATA = ALL_DATA
+  // กรองตามสถานะ
+  .filter(x =>
     CURRENT_STATUS === 'all'
-      ? ALL_DATA
-      : ALL_DATA.filter(x => x[3] === CURRENT_STATUS);
+      ? true
+      : x[3] === CURRENT_STATUS
+  )
+  // 🔍 กรองตาม keyword (รหัสแฟ้ม + ชื่อผู้เสนอ)
+  .filter(x => {
+    if (!SEARCH_KEYWORD) return true;
+
+    const keyword = SEARCH_KEYWORD.toLowerCase();
+
+    const fileCode = String(x[1]).toLowerCase(); // รหัสแฟ้ม
+    const sender   = String(x[2]).toLowerCase(); // ชื่อ-สกุล
+
+    return (
+      fileCode.includes(keyword) ||
+      sender.includes(keyword)
+    );
+  });
+
 
   // ===== ไม่พบข้อมูล =====
   if (!FILTERED_DATA.length) {
@@ -574,3 +593,27 @@ document.addEventListener('click', e => {
   const url = btn.dataset.url;
   viewSignature(url);
 });
+
+const searchInput = document.getElementById('searchInput');
+
+document.getElementById('btnSearch')
+  .addEventListener('click', () => {
+    SEARCH_KEYWORD = searchInput.value.trim();
+    applyFilter();
+  });
+
+document.getElementById('btnClearSearch')
+  .addEventListener('click', () => {
+    SEARCH_KEYWORD = '';
+    searchInput.value = '';
+    applyFilter();
+  });
+
+// กด Enter เพื่อค้นหา
+searchInput.addEventListener('keyup', e => {
+  if (e.key === 'Enter') {
+    SEARCH_KEYWORD = searchInput.value.trim();
+    applyFilter();
+  }
+});
+
