@@ -125,26 +125,26 @@ function applyFilter() {
   // ล้างเฉพาะ desktop
   tb.innerHTML = '';
 
- FILTERED_DATA = ALL_DATA
-  // กรองตามสถานะ
-  .filter(x =>
-    CURRENT_STATUS === 'all'
-      ? true
-      : x[3] === CURRENT_STATUS
-  )
-  // 🔍 กรองตาม keyword (รหัสแฟ้ม + ชื่อผู้เสนอ)
+FILTERED_DATA = ALL_DATA
   .filter(x => {
-    if (!SEARCH_KEYWORD) return true;
 
-    const keyword = SEARCH_KEYWORD.toLowerCase();
+    // 🔍 ถ้ามี keyword → ค้นหาทุกสถานะ
+    if (SEARCH_KEYWORD) {
+      const keyword = SEARCH_KEYWORD.toLowerCase();
 
-    const fileCode = String(x[1]).toLowerCase(); // รหัสแฟ้ม
-    const sender   = String(x[2]).toLowerCase(); // ชื่อ-สกุล
+      const fileCode = String(x[1]).toLowerCase(); // รหัสแฟ้ม
+      const sender   = String(x[2]).toLowerCase(); // ชื่อผู้เสนอ
 
-    return (
-      fileCode.includes(keyword) ||
-      sender.includes(keyword)
-    );
+      return (
+        fileCode.includes(keyword) ||
+        sender.includes(keyword)
+      );
+    }
+
+    // 📂 ถ้าไม่ค้น → ใช้ filter ตามสถานะปกติ
+    return CURRENT_STATUS === 'all'
+      ? true
+      : x[3] === CURRENT_STATUS;
   });
 
 
