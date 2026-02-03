@@ -29,9 +29,6 @@ function getStaffData(force = false) {
 /***********************
  * ELEMENTS
  ***********************/
-const loginBox = document.getElementById('loginBox');
-const staffBox = document.getElementById('staffBox');
-
 const tableOut = document.getElementById('tableOut');
 const tableReceive = document.getElementById('tableReceive');
 const tbOut = document.getElementById('tbOut');
@@ -40,44 +37,7 @@ const tbReceive = document.getElementById('tbReceive');
 const cardOut = document.getElementById('cardOut');
 const cardReceive = document.getElementById('cardReceive');
 
-/***********************
- * LOGIN
- ***********************/
-function login() {
-  const btn = document.getElementById('loginBtn');
-  msg.innerText = '';
 
-  btn.disabled = true;
-  const oldText = btn.innerHTML;
-  btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span>`;
-
-  fetch(GAS, {
-    method: 'POST',
-    body: JSON.stringify({
-      action: 'staffLogin',
-      phone: phone.value
-    })
-  })
-    .then(r => r.json())
-    .then(r => {
-      if (!r.allow) {
-        msg.innerText = 'ไม่มีสิทธิ์ใช้งาน';
-        btn.disabled = false;
-        btn.innerHTML = oldText;
-        return;
-      }
-
-      loginBox.classList.add('d-none');
-      staffBox.classList.remove('d-none');
-
-      showTab('out');
-    })
-    .catch(() => {
-      msg.innerText = 'เกิดข้อผิดพลาด กรุณาลองใหม่';
-      btn.disabled = false;
-      btn.innerHTML = oldText;
-    });
-}
 
 /***********************
  * TAB CONTROL
