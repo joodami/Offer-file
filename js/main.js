@@ -125,15 +125,14 @@ function applyFilter() {
   // ล้างเฉพาะ desktop
   tb.innerHTML = '';
 
-FILTERED_DATA = ALL_DATA
-  .filter(x => {
+  FILTERED_DATA = ALL_DATA.filter(x => {
 
     // 🔍 ถ้ามี keyword → ค้นหาทุกสถานะ
     if (SEARCH_KEYWORD) {
       const keyword = SEARCH_KEYWORD.toLowerCase();
 
-      const fileCode = String(x[1]).toLowerCase(); // รหัสแฟ้ม
-      const sender   = String(x[2]).toLowerCase(); // ชื่อผู้เสนอ
+      const fileCode = String(x[1] || '').toLowerCase(); // รหัสแฟ้ม
+      const sender   = String(x[2] || '').toLowerCase(); // ชื่อผู้เสนอ
 
       return (
         fileCode.includes(keyword) ||
@@ -141,12 +140,17 @@ FILTERED_DATA = ALL_DATA
       );
     }
 
-    // 📂 ถ้าไม่ค้น → ใช้ filter ตามสถานะปกติ
-    return CURRENT_STATUS === 'all'
-      ? true
-      : x[3] === CURRENT_STATUS;
-  });
+    // ===== FILTER ตามสถานะ =====
 
+    // 🟡 แท็บ "เสนอแฟ้มต่อผู้อำนวยการ"
+    // รวมทั้งแถวที่สถานะยังว่าง
+    if (CURRENT_STATUS === 'เสนอแฟ้มต่อผู้อำนวยการ') {
+      return !x[3] || x[3] === 'เสนอแฟ้มต่อผู้อำนวยการ';
+    }
+
+    // 📂 สถานะอื่น ๆ (ตรงตัว)
+    return x[3] === CURRENT_STATUS;
+  });
 
   // ===== ไม่พบข้อมูล =====
   if (!FILTERED_DATA.length) {
