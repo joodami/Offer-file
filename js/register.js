@@ -59,11 +59,12 @@ async function register(e) {
 
   const fid = r.fileId;
 
-  const scanUrl =
-    location.origin +
-    location.pathname.replace('register.html', '') +
-    'register.html?fid=' +
-    fid;
+const scanUrl =
+  location.origin +
+  location.pathname.replace('register.html', '') +
+  'scan.html?fid=' +
+  fid;
+
 
   document.getElementById('qrImg').src =
     'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' +
