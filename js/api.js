@@ -1,4 +1,4 @@
-<script>
+
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbxl0TS1km8Fzg3CZoqcrqynHkg7pIirNVO9ouvDFTTbvmsBio7e28HOAoOcAqRWpZwz/exec';
 
 async function post(action, payload = {}) {
@@ -12,4 +12,4 @@ async function post(action, payload = {}) {
 function getParam(name) {
   return new URLSearchParams(location.search).get(name);
 }
-</script>
+
