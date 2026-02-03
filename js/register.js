@@ -78,6 +78,13 @@ async function register(e) {
    REDIRECT BY STATUS
 ========================= */
 function redirectByStatus(status, fid) {
+
+  // 🆕 ยังไม่เคยเสนอแฟ้ม
+  if (status === 'NEW') {
+    location.href = 'submit.html?fid=' + fid;
+    return;
+  }
+
   if (status === 'SUBMITTED')
     location.href = 'status_submit.html?fid=' + fid;
 
