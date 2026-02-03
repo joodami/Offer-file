@@ -10,6 +10,44 @@ let STAFF_CACHE = null;
 let STAFF_CACHE_TIME = 0;
 const CACHE_TTL = 60 * 1000; // 1 นาที
 
+async function login() {
+  const phoneInput = document.getElementById('phone');
+  const msg = document.getElementById('msg');
+  const phone = phoneInput.value.trim();
+
+  if (!phone) {
+    msg.innerText = 'กรุณากรอกเบอร์โทรศัพท์';
+    return;
+  }
+
+  msg.innerText = 'กำลังตรวจสอบ...';
+
+  const r = await fetch(GAS, {
+    method: 'POST',
+    body: JSON.stringify({
+      action: 'staffLogin',
+      phone
+    })
+  }).then(r => r.json());
+
+  if (!r.success) {
+    msg.innerText = r.message || 'ไม่พบสิทธิ์';
+    return;
+  }
+
+  // ✅ login ผ่าน
+  sessionStorage.setItem('staffPhone', phone);
+  sessionStorage.setItem('staffName', r.name || '');
+
+  document.getElementById('loginBox').classList.add('d-none');
+  document.getElementById('staffBox').classList.remove('d-none');
+
+  msg.innerText = '';
+  showTab('out'); // โหลดแท็บแรก
+}
+
+
+
 function getStaffData(force = false) {
   const now = Date.now();
 
@@ -301,3 +339,14 @@ function showSuccessToast(text) {
   toastEl.querySelector('.toast-body').innerText = '✅ ' + text;
   new bootstrap.Toast(toastEl, { delay: 2000 }).show();
 }
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  const staff = sessionStorage.getItem('staffPhone');
+  if (staff) {
+    document.getElementById('loginBox').classList.add('d-none');
+    document.getElementById('staffBox').classList.remove('d-none');
+    showTab('out');
+  }
+});
+
