@@ -10,6 +10,9 @@ let STAFF_CACHE = null;
 let STAFF_CACHE_TIME = 0;
 const CACHE_TTL = 60 * 1000; // 1 นาที
 
+/***********************
+ * LOGIN
+ ***********************/
 async function login() {
   const phoneInput = document.getElementById('phone');
   const msg = document.getElementById('msg');
@@ -22,32 +25,45 @@ async function login() {
 
   msg.innerText = 'กำลังตรวจสอบ...';
 
-  const r = await fetch(GAS, {
-    method: 'POST',
-    body: JSON.stringify({
-      action: 'staffLogin',
-      phone
-    })
-  }).then(r => r.json());
+  try {
+    const res = await fetch(GAS, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        action: 'staffLogin',
+        phone
+      })
+    });
 
-  if (!r.success) {
-    msg.innerText = r.message || 'ไม่พบสิทธิ์';
-    return;
+    const r = await res.json();
+    console.log('login result:', r);
+
+    if (!r.success) {
+      msg.innerText = r.message || 'ไม่พบสิทธิ์เจ้าหน้าที่';
+      return;
+    }
+
+    // ✅ login ผ่าน
+    sessionStorage.setItem('staffPhone', phone);
+    sessionStorage.setItem('staffName', r.name || '');
+
+    document.getElementById('loginBox').classList.add('d-none');
+    document.getElementById('staffBox').classList.remove('d-none');
+    msg.innerText = '';
+
+    showTab('out');
+
+  } catch (err) {
+    console.error(err);
+    msg.innerText = 'เชื่อมต่อระบบไม่ได้';
   }
-
-  // ✅ login ผ่าน
-  sessionStorage.setItem('staffPhone', phone);
-  sessionStorage.setItem('staffName', r.name || '');
-
-  document.getElementById('loginBox').classList.add('d-none');
-  document.getElementById('staffBox').classList.remove('d-none');
-
-  msg.innerText = '';
-  showTab('out'); // โหลดแท็บแรก
 }
 
-
-
+/***********************
+ * LOAD DATA
+ ***********************/
 function getStaffData(force = false) {
   const now = Date.now();
 
@@ -71,11 +87,8 @@ const tableOut = document.getElementById('tableOut');
 const tableReceive = document.getElementById('tableReceive');
 const tbOut = document.getElementById('tbOut');
 const tbReceive = document.getElementById('tbReceive');
-
 const cardOut = document.getElementById('cardOut');
 const cardReceive = document.getElementById('cardReceive');
-
-
 
 /***********************
  * TAB CONTROL
@@ -119,138 +132,114 @@ function showTableLoading(tbody, col = 5) {
   `;
 }
 
-
 /***********************
  * OUT TAB
  ***********************/
 function loadOut() {
-  // แสดงข้อความกำลังโหลด
   showTableLoading(tbOut, 5);
   showStaffLoading(cardOut);
 
-  getStaffData()
-    .then(data => {
-      tbOut.innerHTML = '';
-      cardOut.innerHTML = '';
+  getStaffData().then(data => {
+    tbOut.innerHTML = '';
+    cardOut.innerHTML = '';
 
-      const list = data.filter(r => r[3] === 'เสนอแฟ้มต่อผู้อำนวยการ');
+    const list = data.filter(r => r[3] === 'เสนอแฟ้มต่อผู้อำนวยการ');
 
-      if (!list.length) {
-        tbOut.innerHTML = `
-          <tr>
-            <td colspan="5" class="text-center">ไม่มีข้อมูล</td>
-          </tr>
-        `;
-        cardOut.innerHTML = `
-          <div class="text-center text-muted">ไม่มีข้อมูล</div>
-        `;
-        return;
-      }
+    if (!list.length) {
+      tbOut.innerHTML = `<tr><td colspan="5" class="text-center">ไม่มีข้อมูล</td></tr>`;
+      cardOut.innerHTML = `<div class="text-center text-muted">ไม่มีข้อมูล</div>`;
+      return;
+    }
 
-      list.forEach(r => {
-        // TABLE
-        tbOut.innerHTML += `
-          <tr>
-            <td class="text-center">${r[1]}</td>
-            <td>${formatDateTH(r[0])}</td>
-            <td>${r[2]}</td>
-            <td>
-              <input type="date" class="form-control">
-            </td>
-            <td class="text-center">
-              <button class="btn btn-success btn-sm"
-                onclick="updateOut('${r[1]}', this)">บันทึก</button>
-            </td>
-          </tr>
-        `;
-
-        // CARD (MOBILE)
-        cardOut.innerHTML += `
-          <div class="staff-card">
-            <div class="code">📁 ${r[1]}</div>
-
-            <div class="label">วันที่เสนอ</div>
-            <div>${formatDateTH(r[0])}</div>
-
-            <div class="label mt-2">ผู้เสนอ</div>
-            <div>${r[2]}</div>
-
-            <div class="label mt-3 text-secondary">
-              วันที่ออกจากห้อง ผอ. <span class="text-danger">*</span>
-            </div>
-            <input type="date" class="form-control mt-1">
-
-            <button class="btn btn-success mt-3"
+    list.forEach(r => {
+      tbOut.innerHTML += `
+        <tr>
+          <td class="text-center">${r[1]}</td>
+          <td>${formatDateTH(r[0])}</td>
+          <td>${r[2]}</td>
+          <td><input type="date" class="form-control"></td>
+          <td class="text-center">
+            <button class="btn btn-success btn-sm"
               onclick="updateOut('${r[1]}', this)">บันทึก</button>
-          </div>
-        `;
-      });
-    });
-}
+          </td>
+        </tr>
+      `;
 
+      cardOut.innerHTML += `
+        <div class="staff-card">
+          <div class="code">📁 ${r[1]}</div>
+
+          <div class="label">วันที่เสนอ</div>
+          <div>${formatDateTH(r[0])}</div>
+
+          <div class="label mt-2">ผู้เสนอ</div>
+          <div>${r[2]}</div>
+
+          <div class="label mt-3 text-secondary">
+            วันที่ออกจากห้อง ผอ. <span class="text-danger">*</span>
+          </div>
+          <input type="date" class="form-control mt-1">
+
+          <button class="btn btn-success mt-3"
+            onclick="updateOut('${r[1]}', this)">บันทึก</button>
+        </div>
+      `;
+    });
+  });
+}
 
 /***********************
  * RECEIVE TAB
  ***********************/
 function loadReceive() {
-  // แสดงข้อความกำลังโหลด
   showTableLoading(tbReceive, 5);
   showStaffLoading(cardReceive);
 
-  getStaffData()
-    .then(data => {
-      tbReceive.innerHTML = '';
-      cardReceive.innerHTML = '';
+  getStaffData().then(data => {
+    tbReceive.innerHTML = '';
+    cardReceive.innerHTML = '';
 
-      const list = data.filter(r => r[3] === 'รับแฟ้มคืนเรียบร้อยแล้ว');
+    const list = data.filter(r => r[3] === 'รับแฟ้มคืนเรียบร้อยแล้ว');
 
-      if (!list.length) {
-        tbReceive.innerHTML = `
-          <tr>
-            <td colspan="5" class="text-center">ไม่มีข้อมูล</td>
-          </tr>
-        `;
-        cardReceive.innerHTML = `
-          <div class="text-center text-muted">ไม่มีข้อมูล</div>
-        `;
-        return;
-      }
+    if (!list.length) {
+      tbReceive.innerHTML = `<tr><td colspan="5" class="text-center">ไม่มีข้อมูล</td></tr>`;
+      cardReceive.innerHTML = `<div class="text-center text-muted">ไม่มีข้อมูล</div>`;
+      return;
+    }
 
-      list.forEach(r => {
-        // TABLE
-        tbReceive.innerHTML += `
-          <tr>
-            <td class="text-center">${r[1]}</td>
-            <td>${r[2]}</td>
-            <td>${formatDateTH(r[6])}</td>
-            <td>${r[5]}</td>
-            <td class="text-center">
-              <button class="btn btn-secondary btn-sm"
-                onclick="closeJobFront('${r[1]}', this)">ปิดงาน</button>
-            </td>
-          </tr>
-        `;
-
-        // CARD (MOBILE)
-        cardReceive.innerHTML += `
-          <div class="staff-card">
-            <div class="code">📁 ${r[1]}</div>
-
-            <div class="label">ผู้เสนอ</div>
-            <div>${r[2]}</div>
-
-            <div class="label mt-2">วันที่รับคืน</div>
-            <div>${formatDateTH(r[6])}</div>
-
-            <div class="label mt-2">ผู้รับคืน</div>
-            <div>${r[5]}</div>
-
-            <button class="btn btn-danger mt-3"
+    list.forEach(r => {
+      tbReceive.innerHTML += `
+        <tr>
+          <td class="text-center">${r[1]}</td>
+          <td>${r[2]}</td>
+          <td>${formatDateTH(r[6])}</td>
+          <td>${r[5]}</td>
+          <td class="text-center">
+            <button class="btn btn-secondary btn-sm"
               onclick="closeJobFront('${r[1]}', this)">ปิดงาน</button>
-          </div>
-        `;
-      });
+          </td>
+        </tr>
+      `;
+
+      cardReceive.innerHTML += `
+        <div class="staff-card">
+          <div class="code">📁 ${r[1]}</div>
+
+          <div class="label">ผู้เสนอ</div>
+          <div>${r[2]}</div>
+
+          <div class="label mt-2">วันที่รับคืน</div>
+          <div>${formatDateTH(r[6])}</div>
+
+          <div class="label mt-2">ผู้รับคืน</div>
+          <div>${r[5]}</div>
+
+          <button class="btn btn-danger mt-3"
+            onclick="closeJobFront('${r[1]}', this)">ปิดงาน</button>
+        </div>
+      `;
     });
+  });
 }
 
 /***********************
@@ -270,6 +259,9 @@ function updateOut(code, btn) {
 
   fetch(GAS, {
     method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
     body: JSON.stringify({
       action: 'outDirector',
       code,
@@ -280,7 +272,7 @@ function updateOut(code, btn) {
     .then(res => {
       if (res.success) {
         showSuccessToast('บันทึกวันที่ออกจากห้อง ผอ. เรียบร้อย');
-        STAFF_CACHE = null; // clear cache
+        STAFF_CACHE = null;
         loadOut();
       } else {
         alert(res.message || 'บันทึกไม่สำเร็จ');
@@ -306,23 +298,24 @@ function closeJobFront(code, btn) {
 }
 
 document.getElementById('confirmCloseBtn').addEventListener('click', () => {
-  const modalEl = document.getElementById('confirmCloseModal');
-  bootstrap.Modal.getInstance(modalEl).hide();
-
-  closeJobBtn.disabled = true;
+  bootstrap.Modal.getInstance(
+    document.getElementById('confirmCloseModal')
+  ).hide();
 
   fetch(GAS, {
     method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
     body: JSON.stringify({
       action: 'closeJob',
       code: closeJobCode
     })
-  })
-    .then(() => {
-      showSuccessToast('ปิดงานเรียบร้อยแล้ว');
-      STAFF_CACHE = null;
-      loadReceive();
-    });
+  }).then(() => {
+    showSuccessToast('ปิดงานเรียบร้อยแล้ว');
+    STAFF_CACHE = null;
+    loadReceive();
+  });
 });
 
 /***********************
@@ -340,7 +333,9 @@ function showSuccessToast(text) {
   new bootstrap.Toast(toastEl, { delay: 2000 }).show();
 }
 
-
+/***********************
+ * AUTO LOGIN
+ ***********************/
 document.addEventListener('DOMContentLoaded', () => {
   const staff = sessionStorage.getItem('staffPhone');
   if (staff) {
@@ -349,4 +344,3 @@ document.addEventListener('DOMContentLoaded', () => {
     showTab('out');
   }
 });
-
