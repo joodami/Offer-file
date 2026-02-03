@@ -1,12 +1,18 @@
-const fid = getParam('fid');
+document.addEventListener('DOMContentLoaded', () => {
 
-if (fid) {
-  checkStatus(fid);
-}
+  console.log('register.js loaded');
 
-document
-  .getElementById('btnRegister')
-  .addEventListener('click', register);
+  const fid = getParam('fid');
+
+  if (fid) {
+    checkStatus(fid);
+  }
+
+  const btn = document.getElementById('btnRegister');
+  if (btn) {
+    btn.addEventListener('click', register);
+  }
+});
 
 
 /* =========================
@@ -23,7 +29,11 @@ async function checkStatus(fid) {
 /* =========================
    REGISTER NEW FILE
 ========================= */
-async function register() {
+async function register(e) {
+  if (e) e.preventDefault();
+
+  console.log('click register');
+
   const code = document.getElementById('code').value.trim();
   const sender = document.getElementById('sender').value.trim();
 
@@ -37,6 +47,7 @@ async function register() {
   btn.innerHTML = 'กำลังบันทึก...';
 
   const r = await post('registerFile', { code, sender });
+  console.log('API result', r);
 
   btn.disabled = false;
   btn.innerHTML = 'ลงทะเบียน & ออก QR Code';
@@ -48,14 +59,12 @@ async function register() {
 
   const fid = r.fileId;
 
-  // 🔗 URL สำหรับสแกน QR
   const scanUrl =
     location.origin +
     location.pathname.replace('register.html', '') +
     'register.html?fid=' +
     fid;
 
-  // 🎯 Frontend สร้าง QR เอง
   document.getElementById('qrImg').src =
     'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' +
     encodeURIComponent(scanUrl);
