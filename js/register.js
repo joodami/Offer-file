@@ -2,29 +2,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   console.log('register.js loaded');
 
-  const fid = getParam('fid');
-
-  if (fid) {
-    checkStatus(fid);
-  }
-
   const btn = document.getElementById('btnRegister');
   if (btn) {
     btn.addEventListener('click', register);
   }
 });
-
-
-/* =========================
-   CHECK STATUS (SCAN QR)
-========================= */
-async function checkStatus(fid) {
-  const r = await post('getFileStatus', { fileId: fid });
-  if (!r || !r.success) return;
-
-  redirectByStatus(r.status, fid);
-}
-
 
 /* =========================
    REGISTER NEW FILE
@@ -60,9 +42,8 @@ async function register(e) {
   const fid = r.fileId;
 
 const scanUrl =
-  location.origin +
-  location.pathname.replace('register.html', '') +
-  'scan.html?fid=' +
+  GAS +
+  '?action=scan&fid=' +
   fid;
 
 
