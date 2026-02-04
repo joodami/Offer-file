@@ -58,5 +58,5 @@ async function submit() {
     return;
   }
 
-  location.href = 'status_submit.html?fid=' + fid;
+  location.replace('index.html?fid=' + fid);
 }
