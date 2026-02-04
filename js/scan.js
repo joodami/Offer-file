@@ -1,14 +1,11 @@
-
-<script src="js/api.js"></script>
-<script>
-const fid = new URLSearchParams(location.search).get('fid');
+const fid = getParam('fid');
 
 if (!fid) {
   alert('QR ไม่ถูกต้อง');
   location.replace('index.html');
 }
 
-(async () => {
+(async function () {
   try {
     const res = await fetch(
       GAS + '?action=scan&fid=' + encodeURIComponent(fid)
@@ -16,20 +13,22 @@ if (!fid) {
     const r = await res.json();
 
     if (!r.success) {
-      alert('ไม่พบแฟ้ม');
+      alert('ไม่พบข้อมูลแฟ้ม');
       location.replace('index.html');
       return;
     }
 
-    if (r.status === 'NEW') {
+    // 🆕 ยังไม่เคยเสนอ หรือ รับคืนแล้ว
+    if (r.status === 'NEW' || r.status === 'RECEIVED') {
       location.replace('submit.html?fid=' + fid);
-    } else {
-      location.replace('index.html?fid=' + fid);
+      return;
     }
 
+    // มีสถานะแล้ว → dashboard
+    location.replace('index.html?fid=' + fid);
+
   } catch (e) {
-    alert('เชื่อมต่อระบบไม่ได้');
+    alert('ไม่สามารถตรวจสอบสถานะแฟ้มได้');
     location.replace('index.html');
   }
 })();
-</script>
