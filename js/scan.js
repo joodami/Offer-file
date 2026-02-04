@@ -18,17 +18,31 @@ if (!fid) {
       return;
     }
 
-    // 🆕 ยังไม่เคยเสนอ หรือ รับคืนแล้ว
-    if (r.status === 'NEW' || r.status === 'RECEIVED') {
-      location.replace('submit.html?fid=' + fid);
-      return;
+    switch (r.status) {
+
+      case 'NEW':
+        location.replace('register.html?fid=' + fid);
+        break;
+
+      case 'SUBMITTED':
+        location.replace('status_submit.html?fid=' + fid);
+        break;
+
+      case 'APPROVED':
+        location.replace('status_approved.html?fid=' + fid);
+        break;
+
+      case 'RECEIVED':
+        // 🔁 จบรอบ → เสนอใหม่
+        location.replace('register.html?fid=' + fid);
+        break;
+
+      default:
+        location.replace('index.html');
     }
 
-    // มีสถานะแล้ว → dashboard
-    location.replace('index.html?fid=' + fid);
-
   } catch (e) {
-    alert('ไม่สามารถตรวจสอบสถานะแฟ้มได้');
+    alert('ตรวจสอบสถานะแฟ้มไม่สำเร็จ');
     location.replace('index.html');
   }
 })();
