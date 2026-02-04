@@ -20,9 +20,10 @@ if (!fid) {
 
     switch (r.status) {
 
-      case 'NEW':
-        location.replace('register.html?fid=' + fid);
-        break;
+case 'NEW':
+  location.replace('submit.html?fid=' + fid);
+  break;
+
 
       case 'SUBMITTED':
         location.replace('status_submit.html?fid=' + fid);
