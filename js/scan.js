@@ -8,8 +8,8 @@ if (!fid) {
 (async function () {
   try {
     const res = await fetch(
-  GAS_URL + '?action=scan&fid=' + encodeURIComponent(fid)
-);
+      GAS_URL + '?action=scan&fid=' + encodeURIComponent(fid)
+    );
 
     const r = await res.json();
 
@@ -21,10 +21,10 @@ if (!fid) {
 
     switch (r.status) {
 
-case 'NEW':
-  location.replace('submit.html?fid=' + fid);
-  break;
-
+      case 'NEW':
+        // 🆕 ยังไม่เสนอ → ลงทะเบียน / เสนอ
+        location.replace('submit.html?fid=' + fid);
+        break;
 
       case 'SUBMITTED':
         location.replace('status_submit.html?fid=' + fid);
@@ -35,15 +35,16 @@ case 'NEW':
         break;
 
       case 'RECEIVED':
-  location.replace('submit.html?fid=' + fid);
-  break;
-
+        // 🔁 จบรอบ → เสนอใหม่
+        location.replace('submit.html?fid=' + fid);
+        break;
 
       default:
         location.replace('index.html');
     }
 
   } catch (e) {
+    console.error(e);
     alert('ตรวจสอบสถานะแฟ้มไม่สำเร็จ');
     location.replace('index.html');
   }
