@@ -28,9 +28,9 @@ async function login() {
   try {
     const res = await fetch(GAS, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+     headers: {
+  'Content-Type': 'text/plain;charset=utf-8'
+},
       body: JSON.stringify({
         action: 'staffLogin',
         phone
@@ -259,9 +259,9 @@ function updateOut(code, btn) {
 
   fetch(GAS, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
+   headers: {
+  'Content-Type': 'text/plain;charset=utf-8'
+},
     body: JSON.stringify({
       action: 'outDirector',
       code,
@@ -304,9 +304,9 @@ document.getElementById('confirmCloseBtn').addEventListener('click', () => {
 
   fetch(GAS, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
+   headers: {
+  'Content-Type': 'text/plain;charset=utf-8'
+},
     body: JSON.stringify({
       action: 'closeJob',
       code: closeJobCode
