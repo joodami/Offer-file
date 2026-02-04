@@ -613,6 +613,49 @@ document.getElementById('btnClearSearch')
     applyFilter();
   });
 
+/* =====================
+   SCAN → HIGHLIGHT STATUS
+===================== */
+const FID = new URLSearchParams(location.search).get('fid');
+
+if (FID) {
+  fetch(GAS, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'text/plain;charset=utf-8'
+    },
+    body: JSON.stringify({
+      action: 'getFileStatus',
+      fileId: FID
+    })
+  })
+  .then(r => r.json())
+  .then(r => {
+    if (!r.success) return;
+
+    const map = {
+      'NEW': 'เสนอแฟ้มต่อผู้อำนวยการ',
+      'SUBMITTED': 'เสนอแฟ้มต่อผู้อำนวยการ',
+      'APPROVED': 'พิจารณาเรียบร้อยแล้ว',
+      'RECEIVED': 'รับแฟ้มคืนเรียบร้อยแล้ว'
+    };
+
+    CURRENT_STATUS = map[r.status] || CURRENT_STATUS;
+
+    // เปลี่ยนแท็บ active
+    document.querySelectorAll('#statusTabs .nav-link')
+      .forEach(tab => {
+        tab.classList.toggle(
+          'active',
+          tab.dataset.status === CURRENT_STATUS
+        );
+      });
+
+    applyFilter();
+  });
+}
+
+
 // กด Enter เพื่อค้นหา
 searchInput.addEventListener('keyup', e => {
   if (e.key === 'Enter') {
