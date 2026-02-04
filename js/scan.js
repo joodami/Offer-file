@@ -8,8 +8,9 @@ if (!fid) {
 (async function () {
   try {
     const res = await fetch(
-      GAS + '?action=scan&fid=' + encodeURIComponent(fid)
-    );
+  GAS_URL + '?action=scan&fid=' + encodeURIComponent(fid)
+);
+
     const r = await res.json();
 
     if (!r.success) {
