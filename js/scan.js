@@ -34,9 +34,9 @@ case 'NEW':
         break;
 
       case 'RECEIVED':
-        // 🔁 จบรอบ → เสนอใหม่
-        location.replace('register.html?fid=' + fid);
-        break;
+  location.replace('submit.html?fid=' + fid);
+  break;
+
 
       default:
         location.replace('index.html');
