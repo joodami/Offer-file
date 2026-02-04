@@ -14,8 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
 async function register(e) {
   if (e) e.preventDefault();
 
-  console.log('click register');
-
   const code = document.getElementById('code').value.trim();
   const sender = document.getElementById('sender').value.trim();
 
@@ -29,7 +27,6 @@ async function register(e) {
   btn.innerHTML = 'กำลังบันทึก...';
 
   const r = await post('registerFile', { code, sender });
-  console.log('API result', r);
 
   btn.disabled = false;
   btn.innerHTML = 'ลงทะเบียน & ออก QR Code';
@@ -41,11 +38,12 @@ async function register(e) {
 
   const fid = r.fileId;
 
-const scanUrl =
-  GAS +
-  '?action=scan&fid=' +
-  fid;
-
+  // ✅ QR ต้องชี้ไปหน้า scan.html
+  const scanUrl =
+    location.origin +
+    location.pathname.replace('register.html', '') +
+    'scan.html?fid=' +
+    fid;
 
   document.getElementById('qrImg').src =
     'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' +
@@ -53,26 +51,4 @@ const scanUrl =
 
   document.getElementById('form').classList.add('d-none');
   document.getElementById('qr').classList.remove('d-none');
-}
-
-
-/* =========================
-   REDIRECT BY STATUS
-========================= */
-function redirectByStatus(status, fid) {
-
-  // 🆕 ยังไม่เคยเสนอแฟ้ม
-  if (status === 'NEW') {
-    location.href = 'submit.html?fid=' + fid;
-    return;
-  }
-
-  if (status === 'SUBMITTED')
-    location.href = 'status_submit.html?fid=' + fid;
-
-  if (status === 'APPROVED')
-    location.href = 'status_approved.html?fid=' + fid;
-
-  if (status === 'RECEIVED')
-    location.href = 'status_received.html?fid=' + fid;
 }
