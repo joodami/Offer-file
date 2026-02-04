@@ -18,25 +18,6 @@ async function checkStatus() {
 }
 
 function redirectByStatus(status) {
-
-  if (status === 'NEW') {
-    location.replace('submit.html?fid=' + fid);
-    return;
-  }
-
-  if (status === 'SUBMITTED') {
-    location.replace('status_submit.html?fid=' + fid);
-    return;
-  }
-
-  if (status === 'APPROVED') {
-    location.replace('status_approved.html?fid=' + fid);
-    return;
-  }
-
-  if (status === 'RECEIVED') {
-    location.replace('status_received.html?fid=' + fid);
-    return;
-  }
+  location.replace('index.html?fid=' + fid);
 }
 
