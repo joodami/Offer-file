@@ -21,28 +21,30 @@ if (!fid) {
 
     switch (r.status) {
 
-      case 'NEW':
-        // 🆕 ยังไม่เสนอ → ลงทะเบียน / เสนอ
-        location.replace('submit.html?fid=' + fid);
-        break;
+  case 'NEW':
+    // 🆕 ยังไม่เสนอ → ลงทะเบียนเสนอแฟ้ม
+    location.replace('submit.html?fid=' + fid);
+    break;
 
-     case 'SUBMITTED':
-  location.replace('index.html?fid=' + fid);
-  break;
+  case 'SUBMITTED':
+    // 📤 เสนอแล้ว → หน้า index แท็บเสนอแฟ้ม
+    location.replace('index.html?fid=' + fid);
+    break;
 
+  case 'APPROVED':
+    // ✅ ผอ.พิจารณาแล้ว
+    location.replace('index.html?fid=' + fid);
+    break;
 
-      case 'APPROVED':
-        location.replace('status_approved.html?fid=' + fid);
-        break;
+  case 'RECEIVED':
+    // 🔁 จบรอบ → เสนอรอบใหม่
+    location.replace('submit.html?fid=' + fid);
+    break;
 
-      case 'RECEIVED':
-        // 🔁 จบรอบ → เสนอใหม่
-        location.replace('submit.html?fid=' + fid);
-        break;
+  default:
+    location.replace('index.html');
+}
 
-      default:
-        location.replace('index.html');
-    }
 
   } catch (e) {
     console.error(e);
