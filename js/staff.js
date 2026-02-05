@@ -143,7 +143,7 @@ function loadOut() {
     tbOut.innerHTML = '';
     cardOut.innerHTML = '';
 
-    const list = data.filter(r => r[3] === 'เสนอแฟ้มต่อผู้อำนวยการ');
+    const list = data.filter(r => r[3] === 'SUBMITTED');
 
     if (!list.length) {
       tbOut.innerHTML = `<tr><td colspan="5" class="text-center">ไม่มีข้อมูล</td></tr>`;
@@ -199,7 +199,8 @@ function loadReceive() {
     tbReceive.innerHTML = '';
     cardReceive.innerHTML = '';
 
-    const list = data.filter(r => r[3] === 'รับแฟ้มคืนเรียบร้อยแล้ว');
+    const list = data.filter(r => r[3] === 'RECEIVED');
+
 
     if (!list.length) {
       tbReceive.innerHTML = `<tr><td colspan="5" class="text-center">ไม่มีข้อมูล</td></tr>`;
