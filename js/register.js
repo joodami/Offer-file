@@ -1,14 +1,11 @@
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbxl0TS1km8Fzg3CZoqcrqynHkg7pIirNVO9ouvDFTTbvmsBio7e28HOAoOcAqRWpZwz/exec';
 
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('btnRegister')
-    .addEventListener('click', register);
-});
+/* =========================
+   CREATE QR
+========================= */
+async function createQR() {
 
-async function register(e) {
-  e.preventDefault();
-
-  const code = document.getElementById('code').value.trim();
+  const code   = document.getElementById('code').value.trim();
   const sender = document.getElementById('sender').value.trim();
 
   if (!code || !sender) {
@@ -16,41 +13,38 @@ async function register(e) {
     return;
   }
 
-  const btn = document.getElementById('btnRegister');
-  btn.disabled = true;
-  btn.innerText = 'กำลังสร้าง...';
+  // เรียก GAS → registerFile
+  const res = await fetch(GAS_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'text/plain;charset=utf-8'
+    },
+    body: JSON.stringify({
+      action: 'registerFile',
+      code,
+      sender
+    })
+  });
 
-  const r = await post('registerFile', { code, sender });
-
-  btn.disabled = false;
-  btn.innerText = 'ลงทะเบียน & ออก QR';
+  const r = await res.json();
 
   if (!r.success) {
     alert('สร้างแฟ้มไม่สำเร็จ');
     return;
   }
 
-  const fid = r.fileId;
-
-  // ⭐ URL ที่ถูกต้องสำหรับ QR
-  const url =
+  // 🔗 URL ที่ QR จะชี้ไป
+  const scanUrl =
     location.origin +
     location.pathname.replace('register.html', '') +
-    'index.html?fid=' + fid;
+    'index.html?fid=' + r.fileId;
 
+  // 🔳 สร้าง QR
   document.getElementById('qrImg').src =
     'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' +
-    encodeURIComponent(url);
+    encodeURIComponent(scanUrl);
 
-  document.getElementById('form').classList.add('d-none');
-  document.getElementById('qr').classList.remove('d-none');
-}
-
-async function post(action, data) {
-  const res = await fetch(GAS_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify({ action, ...data })
-  });
-  return res.json();
+  // toggle UI
+  document.getElementById('formBox').classList.add('d-none');
+  document.getElementById('qrBox').classList.remove('d-none');
 }
