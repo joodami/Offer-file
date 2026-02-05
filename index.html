@@ -2,89 +2,74 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>เสนอแฟ้ม | ระบบเสนอ ผอ.</title>
+  <title>เสนอแฟ้ม ผอ.</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body class="bg-light">
 
-<div class="container py-4">
+<nav class="navbar navbar-dark bg-primary mb-3">
+  <div class="container-fluid">
+    <span class="navbar-brand">📁 ระบบเสนอแฟ้ม</span>
+  </div>
+</nav>
 
-  <h4 class="mb-4 text-center">📁 ระบบเสนอแฟ้ม ผอ.</h4>
+<div class="container">
 
-  <!-- ================= REGISTER ================= -->
-  <div id="registerBox" class="card shadow-sm d-none">
-    <div class="card-header">ลงทะเบียนเสนอแฟ้ม</div>
+  <!-- ===== TAB ===== -->
+  <ul class="nav nav-tabs mb-3">
+    <li class="nav-item">
+      <button id="tab-new" class="nav-link">📝 ลงทะเบียนเสนอ</button>
+    </li>
+    <li class="nav-item">
+      <button id="tab-submit" class="nav-link">📤 เสนอ ผอ.</button>
+    </li>
+    <li class="nav-item">
+      <button id="tab-approve" class="nav-link">✍️ พิจารณาแล้ว</button>
+    </li>
+  </ul>
+
+  <!-- ===== TAB : NEW ===== -->
+  <div id="page-new" class="card d-none">
     <div class="card-body">
-      <form id="registerForm">
-        <div class="mb-3">
-          <label class="form-label">รหัสแฟ้ม</label>
-          <input id="code" class="form-control" required>
-        </div>
+      <h5 class="mb-3">ลงทะเบียนเสนอแฟ้ม</h5>
 
-        <div class="mb-3">
-          <label class="form-label">ผู้เสนอ</label>
-          <input id="sender" class="form-control" required>
-        </div>
+      <input id="sender" class="form-control mb-3" placeholder="ชื่อผู้เสนอ">
 
-        <button class="btn btn-primary w-100" id="btnRegister">
-          ลงทะเบียนเสนอแฟ้ม
-        </button>
-      </form>
+      <button class="btn btn-primary" onclick="registerFile()">
+        บันทึกเสนอแฟ้ม
+      </button>
     </div>
   </div>
 
-  <!-- ================= STATUS ================= -->
-  <div id="statusBox" class="card shadow-sm d-none">
-    <div class="card-header">
-      <ul class="nav nav-tabs card-header-tabs" id="statusTabs">
-        <li class="nav-item">
-          <button class="nav-link" data-status="SUBMITTED">
-            🟡 เสนอ ผอ.
-          </button>
-        </li>
-        <li class="nav-item">
-          <button class="nav-link" data-status="APPROVED">
-            🟢 พิจารณาแล้ว
-          </button>
-        </li>
-      </ul>
+  <!-- ===== TAB : SUBMITTED ===== -->
+  <div id="page-submit" class="card d-none">
+    <div class="card-body text-center">
+      <h5>📤 แฟ้มอยู่ระหว่างเสนอ ผอ.</h5>
+      <p class="text-muted mb-0">
+        กรุณารอเจ้าหน้าที่อัปเดตสถานะ
+      </p>
     </div>
+  </div>
 
+  <!-- ===== TAB : APPROVED ===== -->
+  <div id="page-approve" class="card d-none">
     <div class="card-body">
+      <h5 class="mb-3">✍️ พิจารณาเรียบร้อยแล้ว</h5>
 
-      <!-- SUBMITTED -->
-      <div id="tabSubmitted" class="d-none">
-        <p class="mb-0 text-muted">
-          แฟ้มอยู่ระหว่างเสนอผู้อำนวยการ
-        </p>
-      </div>
+      <label class="form-label">เซ็นรับแฟ้ม</label>
+      <canvas id="sign" class="border w-100 mb-3" height="150"></canvas>
 
-      <!-- APPROVED -->
-      <div id="tabApproved" class="d-none">
-        <p>ผู้อำนวยการพิจารณาเรียบร้อยแล้ว</p>
-
-        <div class="mb-2">
-          <label class="form-label">ชื่อผู้รับแฟ้มคืน</label>
-          <input id="receiver" class="form-control">
-        </div>
-
-        <canvas id="signCanvas"
-                class="border w-100 mb-2"
-                height="150"></canvas>
-
-        <button class="btn btn-success w-100" id="btnReceive">
-          ✍️ เซ็นรับแฟ้ม
-        </button>
-      </div>
-
+      <button class="btn btn-success" onclick="receiveFile()">
+        ยืนยันรับแฟ้มคืน
+      </button>
     </div>
   </div>
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>
