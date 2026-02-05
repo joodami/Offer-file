@@ -1,116 +1,72 @@
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbxl0TS1km8Fzg3CZoqcrqynHkg7pIirNVO9ouvDFTTbvmsBio7e28HOAoOcAqRWpZwz/exec';
-
 const fid = new URLSearchParams(location.search).get('fid');
 
-document.addEventListener('DOMContentLoaded', init);
+const pages = {
+  NEW: 'new',
+  SUBMITTED: 'sub',
+  APPROVED: 'app'
+};
 
-function init() {
-  if (!fid) {
-    alert('ไม่พบรหัสแฟ้ม');
-    return;
-  }
-  loadStatus();
-}
+document.addEventListener('DOMContentLoaded', loadStatus);
 
-/* =========================
-   LOAD STATUS → เลือก TAB
-========================= */
+/* ===== STATUS ===== */
 async function loadStatus() {
   const r = await post('getFileStatus', { fileId: fid });
+  if (!r.success) return;
 
-  if (!r.success) {
-    alert('โหลดสถานะไม่สำเร็จ');
-    return;
-  }
-
-  /*
-    STATUS ที่ใช้
-    - NEW
-    - SUBMITTED
-    - APPROVED
-  */
-
-  if (r.status === 'NEW') {
-    show('new');
-  } else if (r.status === 'SUBMITTED') {
-    show('submit');
-  } else if (r.status === 'APPROVED') {
-    show('approve');
-  }
+  show(pages[r.status] || 'new');
 }
 
-function show(tab) {
-  // tab
-  ['new','submit','approve'].forEach(t => {
-    document.getElementById('tab-'+t).classList.remove('active');
-    document.getElementById('page-'+t).classList.add('d-none');
+function show(p) {
+  ['new','sub','app'].forEach(x=>{
+    document.getElementById('tab-'+x)?.classList.remove('active');
+    document.getElementById('page-'+x)?.classList.add('d-none');
   });
 
-  document.getElementById('tab-'+tab).classList.add('active');
-  document.getElementById('page-'+tab).classList.remove('d-none');
+  document.getElementById('tab-'+p).classList.add('active');
+  document.getElementById('page-'+p).classList.remove('d-none');
 }
 
-/* =========================
-   REGISTER (ครั้งแรก / รอบใหม่)
-========================= */
+/* ===== REGISTER ===== */
 async function registerFile() {
-  const sender = document.getElementById('sender').value.trim();
-  if (!sender) {
-    alert('กรุณากรอกชื่อผู้เสนอ');
-    return;
-  }
+  const sender = senderInput.value.trim();
+  if (!sender) return alert('กรอกชื่อผู้เสนอ');
 
-  const r = await post('submitFile', {
-    fileId: fid,
-    sender
-  });
-
-  if (r.success) {
-    loadStatus();
-  }
+  const r = await post('registerFile', { sender });
+  if (r.success) loadStatus();
 }
 
-/* =========================
-   SIGN + RECEIVE
-========================= */
-const canvas = document.getElementById('sign');
-const ctx = canvas.getContext('2d');
-let drawing = false;
+/* ===== SIGN ===== */
+const c = document.getElementById('sign');
+const ctx = c.getContext('2d');
+let draw=false;
 
-canvas.addEventListener('mousedown', ()=>drawing=true);
-canvas.addEventListener('mouseup', ()=>drawing=false);
-canvas.addEventListener('mousemove', e=>{
-  if(!drawing) return;
-  ctx.lineWidth = 2;
-  ctx.lineCap = 'round';
-  ctx.lineTo(e.offsetX, e.offsetY);
+c.onmousedown=()=>draw=true;
+c.onmouseup=()=>draw=false;
+c.onmousemove=e=>{
+  if(!draw) return;
+  ctx.lineWidth=2;
+  ctx.lineCap='round';
+  ctx.lineTo(e.offsetX,e.offsetY);
   ctx.stroke();
   ctx.beginPath();
-  ctx.moveTo(e.offsetX, e.offsetY);
-});
+  ctx.moveTo(e.offsetX,e.offsetY);
+};
 
-async function receiveFile() {
-  const dataURL = canvas.toDataURL();
-
-  const r = await post('receive', {
-    fileId: fid,
-    signature: dataURL
+async function receive() {
+  const r = await post('receive',{
+    code: fid,
+    signature: c.toDataURL(),
+    receiver: 'ผู้เสนอ'
   });
-
-  if (r.success) {
-    alert('รับแฟ้มคืนเรียบร้อย');
-    loadStatus(); // จะกลับไป NEW รอบใหม่
-  }
+  if (r.success) loadStatus();
 }
 
-/* =========================
-   POST HELPER
-========================= */
-async function post(action, data) {
-  const res = await fetch(GAS_URL, {
-    method: 'POST',
-    headers: { 'Content-Type':'text/plain;charset=utf-8' },
-    body: JSON.stringify({ action, ...data })
+async function post(action,data){
+  const res = await fetch(GAS_URL,{
+    method:'POST',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body:JSON.stringify({action,...data})
   });
   return res.json();
 }
