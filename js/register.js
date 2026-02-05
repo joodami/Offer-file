@@ -1,7 +1,7 @@
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbxl0TS1km8Fzg3CZoqcrqynHkg7pIirNVO9ouvDFTTbvmsBio7e28HOAoOcAqRWpZwz/exec';
 
 /* =========================
-   CREATE QR
+   CREATE QR (ONLY)
 ========================= */
 async function createQR() {
 
@@ -13,31 +13,14 @@ async function createQR() {
     return;
   }
 
-  // เรียก GAS → registerFile
-  const res = await fetch(GAS_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'text/plain;charset=utf-8'
-    },
-    body: JSON.stringify({
-      action: 'registerFile',
-      code,
-      sender
-    })
-  });
+  // ✅ สร้าง fid ที่ frontend
+  const fid = crypto.randomUUID();
 
-  const r = await res.json();
-
-  if (!r.success) {
-    alert('สร้างแฟ้มไม่สำเร็จ');
-    return;
-  }
-
-  // 🔗 URL ที่ QR จะชี้ไป
+  // 🔗 URL สำหรับสแกน
   const scanUrl =
     location.origin +
     location.pathname.replace('register.html', '') +
-    'index.html?fid=' + r.fileId;
+    'index.html?fid=' + fid;
 
   // 🔳 สร้าง QR
   document.getElementById('qrImg').src =
@@ -47,4 +30,9 @@ async function createQR() {
   // toggle UI
   document.getElementById('formBox').classList.add('d-none');
   document.getElementById('qrBox').classList.remove('d-none');
+
+  // 🧠 เก็บค่าไว้ใช้ต่อ (optional)
+  sessionStorage.setItem('new_fid', fid);
+  sessionStorage.setItem('new_code', code);
+  sessionStorage.setItem('new_sender', sender);
 }
