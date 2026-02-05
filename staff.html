@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>เจ้าหน้าที่ | ระบบเสนอแฟ้ม</title>
+  <title>เจ้าหน้าที่ – ระบบเสนอแฟ้ม</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -10,44 +10,49 @@
 
 <body class="bg-light">
 
-<div class="container py-4">
+<nav class="navbar navbar-dark bg-dark mb-3">
+  <div class="container-fluid">
+    <span class="navbar-brand">🔐 เจ้าหน้าที่</span>
+    <button id="btnLogout" class="btn btn-outline-light btn-sm d-none">
+      ออกจากระบบ
+    </button>
+  </div>
+</nav>
 
-  <h4 class="text-center mb-4">👩‍💼 เจ้าหน้าที่สารบรรณ</h4>
+<div class="container">
 
-  <!-- ================= LOGIN ================= -->
-  <div id="loginBox" class="card shadow-sm mx-auto" style="max-width:420px">
+  <!-- ===== LOGIN ===== -->
+  <div id="loginBox" class="card">
     <div class="card-body">
-      <label class="form-label">เบอร์โทรศัพท์</label>
-      <input id="phone" class="form-control mb-3">
+      <h5 class="mb-3">เข้าสู่ระบบเจ้าหน้าที่</h5>
+
+      <input id="phone" class="form-control mb-3"
+             placeholder="เบอร์โทร (ไม่ต้องเว้นวรรค)">
+
       <button class="btn btn-primary w-100" onclick="login()">
         เข้าสู่ระบบ
       </button>
-      <div id="msg" class="text-danger text-center mt-2"></div>
     </div>
   </div>
 
-  <!-- ================= STAFF ================= -->
+  <!-- ===== STAFF PANEL ===== -->
   <div id="staffBox" class="d-none">
 
-    <div class="d-flex justify-content-between mb-3">
-      <strong>รายการแฟ้ม</strong>
-      <button class="btn btn-outline-danger btn-sm" onclick="logout()">
-        ออกจากระบบ
-      </button>
-    </div>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="mb-2">อัปเดตสถานะแฟ้ม</h5>
 
-    <table class="table table-bordered">
-      <thead class="table-primary text-center">
-        <tr>
-          <th>รหัสแฟ้ม</th>
-          <th>ผู้เสนอ</th>
-          <th>สถานะ</th>
-          <th>ออกจากห้อง ผอ.</th>
-          <th>บันทึก</th>
-        </tr>
-      </thead>
-      <tbody id="tb"></tbody>
-    </table>
+        <input id="fileCode" class="form-control mb-2"
+               placeholder="รหัสแฟ้ม">
+
+        <input id="outDate" type="date" class="form-control mb-3">
+
+        <button class="btn btn-success w-100"
+                onclick="outDirector()">
+          บันทึกออกจากห้อง ผอ.
+        </button>
+      </div>
+    </div>
 
   </div>
 
