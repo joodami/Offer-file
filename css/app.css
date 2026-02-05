@@ -8,20 +8,23 @@ body {
   background-color: #f6f7fb;
 }
 
-/* ===== Card ===== */
-.card {
-  border: none;
-  border-radius: 14px;
+/* ===== Navbar ===== */
+.navbar-brand {
+  font-weight: 600;
 }
 
-.card-header {
-  background: transparent;
-  border-bottom: 1px solid #eee;
+/* ===== Table ===== */
+.table {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.table thead th {
   font-weight: 500;
 }
 
 /* ===== Status Badge ===== */
-.badge-status {
+.badge {
   font-size: .85rem;
   padding: .45em .8em;
   border-radius: 20px;
@@ -37,8 +40,9 @@ body {
 }
 
 .file-card .code {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 600;
+  margin-bottom: .25rem;
 }
 
 .file-card .label {
@@ -46,7 +50,17 @@ body {
   font-size: .8rem;
 }
 
-/* ===== Canvas ===== */
+/* ===== Nav Pills ===== */
+.nav-pills .nav-link {
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.nav-pills .nav-link.active {
+  background-color: #0d6efd;
+}
+
+/* ===== Canvas (เผื่อหน้าเซ็น) ===== */
 canvas {
   border-radius: 12px;
   background: #fff;
