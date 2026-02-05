@@ -338,10 +338,40 @@ function showSuccessToast(text) {
  * AUTO LOGIN
  ***********************/
 document.addEventListener('DOMContentLoaded', () => {
-  const staff = sessionStorage.getItem('staffPhone');
-  if (staff) {
+  const phone = sessionStorage.getItem('staffPhone');
+
+  // ❌ ไม่มี session → กลับไปหน้า login
+  if (!phone) {
+    forceLogout();
+    return;
+  }
+
+  // ✅ มี session → ตรวจสอบกับ GAS อีกชั้น
+  fetch(GAS, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({
+      action: 'checkStaffSession',
+      phone
+    })
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (!res.success) {
+      forceLogout();
+      return;
+    }
+
+    // ผ่านจริง
     document.getElementById('loginBox').classList.add('d-none');
     document.getElementById('staffBox').classList.remove('d-none');
     showTab('out');
-  }
+  })
+  .catch(() => forceLogout());
 });
+
+function forceLogout() {
+  sessionStorage.removeItem('staffPhone');
+  sessionStorage.removeItem('staffName');
+  location.href = 'staff.html'; // reload หน้า login
+}
