@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap');
+
+* {
+  font-family: 'Prompt', sans-serif;
+}
+
+body {
+  background-color: #f6f7fb;
+}
+
+/* ===== Card ===== */
+.card {
+  border: none;
+  border-radius: 14px;
+}
+
+.card-header {
+  background: transparent;
+  border-bottom: 1px solid #eee;
+  font-weight: 500;
+}
+
+/* ===== Status Badge ===== */
+.badge-status {
+  font-size: .85rem;
+  padding: .45em .8em;
+  border-radius: 20px;
+}
+
+/* ===== Mobile Card ===== */
+.file-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 14px rgba(0,0,0,.06);
+}
+
+.file-card .code {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.file-card .label {
+  color: #888;
+  font-size: .8rem;
+}
+
+/* ===== Canvas ===== */
+canvas {
+  border-radius: 12px;
+  background: #fff;
+}
