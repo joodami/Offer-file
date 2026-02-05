@@ -26,9 +26,10 @@ if (!fid) {
         location.replace('submit.html?fid=' + fid);
         break;
 
-      case 'SUBMITTED':
-        location.replace('status_submit.html?fid=' + fid);
-        break;
+     case 'SUBMITTED':
+  location.replace('index.html?fid=' + fid);
+  break;
+
 
       case 'APPROVED':
         location.replace('status_approved.html?fid=' + fid);
