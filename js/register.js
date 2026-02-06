@@ -4,11 +4,21 @@ const GAS_URL =
 let CURRENT_QR_URL = '';
 let CURRENT_CODE = '';
 
-/* =========================
-   CREATE QR (ONLY)
-========================= */
-async function createQR() {
+document.addEventListener('DOMContentLoaded', () => {
+  const fid = new URLSearchParams(location.search).get('fid');
 
+  if (fid) {
+    // โหมดเสนอแฟ้ม
+    qrCreateBox.classList.add('d-none');
+    submitBox.classList.remove('d-none');
+    sessionStorage.setItem('fid', fid);
+  }
+});
+
+/* =========================
+   CREATE QR
+========================= */
+function createQR() {
   const code   = document.getElementById('code').value.trim();
   const sender = document.getElementById('sender').value.trim();
 
@@ -17,28 +27,23 @@ async function createQR() {
     return;
   }
 
-  // ✅ สร้าง fid ที่ frontend
   const fid = crypto.randomUUID();
   CURRENT_CODE = code;
 
-  // 🔗 URL สำหรับสแกน
   const scanUrl =
     location.origin +
     location.pathname.replace('register.html', '') +
     'index.html?fid=' + fid;
 
-  // 🔳 สร้าง QR
   CURRENT_QR_URL =
     'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' +
     encodeURIComponent(scanUrl);
 
-  document.getElementById('qrImg').src = CURRENT_QR_URL;
+  qrImg.src = CURRENT_QR_URL;
 
-  // toggle UI
-  document.getElementById('formBox').classList.add('d-none');
-  document.getElementById('qrBox').classList.remove('d-none');
+  qrCreateBox.classList.add('d-none');
+  qrBox.classList.remove('d-none');
 
-  // 🧠 เก็บค่าไว้ใช้ต่อ (ใช้ตอน scan ครั้งแรก)
   sessionStorage.setItem('new_fid', fid);
   sessionStorage.setItem('new_code', code);
   sessionStorage.setItem('new_sender', sender);
@@ -56,4 +61,35 @@ function downloadQR() {
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
+}
+
+/* =========================
+   SUBMIT FILE
+========================= */
+async function submitFile() {
+  const fid = sessionStorage.getItem('fid');
+  const submitDate = submitDate.value;
+  const sender = submitSender.value.trim();
+  const remark = remark.value.trim();
+
+  if (!submitDate || !sender) {
+    alert('กรุณากรอกข้อมูลให้ครบ');
+    return;
+  }
+
+  const r = await fetch(GAS_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({
+      action: 'registerFile',
+      fid: fid,
+      submitDate: submitDate,
+      sender: sender,
+      remark: remark
+    })
+  }).then(r => r.json());
+
+  if (r.success) {
+    location.replace('index.html');
+  }
 }
