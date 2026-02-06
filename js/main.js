@@ -66,17 +66,28 @@ function showTab(status) {
 ========================= */
 async function loadData() {
   const tb = document.getElementById('tb');
-  const card = document.getElementById('cardView');
+  const card = document.getElementById('cardView'); // อาจไม่มีใน index
 
   // clear ก่อนทุกครั้ง
   tb.innerHTML = '';
-  card.innerHTML = '';
+  if (card) card.innerHTML = '';
 
-  // ดึงข้อมูลจาก GAS
-  const data = await fetch(`${GAS_URL}?action=getData`)
-    .then(r => r.json());
+  let data = [];
+  try {
+    data = await fetch(`${GAS_URL}?action=getData`)
+      .then(r => r.json());
+  } catch (e) {
+    tb.innerHTML = `
+      <tr>
+        <td colspan="4" class="text-center text-danger">
+          โหลดข้อมูลไม่สำเร็จ
+        </td>
+      </tr>
+    `;
+    return;
+  }
 
-  // กรองตามแท็บปัจจุบัน
+  // กรองตามสถานะปัจจุบัน
   const list = data.filter(x => x[3] === CURRENT_STATUS);
 
   // ไม่มีข้อมูล
@@ -88,16 +99,17 @@ async function loadData() {
         </td>
       </tr>
     `;
-
-    card.innerHTML = `
-      <div class="text-center text-muted">
-        ไม่มีข้อมูล
-      </div>
-    `;
+    if (card) {
+      card.innerHTML = `
+        <div class="text-center text-muted">
+          ไม่มีข้อมูล
+        </div>
+      `;
+    }
     return;
   }
 
-  // loop render
+  // render ข้อมูล
   list.forEach(x => {
     /* =====================
        DESKTOP : TABLE
@@ -140,49 +152,52 @@ async function loadData() {
     `;
 
     /* =====================
-       MOBILE : CARD
+       MOBILE : CARD (เฉพาะหน้าที่มี)
     ===================== */
-    card.innerHTML += `
-      <div class="file-card">
-        <div class="code">📁 ${x[1]}</div>
+    if (card) {
+      card.innerHTML += `
+        <div class="file-card">
+          <div class="code">📁 ${x[1]}</div>
 
-        <div class="label">ผู้เสนอ</div>
-        <div>${x[2]}</div>
+          <div class="label">ผู้เสนอ</div>
+          <div>${x[2]}</div>
 
-        <div class="label mt-2">สถานะ</div>
-        <div class="mb-2">
+          <div class="label mt-2">สถานะ</div>
+          <div class="mb-2">
+            ${
+              x[3] === 'APPROVED' && x[4]
+                ? `ออกจากห้อง ผอ. : ${formatDate(x[4])}`
+                : x[3]
+            }
+          </div>
+
           ${
-            x[3] === 'APPROVED' && x[4]
-              ? `ออกจากห้อง ผอ. : ${formatDate(x[4])}`
-              : x[3]
+            x[3] === 'APPROVED'
+              ? `
+                <button class="btn btn-success w-100"
+                  onclick="openReceive('${x[1]}')">
+                  รับแฟ้มคืน
+                </button>
+              `
+              : x[3] === 'RECEIVED'
+                ? `
+                  <div class="label mt-2">ผู้รับแฟ้ม</div>
+                  <div>${x[5]}</div>
+                  ${
+                    x[7]
+                      ? `<img src="${x[7]}"
+                           class="img-fluid mt-2 border rounded">`
+                      : ''
+                  }
+                `
+                : ''
           }
         </div>
-
-        ${
-          x[3] === 'APPROVED'
-            ? `
-              <button class="btn btn-success w-100"
-                onclick="openReceive('${x[1]}')">
-                รับแฟ้มคืน
-              </button>
-            `
-            : x[3] === 'RECEIVED'
-              ? `
-                <div class="label mt-2">ผู้รับแฟ้ม</div>
-                <div>${x[5]}</div>
-                ${
-                  x[7]
-                    ? `<img src="${x[7]}"
-                         class="img-fluid mt-2 border rounded">`
-                    : ''
-                }
-              `
-              : ''
-        }
-      </div>
-    `;
+      `;
+    }
   });
 }
+
 
 
 /* =========================
