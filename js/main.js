@@ -1,10 +1,16 @@
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbxl0TS1km8Fzg3CZoqcrqynHkg7pIirNVO9ouvDFTTbvmsBio7e28HOAoOcAqRWpZwz/exec';
+const GAS_URL =
+  'https://script.google.com/macros/s/AKfycbxl0TS1km8Fzg3CZoqcrqynHkg7pIirNVO9ouvDFTTbvmsBio7e28HOAoOcAqRWpZwz/exec';
 
 let CURRENT_STATUS = 'SUBMITTED';
-let modal, canvas, ctx, drawing = false;
+let modal, canvas, ctx;
+let drawing = false;
 
+/* =========================
+   INIT
+========================= */
 document.addEventListener('DOMContentLoaded', async () => {
   modal = new bootstrap.Modal(receiveModal);
+
   canvas = signPad;
   ctx = canvas.getContext('2d');
   ctx.lineWidth = 2;
@@ -24,70 +30,118 @@ document.addEventListener('DOMContentLoaded', async () => {
   canvas.onmouseup = () => drawing = false;
   canvas.onmouseleave = () => drawing = false;
 
+  // ✅ scan จาก QR
   const fid = new URLSearchParams(location.search).get('fid');
   if (fid) {
-    const r = await fetch(GAS_URL + '?action=scan&fid=' + fid).then(r => r.json());
+    const r = await fetch(`${GAS_URL}?action=scan&fid=${fid}`)
+      .then(r => r.json());
+
     if (r.status === 'NEW') {
-      location.replace('register.html?fid=' + fid);
+      location.replace(`register.html?fid=${fid}`);
       return;
     }
     showTab(r.status);
+  } else {
+    loadData();
   }
-
-  loadData();
 });
 
+/* =========================
+   TAB
+========================= */
 function showTab(status) {
   CURRENT_STATUS = status;
-  document.querySelectorAll('#statusTabs .nav-link')
-    .forEach(b => b.classList.toggle('active', b.dataset.status === status));
+
+  document
+    .querySelectorAll('#statusTabs .nav-link')
+    .forEach(b =>
+      b.classList.toggle('active', b.dataset.status === status)
+    );
+
   loadData();
 }
 
+/* =========================
+   LOAD DATA
+========================= */
 async function loadData() {
+  const tb = document.getElementById('tb');
   tb.innerHTML = '';
-  const data = await fetch(GAS_URL + '?action=getData').then(r => r.json());
+
+  const data = await fetch(`${GAS_URL}?action=getData`)
+    .then(r => r.json());
+
   const list = data.filter(x => x[3] === CURRENT_STATUS);
 
   if (!list.length) {
     tb.innerHTML =
-      '<tr><td colspan="4" class="text-center text-muted">ไม่มีข้อมูล</td></tr>';
+      `<tr>
+        <td colspan="4" class="text-center text-muted">
+          ไม่มีข้อมูล
+        </td>
+      </tr>`;
     return;
   }
 
   list.forEach(x => {
-    tb.innerHTML += `
-      <tr class="text-center align-middle">
-        <td>${x[1]}</td>
-        <td>${x[2]}</td>
-        <td>${x[3]}</td>
-        <td>
-          ${
-            CURRENT_STATUS === 'APPROVED'
-              ? `<button class="btn btn-success btn-sm"
-                   onclick="openReceive('${x[1]}')">
-                   รับแฟ้มคืน
-                 </button>`
-              : CURRENT_STATUS === 'RECEIVED'
-                ? `
-                  <div class="small text-start">
-                    <div><strong>ผู้รับ:</strong> ${x[5] || '-'}</div>
-                    ${
-                      x[7]
-                        ? `<img src="${x[7]}"
-                             class="img-fluid border mt-1"
-                             style="max-height:120px">`
-                        : '-'
-                    }
-                  </div>
-                `
-                : '-'
-          }
-        </td>
-      </tr>`;
+    tb.innerHTML += renderRow(x);
   });
-} // ✅ ปิด loadData() ตรงนี้
+}
 
+/* =========================
+   RENDER ROW
+========================= */
+function renderRow(x) {
+  const code     = x[1];
+  const sender   = x[2];
+  const status   = x[3];
+  const outDate  = x[4];
+  const name     = x[5];
+  const signUrl  = x[7];
+
+  let actionHtml = '-';
+
+  if (status === 'APPROVED') {
+    actionHtml = `
+      <button class="btn btn-success btn-sm"
+        onclick="openReceive('${code}')">
+        รับแฟ้มคืน
+      </button>
+    `;
+  }
+
+  if (status === 'RECEIVED') {
+    actionHtml = `
+      <div class="small text-start">
+        <div><strong>ผู้รับ:</strong> ${name}</div>
+        ${
+          signUrl
+            ? `<img src="${signUrl}"
+                 class="img-fluid border mt-1"
+                 style="max-height:120px">`
+            : '-'
+        }
+      </div>
+    `;
+  }
+
+  return `
+    <tr class="text-center align-middle">
+      <td>${code}</td>
+      <td>${sender}</td>
+      <td>
+        ${status === 'APPROVED' && outDate
+          ? `ออกจากห้อง ผอ. : ${formatDate(outDate)}`
+          : status}
+      </td>
+      <td>${actionHtml}</td>
+    </tr>
+  `;
+}
+
+/* =========================
+   RECEIVE MODAL
+========================= */
 function openReceive(code) {
   receiveCode.value = code;
   receiverName.value = '';
@@ -101,7 +155,7 @@ function clearSign() {
 
 async function submitReceive() {
   if (!receiverName.value.trim()) {
-    alert('กรอกชื่อผู้รับ');
+    alert('กรอกชื่อผู้รับแฟ้ม');
     return;
   }
 
@@ -120,4 +174,13 @@ async function submitReceive() {
     modal.hide();
     loadData();
   }
+}
+
+/* =========================
+   UTIL
+========================= */
+function formatDate(d) {
+  return d
+    ? new Date(d).toLocaleDateString('th-TH')
+    : '-';
 }
