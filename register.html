@@ -1,35 +1,33 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <title>สร้าง QR แฟ้ม</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="css/app.css" rel="stylesheet">
+<meta charset="UTF-8">
+<title>สร้าง QR แฟ้ม</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="css/app.css" rel="stylesheet">
 </head>
 <body>
 
-<nav class="navbar navbar-dark bg-dark mb-4">
-  <div class="container">
-    <span class="navbar-brand">🆕 สร้างแฟ้มใหม่</span>
-  </div>
+<nav class="navbar bg-dark navbar-dark mb-4">
+<div class="container"><span class="navbar-brand">🆕 สร้างแฟ้มใหม่</span></div>
 </nav>
 
 <div class="container">
-  <div class="card" id="formBox">
-    <div class="card-body">
-      <input id="code" class="form-control mb-2" placeholder="รหัสแฟ้ม">
-      <input id="sender" class="form-control mb-3" placeholder="ชื่อผู้เสนอ">
-      <button class="btn btn-primary w-100" onclick="createQR()">สร้าง QR</button>
-    </div>
-  </div>
+<div class="card" id="formBox">
+<div class="card-body">
+<input id="code" class="form-control mb-2" placeholder="รหัสแฟ้ม">
+<input id="sender" class="form-control mb-3" placeholder="ชื่อผู้เสนอ">
+<button class="btn btn-primary w-100" onclick="createQR()">สร้าง QR</button>
+</div>
+</div>
 
-  <div class="card d-none mt-3" id="qrBox">
-    <div class="card-body text-center">
-      <img id="qrImg" class="img-fluid mb-3">
-      <button class="btn btn-success" onclick="downloadQR()">⬇️ ดาวน์โหลด QR</button>
-    </div>
-  </div>
+<div class="card d-none mt-3" id="qrBox">
+<div class="card-body text-center">
+<img id="qrImg" class="img-fluid mb-3">
+<button class="btn btn-success" onclick="downloadQR()">⬇️ ดาวน์โหลด QR</button>
+</div>
+</div>
 </div>
 
 <script src="js/register.js"></script>
