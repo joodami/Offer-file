@@ -66,21 +66,25 @@
   <div id="staffBox" class="d-none">
 
     <!-- ===== TABS ===== -->
-    <ul class="nav nav-pills mb-3">
-      <li class="nav-item">
-        <button
-          class="nav-link active"
-          onclick="showTab('out')">
-          🕘 รอออกจากห้อง ผอ.
-        </button>
-      </li>
-      <li class="nav-item">
-        <button
-          class="nav-link"
-          onclick="showTab('receive')">
-          📥 รับแฟ้มคืนแล้ว
-        </button>
-      </li>
+<ul class="nav nav-pills mb-3">
+  <li class="nav-item">
+    <button
+      class="nav-link active"
+      data-status="SUBMITTED"
+      onclick="showTab('SUBMITTED')">
+      🕘 รอออกจากห้อง ผอ.
+    </button>
+  </li>
+  <li class="nav-item">
+    <button
+      class="nav-link"
+      data-status="RECEIVED"
+      onclick="showTab('RECEIVED')">
+      📥 รับแฟ้มคืนแล้ว
+    </button>
+  </li>
+</ul>
+
     </ul>
 
     <!-- ===== DESKTOP TABLE ===== -->
