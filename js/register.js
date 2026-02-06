@@ -91,3 +91,21 @@ async function submitFile() {
     location.replace('index.html');
   }
 }
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(location.search);
+  const fid  = params.get('fid');
+  const code = params.get('code');
+
+  if (fid && code) {
+    qrCreateBox.classList.add('d-none');
+    submitBox.classList.remove('d-none');
+
+    showCode.innerText = code;
+
+    sessionStorage.setItem('fid', fid);
+    sessionStorage.setItem('code', code);
+  }
+});
+
