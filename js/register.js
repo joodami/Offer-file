@@ -38,7 +38,7 @@ async function createQR() {
   document.getElementById('formBox').classList.add('d-none');
   document.getElementById('qrBox').classList.remove('d-none');
 
-  // 🧠 เก็บค่าไว้ใช้ต่อ
+  // 🧠 เก็บค่าไว้ใช้ต่อ (ใช้ตอน scan ครั้งแรก)
   sessionStorage.setItem('new_fid', fid);
   sessionStorage.setItem('new_code', code);
   sessionStorage.setItem('new_sender', sender);
