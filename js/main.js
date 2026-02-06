@@ -139,6 +139,32 @@ function renderRow(x) {
   `;
 }
 
+
+function renderCard(x) {
+  const card = document.getElementById('cardView');
+
+  card.innerHTML += `
+    <div class="file-card">
+      <div class="code">📁 ${x[1]}</div>
+
+      <div class="label">ผู้เสนอ</div>
+      <div>${x[2]}</div>
+
+      <div class="label mt-2">สถานะ</div>
+      <div>${x[3]}</div>
+
+      ${
+        x[3] === 'APPROVED'
+          ? `<button class="btn btn-success w-100 mt-3"
+               onclick="openReceive('${x[1]}')">
+               รับแฟ้มคืน
+             </button>`
+          : ''
+      }
+    </div>
+  `;
+}
+
 /* =========================
    RECEIVE MODAL
 ========================= */
