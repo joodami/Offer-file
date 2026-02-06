@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <title>Offer File</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="css/app.css" rel="stylesheet">
+<meta charset="UTF-8">
+<title>Offer File</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="css/app.css" rel="stylesheet">
 </head>
-
 <body>
 
 <nav class="navbar navbar-expand bg-primary navbar-dark">
@@ -23,69 +21,61 @@
 
 <div class="container mt-4">
 
-  <ul class="nav nav-pills mb-3 justify-content-center" id="statusTabs">
-    <li class="nav-item">
-      <button class="nav-link active" data-status="SUBMITTED"
-        onclick="showTab('SUBMITTED')">🕘 เสนอ ผอ.</button>
-    </li>
-    <li class="nav-item">
-      <button class="nav-link" data-status="APPROVED"
-        onclick="showTab('APPROVED')">📄 พิจารณาแล้ว</button>
-    </li>
-    <li class="nav-item">
-      <button class="nav-link" data-status="RECEIVED"
-        onclick="showTab('RECEIVED')">📥 รับแฟ้มคืนแล้ว</button>
-    </li>
-  </ul>
+<ul class="nav nav-pills mb-3 justify-content-center" id="statusTabs">
+  <li class="nav-item">
+    <button class="nav-link active" data-status="SUBMITTED" onclick="showTab('SUBMITTED')">
+      🕘 เสนอ ผอ.
+    </button>
+  </li>
+  <li class="nav-item">
+    <button class="nav-link" data-status="APPROVED" onclick="showTab('APPROVED')">
+      📄 พิจารณาแล้ว
+    </button>
+  </li>
+  <li class="nav-item">
+    <button class="nav-link" data-status="RECEIVED" onclick="showTab('RECEIVED')">
+      📥 รับคืนแล้ว
+    </button>
+  </li>
+</ul>
 
-  <!-- TABLE -->
-  <div class="d-none d-md-block">
-    <table class="table table-bordered bg-white align-middle">
-      <thead class="table-light text-center">
-        <tr>
-          <th>รหัสแฟ้ม</th>
-          <th>ผู้เสนอ</th>
-          <th>สถานะ</th>
-          <th>จัดการ</th>
-        </tr>
-      </thead>
-      <tbody id="tb"></tbody>
-    </table>
-  </div>
-
-  <!-- MOBILE -->
-  <div class="d-md-none" id="cardView"></div>
+<table class="table table-bordered bg-white">
+<thead class="table-light text-center">
+<tr>
+  <th>รหัสแฟ้ม</th>
+  <th>ผู้เสนอ</th>
+  <th>สถานะ</th>
+  <th>จัดการ</th>
+</tr>
+</thead>
+<tbody id="tb"></tbody>
+</table>
 </div>
 
-<!-- MODAL รับแฟ้มคืน -->
+<!-- Modal รับแฟ้มคืน -->
 <div class="modal fade" id="receiveModal" tabindex="-1">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">📥 รับแฟ้มคืน</h5>
-        <button class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" id="receiveCode">
+<div class="modal-dialog modal-lg modal-dialog-centered">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title">📥 รับแฟ้มคืน</h5>
+<button class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+<div class="modal-body">
+<input type="hidden" id="receiveCode">
 
-        <div class="mb-3">
-          <label class="form-label">ชื่อผู้รับแฟ้ม</label>
-          <input id="receiverName" class="form-control">
-        </div>
+<label class="form-label">ชื่อผู้รับแฟ้ม</label>
+<input id="receiverName" class="form-control mb-3">
 
-        <label class="form-label">เซ็นลายมือ</label>
-        <canvas id="signPad" width="600" height="220"></canvas>
-
-        <button class="btn btn-outline-secondary btn-sm mt-2" onclick="clearSign()">
-          ล้างลายเซ็น
-        </button>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
-        <button class="btn btn-success" onclick="submitReceive()">บันทึก</button>
-      </div>
-    </div>
-  </div>
+<label class="form-label">เซ็นลายมือ</label>
+<canvas id="signPad" width="600" height="220"></canvas>
+<button class="btn btn-sm btn-outline-secondary mt-2" onclick="clearSign()">ล้างลายเซ็น</button>
+</div>
+<div class="modal-footer">
+<button class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+<button class="btn btn-success" onclick="submitReceive()">บันทึก</button>
+</div>
+</div>
+</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
