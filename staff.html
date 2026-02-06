@@ -5,69 +5,114 @@
   <title>เจ้าหน้าที่สารบรรณ</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
+
+  <!-- App CSS -->
   <link href="css/app.css" rel="stylesheet">
 </head>
 
 <body>
 
+<!-- ======================
+     NAVBAR
+====================== -->
 <nav class="navbar navbar-expand bg-primary navbar-dark mb-4">
   <div class="container">
-    <span class="navbar-brand">👩‍💼 เจ้าหน้าที่สารบรรณ</span>
-    <button class="btn btn-outline-light btn-sm" onclick="logout()">ออกจากระบบ</button>
+    <span class="navbar-brand fw-bold">
+      👩‍💼 เจ้าหน้าที่สารบรรณ
+    </span>
+    <button
+      class="btn btn-outline-light btn-sm"
+      onclick="logout()">
+      ออกจากระบบ
+    </button>
   </div>
 </nav>
 
 <div class="container">
 
-  <!-- LOGIN -->
+  <!-- ======================
+       LOGIN
+  ====================== -->
   <div class="card mx-auto" id="loginBox" style="max-width:420px">
     <div class="card-body">
-      <h5 class="mb-3 text-center">เข้าสู่ระบบ</h5>
-      <input id="phone" class="form-control mb-3" placeholder="เบอร์โทรศัพท์">
-      <button class="btn btn-primary w-100" onclick="login()">เข้าสู่ระบบ</button>
-      <div id="msg" class="text-danger text-center mt-2"></div>
+      <h5 class="mb-3 text-center">เข้าสู่ระบบเจ้าหน้าที่</h5>
+
+      <input
+        id="phone"
+        class="form-control mb-3"
+        placeholder="เบอร์โทรศัพท์">
+
+      <button
+        class="btn btn-primary w-100"
+        onclick="login()">
+        เข้าสู่ระบบ
+      </button>
+
+      <div
+        id="msg"
+        class="text-danger text-center mt-2">
+      </div>
     </div>
   </div>
 
-  <!-- STAFF -->
+  <!-- ======================
+       STAFF AREA
+  ====================== -->
   <div id="staffBox" class="d-none">
 
+    <!-- ===== TABS ===== -->
     <ul class="nav nav-pills mb-3">
       <li class="nav-item">
-        <button class="nav-link active" onclick="showTab('out')">
+        <button
+          class="nav-link active"
+          onclick="showTab('out')">
           🕘 รอออกจากห้อง ผอ.
         </button>
       </li>
       <li class="nav-item">
-        <button class="nav-link" onclick="showTab('receive')">
+        <button
+          class="nav-link"
+          onclick="showTab('receive')">
           📥 รับแฟ้มคืนแล้ว
         </button>
       </li>
     </ul>
 
-    <!-- DESKTOP TABLE -->
+    <!-- ===== DESKTOP TABLE ===== -->
     <div class="d-none d-md-block">
-      <table class="table table-bordered bg-white">
+      <table class="table table-bordered bg-white align-middle">
         <thead class="table-light text-center">
           <tr>
             <th>รหัสแฟ้ม</th>
             <th>ผู้เสนอ</th>
-            <th>วันที่</th>
+            <th>วันที่ล่าสุด</th>
             <th>จัดการ</th>
           </tr>
         </thead>
-        <tbody id="tb"></tbody>
+        <tbody id="tb">
+          <!-- JS render -->
+        </tbody>
       </table>
     </div>
 
-    <!-- MOBILE -->
-    <div class="d-md-none" id="cardView"></div>
+    <!-- ===== MOBILE CARDS ===== -->
+    <div class="d-md-none" id="cardView">
+      <!-- JS render -->
+    </div>
 
   </div>
 
 </div>
 
+<!-- ======================
+     SCRIPT
+====================== -->
 <script src="js/staff.js"></script>
+
 </body>
 </html>
