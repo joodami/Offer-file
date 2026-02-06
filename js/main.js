@@ -39,20 +39,38 @@ async function loadData(){
     tb.innerHTML='<tr><td colspan="4" class="text-center text-muted">ไม่มีข้อมูล</td></tr>';
     return;
   }
-  list.forEach(x=>{
-    tb.innerHTML+=`
-    <tr class="text-center">
-      <td>${x[1]}</td>
-      <td>${x[2]}</td>
-      <td>${x[3]}</td>
-      <td>
-        ${CURRENT_STATUS==='APPROVED'
-          ? `<button class="btn btn-success btn-sm" onclick="openReceive('${x[1]}')">รับแฟ้มคืน</button>`
-          : '-'}
-      </td>
-    </tr>`;
-  });
-}
+  list.forEach(x => {
+  tb.innerHTML += `
+  <tr class="text-center align-middle">
+    <td>${x[1]}</td>
+    <td>${x[2]}</td>
+    <td>${x[3]}</td>
+    <td>
+      ${
+        CURRENT_STATUS === 'APPROVED'
+          ? `<button class="btn btn-success btn-sm"
+               onclick="openReceive('${x[1]}')">
+               รับแฟ้มคืน
+             </button>`
+          : CURRENT_STATUS === 'RECEIVED'
+            ? `
+              <div class="small">
+                <div><strong>ผู้รับ:</strong> ${x[5] || '-'}</div>
+                ${
+                  x[7]
+                    ? `<img src="${x[7]}"
+                         class="img-fluid border mt-1"
+                         style="max-height:120px">`
+                    : '-'
+                }
+              </div>
+            `
+            : '-'
+      }
+    </td>
+  </tr>`;
+});
+
 
 function openReceive(code){
   receiveCode.value=code;
