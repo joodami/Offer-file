@@ -2,32 +2,68 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>สร้าง QR แฟ้ม</title>
+<title>Register File</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="css/app.css" rel="stylesheet">
 </head>
 <body>
 
-<nav class="navbar bg-dark navbar-dark mb-4">
-<div class="container"><span class="navbar-brand">🆕 สร้างแฟ้มใหม่</span></div>
+<nav class="navbar navbar-expand bg-primary navbar-dark">
+  <div class="container">
+    <span class="navbar-brand fw-bold">📁 Offer File</span>
+    <a href="index.html" class="btn btn-light btn-sm">⬅ กลับหน้าหลัก</a>
+  </div>
 </nav>
 
-<div class="container">
-<div class="card" id="formBox">
-<div class="card-body">
-<input id="code" class="form-control mb-2" placeholder="รหัสแฟ้ม">
-<input id="sender" class="form-control mb-3" placeholder="ชื่อผู้เสนอ">
-<button class="btn btn-primary w-100" onclick="createQR()">สร้าง QR</button>
-</div>
+<div class="container mt-4">
+
+<!-- ================= CREATE QR ================= -->
+<div id="qrCreateBox">
+  <h5 class="mb-3">➕ สร้าง QR ใหม่</h5>
+
+  <div class="mb-3">
+    <label class="form-label">รหัสแฟ้ม</label>
+    <input id="code" class="form-control">
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">ผู้สร้าง</label>
+    <input id="sender" class="form-control">
+  </div>
+
+  <button class="btn btn-primary" onclick="createQR()">สร้าง QR</button>
 </div>
 
-<div class="card d-none mt-3" id="qrBox">
-<div class="card-body text-center">
-<img id="qrImg" class="img-fluid mb-3">
-<button class="btn btn-success" onclick="downloadQR()">⬇️ ดาวน์โหลด QR</button>
+<!-- ================= SUBMIT FILE ================= -->
+<div id="submitBox" class="d-none">
+  <h5 class="mb-3">📝 เสนอแฟ้ม ผอ.</h5>
+
+  <div class="mb-3">
+    <label class="form-label">วันที่เสนอ</label>
+    <input type="date" id="submitDate" class="form-control">
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">ผู้เสนอ</label>
+    <input id="submitSender" class="form-control">
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">หมายเหตุ</label>
+    <textarea id="remark" class="form-control" rows="3"></textarea>
+  </div>
+
+  <button class="btn btn-success" onclick="submitFile()">บันทึกเสนอแฟ้ม</button>
 </div>
+
+<!-- ================= QR RESULT ================= -->
+<div id="qrBox" class="d-none text-center mt-4">
+  <img id="qrImg" class="img-fluid mb-3">
+  <br>
+  <button class="btn btn-outline-secondary" onclick="downloadQR()">ดาวน์โหลด QR</button>
 </div>
+
 </div>
 
 <script src="js/register.js"></script>
