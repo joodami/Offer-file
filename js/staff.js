@@ -1,4 +1,5 @@
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbxl0TS1km8Fzg3CZoqcrqynHkg7pIirNVO9ouvDFTTbvmsBio7e28HOAoOcAqRWpZwz/exec';
+const GAS_URL =
+  'https://script.google.com/macros/s/AKfycbxl0TS1km8Fzg3CZoqcrqynHkg7pIirNVO9ouvDFTTbvmsBio7e28HOAoOcAqRWpZwz/exec';
 
 let CURRENT_TAB = 'out';
 
@@ -87,13 +88,15 @@ async function loadData() {
   );
 
   if (!list.length) {
-    tb.innerHTML = `<tr><td colspan="4" class="text-center text-muted">ไม่มีข้อมูล</td></tr>`;
-    card.innerHTML = `<div class="text-center text-muted">ไม่มีข้อมูล</div>`;
+    tb.innerHTML =
+      `<tr><td colspan="4" class="text-center text-muted">ไม่มีข้อมูล</td></tr>`;
+    card.innerHTML =
+      `<div class="text-center text-muted">ไม่มีข้อมูล</div>`;
     return;
   }
 
   list.forEach(x => {
-    // desktop
+    // Desktop
     tb.innerHTML += `
       <tr class="text-center">
         <td>${x[1]}</td>
@@ -103,14 +106,16 @@ async function loadData() {
           ${
             CURRENT_TAB === 'out'
               ? `<button class="btn btn-success btn-sm"
-                   onclick="outDirector('${x[1]}')">บันทึกออก ผอ.</button>`
+                   onclick="outDirector('${x[1]}')">
+                   บันทึกออก ผอ.
+                 </button>`
               : '-'
           }
         </td>
       </tr>
     `;
 
-    // mobile
+    // Mobile
     card.innerHTML += `
       <div class="file-card">
         <div class="code">📁 ${x[1]}</div>
@@ -131,7 +136,7 @@ async function loadData() {
 }
 
 /* ======================
-   ACTION
+   ACTION : OUT DIRECTOR
 ====================== */
 async function outDirector(code) {
   const date = prompt('วันที่ออกจากห้อง ผอ. (YYYY-MM-DD)');
