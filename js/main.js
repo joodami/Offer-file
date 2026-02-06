@@ -66,27 +66,124 @@ function showTab(status) {
 ========================= */
 async function loadData() {
   const tb = document.getElementById('tb');
-  tb.innerHTML = '';
+  const card = document.getElementById('cardView');
 
+  // clear ก่อนทุกครั้ง
+  tb.innerHTML = '';
+  card.innerHTML = '';
+
+  // ดึงข้อมูลจาก GAS
   const data = await fetch(`${GAS_URL}?action=getData`)
     .then(r => r.json());
 
+  // กรองตามแท็บปัจจุบัน
   const list = data.filter(x => x[3] === CURRENT_STATUS);
 
+  // ไม่มีข้อมูล
   if (!list.length) {
-    tb.innerHTML =
-      `<tr>
+    tb.innerHTML = `
+      <tr>
         <td colspan="4" class="text-center text-muted">
           ไม่มีข้อมูล
         </td>
-      </tr>`;
+      </tr>
+    `;
+
+    card.innerHTML = `
+      <div class="text-center text-muted">
+        ไม่มีข้อมูล
+      </div>
+    `;
     return;
   }
 
+  // loop render
   list.forEach(x => {
-    tb.innerHTML += renderRow(x);
+    /* =====================
+       DESKTOP : TABLE
+    ===================== */
+    tb.innerHTML += `
+      <tr class="text-center align-middle">
+        <td>${x[1]}</td>
+        <td>${x[2]}</td>
+        <td>
+          ${
+            x[3] === 'APPROVED' && x[4]
+              ? `ออกจากห้อง ผอ. : ${formatDate(x[4])}`
+              : x[3]
+          }
+        </td>
+        <td>
+          ${
+            x[3] === 'APPROVED'
+              ? `<button class="btn btn-success btn-sm"
+                   onclick="openReceive('${x[1]}')">
+                   รับแฟ้มคืน
+                 </button>`
+              : x[3] === 'RECEIVED'
+                ? `
+                  <div class="small text-start">
+                    <div><strong>ผู้รับ:</strong> ${x[5]}</div>
+                    ${
+                      x[7]
+                        ? `<img src="${x[7]}"
+                             class="img-fluid border mt-1"
+                             style="max-height:80px">`
+                        : ''
+                    }
+                  </div>
+                `
+                : '-'
+          }
+        </td>
+      </tr>
+    `;
+
+    /* =====================
+       MOBILE : CARD
+    ===================== */
+    card.innerHTML += `
+      <div class="file-card">
+        <div class="code">📁 ${x[1]}</div>
+
+        <div class="label">ผู้เสนอ</div>
+        <div>${x[2]}</div>
+
+        <div class="label mt-2">สถานะ</div>
+        <div class="mb-2">
+          ${
+            x[3] === 'APPROVED' && x[4]
+              ? `ออกจากห้อง ผอ. : ${formatDate(x[4])}`
+              : x[3]
+          }
+        </div>
+
+        ${
+          x[3] === 'APPROVED'
+            ? `
+              <button class="btn btn-success w-100"
+                onclick="openReceive('${x[1]}')">
+                รับแฟ้มคืน
+              </button>
+            `
+            : x[3] === 'RECEIVED'
+              ? `
+                <div class="label mt-2">ผู้รับแฟ้ม</div>
+                <div>${x[5]}</div>
+                ${
+                  x[7]
+                    ? `<img src="${x[7]}"
+                         class="img-fluid mt-2 border rounded">`
+                    : ''
+                }
+              `
+              : ''
+        }
+      </div>
+    `;
   });
 }
+
 
 /* =========================
    RENDER ROW
