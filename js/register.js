@@ -19,8 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
    CREATE QR
 ========================= */
 function createQR() {
-  const code   = document.getElementById('code').value.trim();
-  const sender = document.getElementById('sender').value.trim();
+  const code   = codeInput.value.trim();
+  const sender = senderInput.value.trim();
 
   if (!code || !sender) {
     alert('กรุณากรอกข้อมูลให้ครบ');
@@ -30,10 +30,11 @@ function createQR() {
   const fid = crypto.randomUUID();
   CURRENT_CODE = code;
 
+  // 🔴 ใส่ code ไปด้วย
   const scanUrl =
     location.origin +
     location.pathname.replace('register.html', '') +
-    'index.html?fid=' + fid;
+    `register.html?fid=${fid}&code=${encodeURIComponent(code)}`;
 
   CURRENT_QR_URL =
     'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' +
@@ -43,11 +44,8 @@ function createQR() {
 
   qrCreateBox.classList.add('d-none');
   qrBox.classList.remove('d-none');
-
-  sessionStorage.setItem('new_fid', fid);
-  sessionStorage.setItem('new_code', code);
-  sessionStorage.setItem('new_sender', sender);
 }
+
 
 /* =========================
    DOWNLOAD QR
